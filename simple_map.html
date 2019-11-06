@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Global Water Explorer</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src='./d3_v5.min.js'></script>
+    <!-- <link rel="stylesheet" href="./materialize.min.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    </link>
+    <link rel="stylesheet" href="./main.css">
+    <link rel="stylesheet" href="./navbar.css">
+    <!-- <script src='./jquery-3.3.1.min.js'></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <!-- <script src='./materialize_100_2.min.js'></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> -->
+    <script src='./materialize_v1.js'></script>
+    <script src="./highcharts.js"></script>
+    <!-- <script src="./mapbox_init.js"></script>
+    <script src="./helpers.js"></script> -->
+
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+
+
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+
+</head>
+
+<body>
+
+    <div id='map'>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            mapboxgl.accessToken = 'pk.eyJ1IjoicGVyaWt1dCIsImEiOiJVNzBjMl9FIn0.38swLsSY2ao8E8rU8FYgyw';
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/light-v10',
+                //style: 'mapbox://styles/perikut/ck1xa74kk1c2c1cmtdho498go',
+
+                center: [-100, 22],
+                //    center: [-2, 41],
+                //center: [73, 62],
+                zoom: 2
+            });
+
+            // Add zoom and rotation controls to the map.
+            map.addControl(new mapboxgl.NavigationControl());
+            map.on('load', function () {
+                map.addSource("basins_06", {
+                    "type": "vector",
+                    "tiles": ["https://geospatial.jrc.ec.europa.eu/geoserver/gwc/service/wmts?layer=hotspots:adm_0_level_6&tilematrixset=EPSG:900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application/x-protobuf;type=mapbox-vector&TileMatrix=EPSG:900913:{z}&TileCol={x}&TileRow={y}"]
+                });
+
+
+                var layer = {
+                    "id": "basins_6_adm_0",
+                    "type": "fill",
+                    "source": "basins_06",
+                    "source-layer": "adm_0_level_6",
+                    'layout': {
+                        'visibility': 'visible'
+
+                    },
+                    // "layout": {
+                    //     'text-field': '{pfaf_id}',
+                    //     'text-font': ["Lato Bold"],
+                    //     'text-size': {
+                    //         "base": 1,
+                    //         "stops": [
+                    //             [12, 12],
+                    //             [16, 16]
+                    //         ]
+                    //     }
+                    // },
+                    "paint": {
+                        //"fill-color": expression,
+                        "fill-color": '#9cb9ef',
+                        "fill-opacity": 0.5,
+                        'fill-outline-color':
+                        {
+                            "stops": [
+                                [3, '#8a2be2'],
+                                [6, '#8a2be2'],
+                                [8, '#8a2be2']
+
+                            ]
+                        }
+
+
+
+                    }
+                };
+
+                map.addLayer(layer, 'country-label');
+
+                var layer = {
+                    "id": "basins_06_lines",
+                    "type": "line",
+                    "source": "basins_06",
+
+                    "source-layer": "adm_0_level_6",
+                    'layout': {
+                        'visibility': 'none'
+
+                    },
+                    'paint': {
+
+                        'line-color': "#ff07a7",
+                        'line-width':
+                        {
+                            "stops": [
+                                [3, 0.001],
+                                [6, 0.5],
+                                [8, 10]
+
+                            ]
+                        }
+
+                    }
+                    //  ,
+                    //'filter': ['any', ['==', 'pfaf_id', '']]
+                }
+
+
+                //  map.addLayer(layer, 'country-label');
+
+
+            })
+            function getRandomColor() {
+                var letters = '0123456789ABCDEF';
+                var color = '#';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+            function getUniqueFeatures(array, comparatorProperty) {
+
+                var existingFeatureKeys = {};
+                var uniqueFeatures = array.filter(function (el) {
+                    if (existingFeatureKeys[el.properties[comparatorProperty]]) {
+                        return false;
+                    } else {
+                        existingFeatureKeys[el.properties[comparatorProperty]] = true;
+                        return true;
+                    }
+                });
+
+                return uniqueFeatures;
+            }
+            var y = 1;
+            map.on('sourcedataloading', function (e) {
+
+                console.log('sourcedataloading');
+                var checkLoaded = setInterval(loaded, 100);
+                function loaded() {
+                    if (map.getLayer('basins_6_adm_0')) {
+                        //  console.log('tiles loaded: ', map.areTilesLoaded());
+                    }
+                    if (map.areTilesLoaded()) {
+
+
+                        window.clearInterval(checkLoaded);
+                        console.log('tiles loaded: ', map.areTilesLoaded());
+                        setTimeout(function () {
+                            //  if (y == 0) return false;
+                            var features = map.querySourceFeatures("basins_06", {
+                                sourceLayer: 'adm_0_level_6',
+                                filter: ['any', ['==', 'adm_0_code', 85]]
+                            });
+                            console.info(features);
+                            if (features.length == 0) {
+                                // y = 0;
+                                console.info(features.length)
+                                return false;
+                            }
+                            else {
+                                if (y == 1) {
+                                    console.log('y == 1')
+                                    y = 0;
+                                    //   return false;
+                                }
+                                else {
+                                    return false;
+                                }
+                            }
+
+
+                            var uniques = getUniqueFeatures(features, "pfaf_id");
+                            // var pfaf_arr = uniques.map(function (d) {
+                            //     return d.properties.pfaf_id
+                            // });
+                            var symbol_expression = ["match", ["get", "pfaf_id"]];
+                            var opacity_expression = ["match", ["get", "pfaf_id"]];
+
+                            uniques.forEach(function (d) {
+                                //    console.log(d)
+                                symbol_expression.push(d.properties.pfaf_id, getRandomColor());
+                                opacity_expression.push(d.properties.pfaf_id, 1);
+                            })
+                            console.info(symbol_expression)
+                            symbol_expression.push("#d0c4c4");
+                            opacity_expression.push(0);
+
+                            map.setPaintProperty('basins_6_adm_0', "fill-opacity", opacity_expression);
+                            map.setPaintProperty('basins_6_adm_0', "fill-color", symbol_expression);
+                            map.setLayoutProperty('basins_6_adm_0', "visibility", "visible");
+
+
+                            //   console.info(pfaf_arr.sort())
+                        }, 100)
+                    }
+                }
+            });
+
+        })
+    </script>
+
+</body>
+
+</html>
