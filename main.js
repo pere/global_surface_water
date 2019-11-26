@@ -358,7 +358,19 @@ $(document).ready(function () {
             }
             else {
                 var coords = this_data.bbox.coordinates;
-                var bbox = [coords[0][2], coords[0][0]];
+                //USA
+                if (this_data.adm_0_code == 259) {
+                    var bbox = [[-198.281250, 19.808054], [-31.025391, 69.595890]];
+                }
+                else {
+                    var bbox = [coords[0][2], coords[0][0]];
+                    //  var bbox = [[-198.281250 19.808054], [-31.025391 69.595890]];
+                }
+                //  -198.281250,19.808054,-31.025391,69.595890
+                console.info(this_data)
+
+
+
                 console.log(bbox)
 
 
