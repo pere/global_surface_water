@@ -34,8 +34,9 @@
  
  .d3_legend,
  .d3_legend svg {
-     width: 450px;
-     height: 50px;
+     width: 550px;
+     height: 150px;
+     background-color: #343a3f;
  }
  
  .d3_legend g {
@@ -263,3 +264,125 @@
  {
     font-size: 1.3em;
  }
+
+ /* country stats */
+ 
+ .subheader {
+    font-size: 1.7rem !important;
+    font-weight: bold !important;
+
+    line-height: 1.5rem;
+    margin: 0.75rem 8px;
+}
+
+.list-divider {
+    border: 0;
+    height: 1px;
+    overflow: hidden;
+    background-color: #e0e0e0;
+    margin-right: 16px;
+    margin-left: 75px;
+}
+
+.list {
+    margin: 0;
+}
+
+.list li {
+    padding: 0 16px;
+}
+
+ .list li .valign-wrapper {
+    min-height: 42px;
+} 
+
+.list i.circle {
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.26);
+}
+
+.list .title span {
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.ml-auto {
+    margin-left: auto;
+}
+
+i.ml-auto {
+    color: rgba(0, 0, 0, 0.26);
+}
+
+.country_li li {
+    width: 100%;
+}
+
+li.country_li>div.collapsible-body
+{
+background-color: #250c0c17!important;
+}
+
+li.country_li>div.collapsible-body>ul {
+    margin: 0.75rem 8px;
+    margin-left: 1.8rem !important;
+}
+
+i.material-icons {
+    font-size: 22px !important;
+    padding-right: 10px !important;
+    display: block;
+}
+
+.list .row {
+    border-bottom: 0.5px solid grey;
+    margin-bottom: 0px;
+}
+
+.list p {
+    margin: 5px;
+}
+
+.highlight {
+    color: gray;
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+.highlight.on {
+    color: #fddc00;
+    opacity: 1;
+}
+
+.show {
+    color: gray;
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+.show.on {
+    color: #fddc00;
+    opacity: 1;
+}
+
+.sidenav li {
+    float: none;
+    line-height: 25px!important;
+}
+.gain_loss
+{
+    font-size: 1em!important;
+    margin-top: 10px;
+    margin-bottom: -18px;
+    color: #fff!important;
+    font-weight: bold;
+    border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+    text-align: center!important;
+    padding: 3px;
+    
+}
+.sidenav .list li .col.s6
+{
+    font-size: 0.9rem;
+}
+  /* END country stats */

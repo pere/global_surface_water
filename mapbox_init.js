@@ -5,8 +5,8 @@ function init_map() {
         // style: 'mapbox://styles/mapbox/light-v10',
         style: 'mapbox://styles/perikut/ck1xa74kk1c2c1cmtdho498go',
         //style: 'mapbox://styles/v1/perikut/ck1xa74kk1c2c1cmtdho498go',
-    center: [-100, 22],
-    //    center: [-2, 41],
+        center: [-100, 22],
+        //    center: [-2, 41],
         //center: [73, 62],
         zoom: 2
     });
@@ -23,17 +23,17 @@ function init_map() {
             offset: {
                 'bottom': [0, -20],
                 'top': [0, -15],
-                'top-left': [0,0],//[linearOffset, (markerHeight - markerRadius - linearOffset) * -1],
-                'top-right': [0,0],//[-linearOffset, (markerHeight - markerRadius - linearOffset) * -1],
-                
-               // 'bottom-left': [linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
-               // 'bottom-right': [-linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
+                'top-left': [0, 0],//[linearOffset, (markerHeight - markerRadius - linearOffset) * -1],
+                'top-right': [0, 0],//[-linearOffset, (markerHeight - markerRadius - linearOffset) * -1],
+
+                // 'bottom-left': [linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
+                // 'bottom-right': [-linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
                 //'left': [markerRadius, (markerHeight - markerRadius) * -1],
                 //'right': [-markerRadius, (markerHeight - markerRadius) * -1]
             }
         });
 
-        basins_popup = new mapboxgl.Popup({
+        bassins_popup = new mapboxgl.Popup({
             closeButton: false,
             closeOnClick: true
         });
@@ -105,17 +105,17 @@ function init_map() {
             "paint": {
                 //"fill-color": expression,
                 "fill-color": '#9cb9ef',
-                "fill-opacity": 0.8,
+                "fill-opacity": 0.6,
                 'fill-outline-color':
                 {
                     "stops": [
                         [3, '#8a2be2'],
                         [6, '#8a2be2'],
                         [8, '#8a2be2']
-                        
-                        
 
-                      //  [8, 'rgba(255, 255, 255, 0.1)']
+
+
+                        //  [8, 'rgba(255, 255, 255, 0.1)']
                     ]
                 }
 
@@ -294,10 +294,10 @@ function init_map() {
         map.addLayer({
             "id": "basins_5_adm_0_fill",
             "type": "fill",
-            
+
             "source": "basins_5_adm_0",
             "source-layer": "basins_5_adm_0",
-             // "layout": {
+            // "layout": {
             //     'text-field': '{pfaf_id}',
             //     'text-font': ["Lato Bold"],
             //     'text-size': {
@@ -384,6 +384,66 @@ function init_map() {
 
     });
 
+    var y = 1;
+
+    function loaded() {
+        window.clearInterval(window.checkLoaded);
+        if (map.getLayer('basins_6_adm_0')) {
+            console.log('tiles loaded: ', map.areTilesLoaded());
+        }
+        if (map.areTilesLoaded()) {
+
+            if (y == 0) {
+                console.log('should not be executed, y = ' + y)
+                console.log(window.checkLoaded)
+                clearInterval(window.checkLoaded);
+                debugger;
+
+            }
+
+            console.log('tiles loaded: ', map.areTilesLoaded());
+
+            //  if (y == 0) return false;
+
+            var features = map.querySourceFeatures("basins_06", {
+                sourceLayer: 'adm_0_level_6',
+                filter: ['any', ['==', 'adm_0_code', 85]]
+            });
+            console.info(features.length);
+            if (features.length == 0) {
+                // y = 0;
+                console.info(features.length)
+                return false;
+            }
+            else {
+                if (y == 0) {
+                    console.log('y == 0')
+                    //  y = 0;
+                    //   return false;
+                }
+                else {
+                    console.log('y == 1 should return false')
+                    y = 0;
+                    var uniques = getUniqueFeatures(features, "pfaf_id");
+                    console.info('visualizing ' + uniques.length + ' BASSINS');
+                    clearInterval(window.checkLoaded);
+                    debugger;
+
+                    //return false;
+                }
+            }
+
+        }
+    }
+    //var checkLoaded;
+    map.on('sourcedataloading', function (e) {
+
+        // console.log('sourcedataloading');
+        //    window.checkLoaded = setInterval(loaded, 2200);
+
+
+    });
+
     class MyCustomControl {
         onAdd(map) {
             this.map = map;
@@ -402,5 +462,5 @@ function init_map() {
 
     map.addControl(myCustomControl, 'bottom-right');
 
-    $('.my-custom-control').html('<div class="d3_legend"><svg><g></g></svg></div><div class="highcharts_container_bottom">highcharts</div>')
+    $('.my-custom-control').html('<div class="scale"><svg><g></g></svg></div><div class="highcharts_container_bottom">highcharts</div>')
 }

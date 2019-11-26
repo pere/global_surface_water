@@ -8,7 +8,7 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 var layers_correspondence = {
-    'countries': ['gaul_0_simple', 'gaul_0_fixed', 'gaul_0_simplified_highlighted', 'gaul_0_fixed_highlighted'],
+    'countries': { layer_ids: ['gaul_0_simple', 'gaul_0_fixed', 'gaul_0_simplified_highlighted', 'gaul_0_fixed_highlighted'] },
     'gaul_1': ['gaul_1', 'gaul1_simple'],
     'basins_6': ['basins_6_adm_0'],
     'basins_5': ['basins_5_adm_0_fill']
@@ -114,167 +114,233 @@ function get_chart(data) {
 
 function do_legend(params) {
     console.warn(params)
-    
+
     var class_function = get_thresholds_class(params);
     var color_function = get_thresholds_colors(params);
 
-    $('.general_stats .permanent_stats .data').empty().html('<div>Average <span>'+params.avg.toFixed(2)+'</span></div><div> Minimum <span>'+params.min+'</span></div><div> Maximum <span>'+params.max+'</span></div>')
+    $('.general_stats .permanent_stats .data').empty().html('<div>Average <span>' + params.avg + '</span></div><div> Minimum <span>' + params.min + '</span></div><div> Maximum <span>' + params.max + '</span></div>')
     $('#slide-out').sidenav('open')
-    var arr=[]
-   selects._data.forEach(function(d)
-{
-arr.push({data:d.avg_permanent,
-    _class:class_function(d.avg_permanent),
-    color: color_function(d.avg_permanent)
-})
-})
-console.info(arr)
+    var arr = []
+    selects._data.forEach(function (d) {
+        arr.push({
+            data: d.avg_permanent,
+            _class: class_function(d.avg_permanent),
+            color: color_function(d.avg_permanent)
+        })
+    })
+    console.info(arr)
 
-var x = d3v5.scaleLinear()
-            .domain([params.min, params.max])
-            .rangeRound([1, 500])
-var classified_data=class_function.range().map(function(_class) {
-            var d = class_function.invertExtent(_class);
-            if (d[0] == null) d[0] = x.domain()[0];//+30;
-            if (d[1] == null) d[1] = x.domain()[1];
-            console.log(d)
-            return d;
-})
-
-var arr_classified=[];
-var temp_arr=[]
-arr.forEach(function(d)
-{
-    var pos=temp_arr.indexOf(d._class)
-  if (temp_arr.indexOf(d._class)==-1)
-  {
-    temp_arr.push(d._class);
-    arr_classified.push({data_range:classified_data[d._class],_class:d._class,count:1,color:d.color})
-  }
-  else
-  {
-    arr_classified[pos].count++;
-  }
-})
-console.log(arr_classified)
-
-var legend_wrapper=$('.d3_legend');
     var x = d3v5.scaleLinear()
         .domain([params.min, params.max])
-        .rangeRound([1,500])
-      //  .rangeRound([1,legend_wrapper.width()-70])
+        .rangeRound([1, 500])
+    var classified_data = class_function.range().map(function (_class) {
+        var d = class_function.invertExtent(_class);
+        if (d[0] == null) d[0] = x.domain()[0];//+30;
+        if (d[1] == null) d[1] = x.domain()[1];
+        //var avg = Number((total_avg / index).toFixed(2));
+        console.log(d)
+        return d
+    })
+
+    var arr_classified = [];
+    var temp_arr = []
+    arr.forEach(function (d) {
+        var pos = temp_arr.indexOf(d._class)
+        if (temp_arr.indexOf(d._class) == -1) {
+            temp_arr.push(d._class);
+            arr_classified.push({ data_range: classified_data[d._class], _class: d._class, count: 1, color: d.color })
+        }
+        else {
+            arr_classified[pos].count++;
+        }
+    })
+    console.log(arr_classified)
+
+    var legend_wrapper = $('.scale');
+    var x = d3v5.scaleLinear()
+        .domain([params.min, params.max])
+        .rangeRound([1, 500])
+    //  .rangeRound([1,legend_wrapper.width()-70])
 
 
     var xAxis = d3v5.axisBottom(x)
         .tickSize(15)
         .tickValues(color_function.domain())
-        .tickFormat(function(d,i) {
-            if (i==0 || i==2 || i==7 || i==12)
-             return parseInt(d); // === 0.5 ? formatPercent(d) : formatNumber(100 * d);
-         });
-    $(".d3_legend g").empty();
-    $('.my-custom-control').show()
-    var g = d3v5.select(".d3_legend g").call(xAxis);
-
-    g.select(".domain")
-        .remove();
-
-   
-    g.selectAll("rect")
-        .data(color_function.range().map(function (color) {
-            var d = color_function.invertExtent(color);
-            if (d[0] == null) d[0] = x.domain()[0];
-            if (d[1] == null) d[1] = x.domain()[1];
-            console.log(d)
-            return d;
-        }))
-        .enter().insert("rect", ".tick")
-        .attr("height", 35)
-        .attr('padding', '15px')
-        .attr("x", function(d) {
-            return x(d[0]);
-        })
-        .attr("width", function(d,i) {
-            //if (i<arr_classified.length-1)
-            var _x=x(d[1]) - x(d[0])+20;
-            if (_x<10)
-            _x=_x+20
-
-            console.info(_x)
-            return _x 
-            //x(d[1]) - x(d[0])+20;
-        })
-        .attr("fill", function(d) {
-            return color_function(d[0]);
+        .tickFormat(function (d, i) {
+            if (i == 0 || i == 2 || i == 7 || i == 12)
+                return parseInt(d); // === 0.5 ? formatPercent(d) : formatNumber(100 * d);
         });
+    $(".scale").empty();
+    $('.my-custom-control').show();
 
-    g.append("text")
-        .attr("fill", "#000")
+    var all = color_function.range().map(function (color) {
+        var d = color_function.invertExtent(color);
+        if (d[0] == null) d[0] = x.domain()[0];//+30;
+        if (d[1] == null) d[1] = x.domain()[1];
+        console.log(d)
+        return d;
+    })
+    console.log(all)
+    var params_html = '<div class="scale_params"><span>Min: ' + params.min + '</span><span> Average: ' + params.avg + '</span><span>Max ' + params.max + '</span></div>';
 
-        .attr("font-weight", "bold")
-        .attr("text-anchor", "start")
-        .attr("y", -17)
+    all.forEach(function (d, i) {
+        var item = $("<div class='color'>");
+        var c = color_function(d[0]);
+        console.log(c)
+        item.css("background", c)
+        item.css("height", "2vw");
+        item.css("width", 0)
+        item.addClass('cat_' + i);
+        $('.scale').append(item)
+        item.animate({ "width": x(d[1]) - x(d[0]) }, 1000);
+
+    });
+
+    $('.scale').append(params_html)
+    setTimeout(function () {
+        $('.scale .color').each(function () {
+            var cat = $(this).attr('class').split('_')[1];
+            console.log(cat)
+            var filtered = arr_classified.filter(function (d) {
+                // console.log(d)
+                return d._class == cat;
+            })[0];
+            console.info(filtered)
+            if (filtered) {
+
+                var range_txt = filtered.data_range[0] + ' - ' + filtered.data_range[1];
+
+                $(this).attr('data-tooltip', '<div class="section"> <div class="title" style="background-color:' + filtered.color + '">' + range_txt + '</div>' + filtered.count + ' records found</div>');
+            }
+            else {
+                $(this).attr('data-tooltip', "<b>No data in this category</b>");
+            }
+
+
+
+            $(this).attr("data-position", "top");
+
+            $(this).tooltip({
+                enterDelay: 10,
+                //  exitDelay: 5050,
+                position: 'top',
+                html: true
+            });
+        })
+
+        $('.scale .color').on('mouseout', function (e) {
+            console.info('mouseout cat ' + $(e.target).attr('class'))
+            $('.scale .color').tooltip('close');
+        })
+
+        $('.scale .color').on('hover', function (e) {
+            //   var _this = $(e.target)
+
+            $(this).tooltip('open');
+        });
+    }, 500)
+    /*
+      var g = d3v5.select(".scale g").call(xAxis);
+  
+      g.select(".domain")
+          .remove();
+  
+     
+      g.selectAll("rect")
+          .data(color_function.range().map(function (color) {
+              var d = color_function.invertExtent(color);
+              if (d[0] == null) d[0] = x.domain()[0];
+              if (d[1] == null) d[1] = x.domain()[1];
+              console.log(d)
+              return d;
+          }))
+          .enter().insert("rect", ".tick")
+          .attr("height", 35)
+          .attr('padding', '15px')
+          .attr("x", function(d) {
+              return x(d[0]);
+          })
+          .attr("width", function(d,i) {
+              //if (i<arr_classified.length-1)
+              var _x=x(d[1]) - x(d[0])+20;
+              if (_x<10)
+              _x=_x+20
+  
+              console.info(_x)
+              return _x 
+              //x(d[1]) - x(d[0])+20;
+          })
+          .attr("fill", function(d) {
+              return color_function(d[0]);
+          });
+  
+      g.append("text")
+          .attr("fill", "#000")
+  
+          .attr("font-weight", "bold")
+          .attr("text-anchor", "start")
+          .attr("y", -17)
+          */
 
     //.text("Data");
 }
 
-function get_thresholds_class(params)
-{
-  var domain=params.arrs;
-  var data_range = d3v5.range(0,domain.length,1);
-  console.info(domain)  
-  console.log(data_range.length)
+function get_thresholds_class(params) {
+    var domain = params.arrs;
+    var data_range = d3v5.range(0, domain.length, 1);
+    console.info(domain)
+    console.log(data_range)
 
 
-return d3v5.scaleThreshold()        
+    return d3v5.scaleThreshold()
         .domain(domain)
         .range(data_range)
 
 }
 
-function get_thresholds_colors(params)
-{
-  var domain=params.arrs;
-  var colorInterpolator = d3v5.interpolateRainbow;//("red", "green");
+function get_thresholds_colors(params) {
+    var domain = params.arrs;
+    var colorInterpolator = d3v5.interpolateRainbow;//("red", "green");
 
-  //var colorInterpolator = d3v5.interpolateRgb("white", "green","red");
+    //var colorInterpolator = d3v5.interpolateRgb("white", "green","red");
 
-var steps = domain.length+1;
+    var steps = domain.length + 1;
+    //14
 
-var colorArray = d3v5.range(0, (1 + 1 / steps), 1 / (steps - 1)).map(function(d) {
-  return colorInterpolator(d)
-});
-console.log(domain)
-console.log(colorArray)
-var range = colorArray
+    var colorArray = d3v5.range(0, (1 + 1 / steps), 1 / (steps - 1)).map(function (d) {
+        return colorInterpolator(d)
+    });
+    console.warn(d3v5.range(0, (1 + 1 / steps), 1 / (steps - 1)))
+    console.log(domain)
+    console.log(colorArray)
+    var range = colorArray
 
 
-return d3v5.scaleThreshold()
+    return d3v5.scaleThreshold()
         //min, avg,
         .domain(domain)
         // .range(["#6e7c5a", "#a0b28f", "#d8b8b3", "#b45554", "#760000"]);
         .range(range)
 
-}  
+}
 
-function get_thresholds_classification(params)
-{
-  var domain=params.arrs;
- // var colorInterpolator = d3v5.interpolateRainbow;//("red", "green");
+function get_thresholds_classification(params) {
+    var domain = params.arrs;
+    // var colorInterpolator = d3v5.interpolateRainbow;//("red", "green");
 
 
-  //var colorInterpolator = d3v5.interpolateRgb("white", "green","red");
+    //var colorInterpolator = d3v5.interpolateRgb("white", "green","red");
 
-var steps = domain.length;
+    var steps = domain.length;
 
-var colorArray = d3v5.range(0, (1 + 1 / steps), 1 / (steps - 1)).map(function(d) {
-  return colorInterpolator(d)
-});
+    var colorArray = d3v5.range(0, (1 + 1 / steps), 1 / (steps - 1)).map(function (d) {
+        return colorInterpolator(d)
+    });
 
-console.log(colorArray)
-var range = colorArray
+    console.log(colorArray)
+    var range = colorArray
 
-return d3v5.scaleThreshold()
+    return d3v5.scaleThreshold()
         //min, avg,
         .domain(domain)
         // .range(["#6e7c5a", "#a0b28f", "#d8b8b3", "#b45554", "#760000"]);

@@ -1,0 +1,485 @@
+<html>
+
+<head>
+    <title>Threshold scale</title>
+</head>
+
+<style>
+    body {
+        font-family: "Helvetica Neue", Helvetica, sans-serif;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .highcharts_container {
+        width: 500px;
+        height: 300px;
+    }
+
+    rect {
+
+        stroke: white stroke-width: 5.5px;
+    }
+
+    p {
+        color: #222;
+        clear: left;
+        padding-top: 12px;
+        margin-bottom: 8px;
+        font-weight: 200;
+        font-size: 1.2em
+    }
+
+    p.small {
+        color: #444;
+        font-size: 0.9em;
+        padding-top: 0px;
+        margin-top: 0px;
+    }
+
+    .scale {
+        margin-bottom: 2vm;
+        margin-top: 100px;
+    }
+
+    .color {
+        float: left;
+        margin-right: 0.2vw;
+    }
+
+    .color:hover {
+        cursor: pointer;
+    }
+
+    .scale .title {
+        font-size: 1.4em;
+        text-align: center;
+
+        padding: 7px;
+        margin-bottom: 10px;
+        line-height: 22px;
+    }
+</style>
+
+<body>
+    <p>Diverging Scale 3</p>
+    <p class="small">Pink to Green diverging scale</p>
+    <div id="scale3" class="scale"></div>
+
+    <svg width="700" height="80">
+        <g id="wrapper" transform="translate(100, 40)">
+        </g>
+    </svg>
+    <div class="highcharts_container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src='./materialize_v1.js'></script>
+    <script src='./d3_v5.min.js'></script>
+    <script src="./highcharts.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+
+
+
+
+
+            /*
+                        scale = d3.scale.linear();
+            
+            var scale1 = chroma_scale(8, chroma.scale("RdBu"));
+            showColors("scale1", scale1)
+            
+            var scale2 = chroma_scale(8, chroma.scale("PuOr"));
+            showColors("scale2", scale2)
+            
+            var scale3 = chroma_scale(8, chroma.scale("PiYG"));
+            showColors("scale3", scale3)
+            
+            //chroma.scale('Spectral').domain([1,0]);
+            
+            //Belzier Interpolation with Chroma.js
+            //https://vis4.net/blog/posts/mastering-multi-hued-color-scales/
+            
+            function showColors(id, colors) {
+               var box = $("#" + id);
+            
+               _.each(colors, function(color) {
+                  var item = $("<div class='color'>");
+                  item.css("background", color.hex())
+                  item.css("height","5vw");
+                  item.css("width", "5vw")
+                  box.append(item)
+               });
+            }
+            
+            function chroma_scale(length, chroma_scale) {
+               var colors = [];
+               
+               scale.domain([1, length])
+            
+            
+               var color_scale = chroma.scale();
+            
+               for (var i = 1; i <= length; i++) {
+                  var val = scale(i)
+                  colors.push(chroma_scale(val));
+               }
+            
+               return colors;
+            }
+            */
+            var data = [{ "pfaf_id": "152000", "color": "rgb(181, 25, 114)", "avg_permanent": 369.605, "avg_seasonal": 32.494 }, { "pfaf_id": "216035", "color": "rgb(155, 7, 92)", "avg_permanent": 121.775, "avg_seasonal": 11.017 }, { "pfaf_id": "216036", "color": "rgb(143, 1, 82)", "avg_permanent": 5.657, "avg_seasonal": 1.27 }, { "pfaf_id": "216037", "color": "rgb(145, 2, 84)", "avg_permanent": 24.4, "avg_seasonal": 0.786 }, { "pfaf_id": "216038", "color": "rgb(142, 1, 82)", "avg_permanent": 3.379, "avg_seasonal": 0.873 }, { "pfaf_id": "216039", "color": "rgb(146, 3, 85)", "avg_permanent": 34.784, "avg_seasonal": 7.625 }, { "pfaf_id": "216041", "color": "rgb(144, 2, 84)", "avg_permanent": 21.218, "avg_seasonal": 26.64 }, { "pfaf_id": "216043", "color": "rgb(148, 4, 86)", "avg_permanent": 50.55, "avg_seasonal": 13.393 }, { "pfaf_id": "216044", "color": "rgb(143, 2, 83)", "avg_permanent": 12.377, "avg_seasonal": 6.404 }, { "pfaf_id": "216045", "color": "rgb(142, 1, 82)", "avg_permanent": 1.63, "avg_seasonal": 1.588 }, { "pfaf_id": "216046", "color": "rgb(142, 1, 82)", "avg_permanent": 4.139, "avg_seasonal": 6.469 }, { "pfaf_id": "216047", "color": "rgb(143, 1, 83)", "avg_permanent": 9.598, "avg_seasonal": 6.742 }, { "pfaf_id": "216049", "color": "rgb(148, 4, 86)", "avg_permanent": 51.835, "avg_seasonal": 11.461 }, { "pfaf_id": "216050", "color": "rgb(152, 6, 90)", "avg_permanent": 88.189, "avg_seasonal": 50.194 }, { "pfaf_id": "216060", "color": "rgb(146, 3, 85)", "avg_permanent": 35.773, "avg_seasonal": 12.764 }, { "pfaf_id": "216070", "color": "rgb(148, 4, 86)", "avg_permanent": 50.536, "avg_seasonal": 3.892 }, { "pfaf_id": "216080", "color": "rgb(145, 2, 84)", "avg_permanent": 22.941, "avg_seasonal": 9.824 }, { "pfaf_id": "216090", "color": "rgb(163, 12, 99)", "avg_permanent": 196.901, "avg_seasonal": 21.481 }, { "pfaf_id": "217000", "color": "rgb(162, 11, 98)", "avg_permanent": 184.133, "avg_seasonal": 17.98 }, { "pfaf_id": "231100", "color": "rgb(154, 7, 91)", "avg_permanent": 108.626, "avg_seasonal": 25.963 }, { "pfaf_id": "231201", "color": "rgb(153, 6, 90)", "avg_permanent": 98.817, "avg_seasonal": 225.318 }, { "pfaf_id": "231202", "color": "rgb(144, 2, 84)", "avg_permanent": 18.42, "avg_seasonal": 4.033 }, { "pfaf_id": "231203", "color": "rgb(145, 2, 84)", "avg_permanent": 26.156, "avg_seasonal": 6.693 }, { "pfaf_id": "231204", "color": "rgb(142, 1, 82)", "avg_permanent": 3.068, "avg_seasonal": 0.889 }, { "pfaf_id": "231205", "color": "rgb(144, 2, 83)", "avg_permanent": 14.55, "avg_seasonal": 5.234 }, { "pfaf_id": "231206", "color": "rgb(143, 2, 83)", "avg_permanent": 9.921, "avg_seasonal": 2.283 }, { "pfaf_id": "231207", "color": "rgb(142, 1, 82)", "avg_permanent": 4.324, "avg_seasonal": 1.271 }, { "pfaf_id": "231208", "color": "rgb(145, 2, 84)", "avg_permanent": 22.929, "avg_seasonal": 6.522 }, { "pfaf_id": "231209", "color": "rgb(145, 2, 84)", "avg_permanent": 24.235, "avg_seasonal": 4.699 }, { "pfaf_id": "231300", "color": "rgb(149, 5, 88)", "avg_permanent": 68.278, "avg_seasonal": 19.095 }, { "pfaf_id": "231402", "color": "rgb(142, 1, 82)", "avg_permanent": 2.702, "avg_seasonal": 1.462 }, { "pfaf_id": "231403", "color": "rgb(154, 7, 92)", "avg_permanent": 113.22, "avg_seasonal": 19.383 }, { "pfaf_id": "231404", "color": "rgb(144, 2, 84)", "avg_permanent": 21.423, "avg_seasonal": 2.111 }, { "pfaf_id": "231405", "color": "rgb(144, 2, 83)", "avg_permanent": 13.766, "avg_seasonal": 6.173 }, { "pfaf_id": "231406", "color": "rgb(150, 5, 88)", "avg_permanent": 71.208, "avg_seasonal": 7.887 }, { "pfaf_id": "231407", "color": "rgb(153, 6, 90)", "avg_permanent": 96.495, "avg_seasonal": 19.627 }, { "pfaf_id": "231408", "color": "rgb(142, 1, 82)", "avg_permanent": 1.726, "avg_seasonal": 4.5 }, { "pfaf_id": "231409", "color": "rgb(142, 1, 82)", "avg_permanent": 0.101, "avg_seasonal": 1.465 }, { "pfaf_id": "231603", "color": "rgb(145, 2, 84)", "avg_permanent": 27.153, "avg_seasonal": 7.128 }, { "pfaf_id": "231604", "color": "rgb(146, 3, 85)", "avg_permanent": 35.125, "avg_seasonal": 11.882 }, { "pfaf_id": "231605", "color": "rgb(147, 3, 86)", "avg_permanent": 43.992, "avg_seasonal": 6.298 }, { "pfaf_id": "231606", "color": "rgb(143, 2, 83)", "avg_permanent": 10.516, "avg_seasonal": 7.315 }, { "pfaf_id": "231607", "color": "rgb(149, 5, 88)", "avg_permanent": 68.322, "avg_seasonal": 17.926 }, { "pfaf_id": "231608", "color": "rgb(145, 2, 84)", "avg_permanent": 27.806, "avg_seasonal": 5.983 }, { "pfaf_id": "231609", "color": "rgb(145, 3, 85)", "avg_permanent": 30.405, "avg_seasonal": 5.708 }, { "pfaf_id": "231802", "color": "rgb(148, 4, 86)", "avg_permanent": 51.689, "avg_seasonal": 8.318 }, { "pfaf_id": "231803", "color": "rgb(142, 1, 82)", "avg_permanent": 4.393, "avg_seasonal": 1.046 }, { "pfaf_id": "231804", "color": "rgb(148, 4, 86)", "avg_permanent": 52.001, "avg_seasonal": 23.884 }, { "pfaf_id": "231805", "color": "rgb(143, 1, 83)", "avg_permanent": 6.927, "avg_seasonal": 5.213 }, { "pfaf_id": "231806", "color": "rgb(142, 1, 82)", "avg_permanent": 2.377, "avg_seasonal": 1.342 }, { "pfaf_id": "231807", "color": "rgb(142, 1, 82)", "avg_permanent": 0.088, "avg_seasonal": 0.05 }, { "pfaf_id": "231808", "color": "rgb(143, 2, 83)", "avg_permanent": 12.678, "avg_seasonal": 6.864 }, { "pfaf_id": "231809", "color": "rgb(143, 2, 83)", "avg_permanent": 13.449, "avg_seasonal": 4.359 }, { "pfaf_id": "231901", "color": "rgb(147, 3, 86)", "avg_permanent": 42.163, "avg_seasonal": 7.561 }, { "pfaf_id": "231904", "color": "rgb(143, 1, 82)", "avg_permanent": 4.845, "avg_seasonal": 1.006 }, { "pfaf_id": "231905", "color": "rgb(159, 10, 96)", "avg_permanent": 158.97, "avg_seasonal": 15.086 }, { "pfaf_id": "231906", "color": "rgb(143, 1, 82)", "avg_permanent": 5.415, "avg_seasonal": 1.255 }, { "pfaf_id": "231907", "color": "rgb(144, 2, 83)", "avg_permanent": 16.107, "avg_seasonal": 0.76 }, { "pfaf_id": "231908", "color": "rgb(142, 1, 82)", "avg_permanent": 2.655, "avg_seasonal": 0.768 }, { "pfaf_id": "232144", "color": "rgb(146, 3, 85)", "avg_permanent": 33.542, "avg_seasonal": 9.163 }]
+
+
+
+            var sum = 0;
+            var arr = []
+            data.forEach(function (d) {
+                arr.push(d.avg_permanent);
+                sum += d.avg_permanent;
+            })
+
+            var min = d3v5.min(arr);
+            var max = d3v5.max(arr);
+
+            var domain = []
+            var buckets = 10;
+            var below_sub_buckets = 4;
+            var avg = parseInt(sum / data.length);
+            var sub_step = parseInt((avg / 8));
+            console.log(avg / 2)
+
+
+            //var all_ranges=[]
+            var arrs = [].concat(min_range).concat(max_range).concat([max]);
+
+            var min_range = d3v5.range(min, avg / 2, sub_step);
+            var max_range = d3v5.range(avg, avg * 2, sub_step);
+
+            //var all_ranges=[]
+            var arrs = [].concat(min_range).concat(max_range).concat([max]);
+            console.info(JSON.stringify(arrs))
+            /*    var each_sub_bucket=parseInt((avg/2)/below_sub_buckets);
+           
+           
+           var below_sub_buckets_data=d3v5.range();
+           for (var i=0;i<sub_buckets;i++)
+           {
+               below_sub_buckets_data.push(i*((avg/2)))
+           }
+           var below_avg=arr.map(function(d)
+           {
+             return d<(avg/2);
+           }) */
+
+            var params = { avg: avg, max: d3v5.max(arr), min: min, buckets: buckets, arrs: arrs }
+            console.log(params)
+            function get_thresholds_colors(params) {
+                var domain = params.arrs;
+                var colorInterpolator = d3v5.interpolateRainbow;//("red", "green");
+
+                //var colorInterpolator = d3v5.interpolateRgb("white", "green","red");
+
+                var steps = domain.length + 1;
+                console.log(d3v5.range(0, (1 + 1 / steps), 1 / (steps - 1)))
+
+                var colorArray = d3v5.range(0, (1 + 1 / steps), 1 / (steps - 1)).map(function (d) {
+                    return colorInterpolator(d)
+                });
+
+                console.log(colorArray)
+                var range = colorArray
+
+                return d3v5.scaleThreshold()
+                    //min, avg,
+                    .domain(domain)
+                    // .range(["#6e7c5a", "#a0b28f", "#d8b8b3", "#b45554", "#760000"]);
+                    .range(range)
+
+            }
+
+            function get_thresholds_class(params) {
+                var domain = params.arrs;
+                var data_range = d3v5.range(0, domain.length, 1);
+                console.info(data_range)
+                console.log(data_range.length)
+
+
+                return d3v5.scaleThreshold()
+                    //min, avg,
+                    .domain(domain)
+                    // .range(["#6e7c5a", "#a0b28f", "#d8b8b3", "#b45554", "#760000"]);
+                    .range(data_range)
+
+            }
+
+            var color_function = get_thresholds_colors(params);
+            var class_function = get_thresholds_class(params);
+            function do_legend(params) {
+                var arr = []
+                data.forEach(function (d) {
+                    arr.push({
+                        data: d.avg_permanent,
+                        _class: class_function(d.avg_permanent),
+                        color: color_function(d.avg_permanent)
+                    })
+                    //console.warn(class_function(d.avg_permanent));
+
+                })
+                console.log(arr);
+                var x = d3v5.scaleLinear()
+                    .domain([params.min, params.max])
+                    .rangeRound([1, 500])
+                var test = class_function.range().map(function (_class) {
+                    var d = class_function.invertExtent(_class);
+                    if (d[0] == null) d[0] = x.domain()[0];//+30;
+                    if (d[1] == null) d[1] = x.domain()[1];
+                    console.log(d)
+                    return d;
+                })
+
+                var arr_classified = [];
+                var temp_arr = []
+                arr.forEach(function (d) {
+                    var pos = temp_arr.indexOf(d._class)
+                    if (temp_arr.indexOf(d._class) == -1) {
+                        temp_arr.push(d._class);
+                        arr_classified.push({ data_range: test[d._class], _class: d._class, count: 1, color: d.color })
+                    }
+                    else {
+                        arr_classified[pos].count++;
+                    }
+                })
+                console.log(arr_classified)
+
+
+                var x = d3v5.scaleLinear()
+                    .domain([params.min, params.max])
+                    .rangeRound([1, 500])
+                var xAxis = d3v5.axisBottom(x)
+                    .tickSize(13)
+                    .tickValues(color_function.domain())
+                    /* function(d,i)
+                {
+                 //   console.info(i)
+                //    if (i==0 || i==2 || i==7 || i==12)
+                    return color_function.domain()
+                }) */
+                    .tickFormat(function (d, i) {
+                        if (i == 0 || i == 2 || i == 7 || i == 12)
+                            return parseInt(d); // === 0.5 ? formatPercent(d) : formatNumber(100 * d);
+                    });
+                $(".d3_legend g").empty();
+                var g = d3v5.select("#wrapper").call(xAxis);
+                var all = color_function.range().map(function (color) {
+                    var d = color_function.invertExtent(color);
+                    if (d[0] == null) d[0] = x.domain()[0];//+30;
+                    if (d[1] == null) d[1] = x.domain()[1];
+                    console.log(d)
+                    return d;
+                })
+                console.log(all)
+
+                var box = $(".scale");
+
+                all.forEach(function (d, i) {
+                    var item = $("<div class='color'>");
+                    var c = color_function(d[0]);
+                    console.log(c)
+                    item.css("background", c)
+                    item.css("height", "3vw");
+                    item.css("width", 0)
+                    item.addClass('cat_' + i);
+                    box.append(item)
+                    item.animate({ "width": x(d[1]) - x(d[0]) }, 1000);
+                });
+
+                setTimeout(function () {
+                    $('.scale .color').each(function () {
+                        var cat = $(this).attr('class').split('_')[1];
+
+                        var filtered = arr_classified.filter(function (d) {
+                            // console.log(d)
+                            return d._class == cat;
+                        })[0];
+
+                        if (filtered) {
+                            var range_txt = filtered.data_range[0] + ' - ' + filtered.data_range[1];
+
+                            $(this).attr('data-tooltip', '<div class="section"> <div class="title" style="background-color:' + filtered.color + '">' + range_txt + '</div>' + filtered.count + ' records found</div>');
+                        }
+                        else {
+                            $(this).attr('data-tooltip', "<b>No data in this category</b>");
+                        }
+
+
+
+                        $(this).attr("data-position", "top");
+
+                        $(this).tooltip({
+                            enterDelay: 10,
+                            //  exitDelay: 5050,
+                            position: 'top',
+                            html: true
+                        });
+                    })
+
+                    $('.scale .color').on('mouseout', function (e) {
+                        console.info('mouseout cat ' + $(e.target).attr('class'))
+                        $('.scale .color').tooltip('close');
+                    })
+
+                    $('.scale .color').on('hover', function (e) {
+                        //   var _this = $(e.target)
+
+                        $(this).tooltip('open');
+                    });
+                }, 500)
+
+
+
+
+
+
+                g.select(".domain")
+                    .remove();
+                console.log(color_function.domain())
+                g.selectAll("div.test")
+                    .data(color_function.range().map(function (color) {
+                        var d = color_function.invertExtent(color);
+                        if (d[0] == null) d[0] = x.domain()[0];//+30;
+                        if (d[1] == null) d[1] = x.domain()[1];
+                        console.log(d)
+                        return d;
+                    }))
+                    .enter()
+                    .insert("rect", ".tick")
+                    .attr("height", 35)
+                    .attr('padding', '15px')
+                    //.attr('rx','10px')
+                    .attr("x", function (d, i) {
+                        console.log(i)
+                        console.log(d)
+                        if (i = 0) {
+                            return x(d[0]);
+                        }
+                        else {
+                            console.info(x(d[0]))
+                            return x(d[0]);
+                        }
+
+                    })
+                    .attr("width", function (d) {
+                        return x(d[1]) - x(d[0]) + 20;
+                    })
+                    .attr("fill", function (d) {
+                        return color_function(d[0]);
+                    });
+
+                g.append("text")
+                    .attr("fill", "#000")
+
+                    .attr("font-weight", "bold")
+                    .attr("text-anchor", "start")
+                    .attr("y", -12)
+                /*
+                var linearScale = d3v5.scaleLinear()
+                    .domain(color_func)
+                    .range([0, 600]);
+                console.log(d3v5.interpolateRainbow[6])
+                var thresholdScale = d3v5.scaleThreshold()
+                    .domain([0, 50, 100])
+                    //.range(['#ccc', 'lightblue', 'orange', '#ccc']);
+                    .range(d3v5.interpolateRainbow)
+                
+                var myData = d3v5.range(-10, 110, 2);
+                console.info(myData)
+                
+                d3v5.select('#wrapper')
+                    .selectAll('rect')
+                    .data(myData)
+                    .enter()
+                    .append('rect')
+                    .attr('x', function(d) {
+                        return linearScale(d);
+                    })
+                    .attr('width', 9)
+                    .attr('height', 30)
+                    .style('fill', function(d) {
+                        console.info(thresholdScale(d))
+                        return thresholdScale(d);
+                    }); 
+                    */
+            }
+            do_legend(params)
+            $('.highcharts_containerss').highcharts({
+                chart: {
+                    type: 'bar'
+                },
+                title: {
+                    text: 'Monthly Average Rainfall'
+                },
+                subtitle: {
+                    text: 'Source: WorldClimate.com'
+                },
+                xAxis: {
+                    categories: [
+                        'Jan',
+                        'Feb',
+                        'Mar',
+                        'Apr',
+                        'May',
+                        'Jun',
+                        'Jul',
+                        'Aug',
+                        'Sep',
+                        'Oct',
+                        'Nov',
+                        'Dec'
+                    ]
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Rainfall (mm)'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    name: 'Tokyo',
+                    data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+
+                }, {
+                    name: 'New York',
+                    data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
+
+                }, {
+                    name: 'London',
+                    data: [48.9, 38.8, 39.3, 41.4, 47.0, 48.3, 59.0, 59.6, 52.4, 65.2, 59.3, 51.2]
+
+                }, {
+                    name: 'Berlin',
+                    data: [42.4, 33.2, 34.5, 39.7, 52.6, 75.5, 57.4, 60.4, 47.6, 39.1, 46.8, 51.1]
+                }]
+            });
+        })
+    </script>
+</body>
+
+</html>

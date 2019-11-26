@@ -45,12 +45,10 @@
                 style: 'mapbox://styles/mapbox/light-v10',
                 //style: 'mapbox://styles/perikut/ck1xa74kk1c2c1cmtdho498go',
 
-                // center: [-100, 22],
-                //   center: [1.087646, 44.613934],
-                center: [102.612305, 61.752331],
+                center: [-100, 22],
                 //    center: [-2, 41],
                 //center: [73, 62],
-                zoom: 4
+                zoom: 2
             });
 
             // Add zoom and rotation controls to the map.
@@ -85,7 +83,7 @@
                     "paint": {
                         //"fill-color": expression,
                         "fill-color": '#9cb9ef',
-                        "fill-opacity": 0.1,
+                        "fill-opacity": 0.5,
                         'fill-outline-color':
                         {
                             "stops": [
@@ -160,60 +158,7 @@
             }
             var y = 1;
             var canvas = map.getCanvasContainer();
-            function getRandomInRange(min, max) {
-                return Math.random() * (max - min) + min;
-            }
-
-            var features_arr = [];
-
-            function get_thresholds_colors(features) {
-
-                var colorInterpolator = d3v5.interpolateRainbow;
-                var domain = features_arr;
-                console.log(features_arr)
-
-                //  console.log(d3v5.range(1, 100, 10))
-                var range = d3v5.range(0, 100, 5);
-                var colorArray = range.map(function (d) {
-                    console.info(d)
-                    return colorInterpolator(d)
-                });
-
-
-                console.log(colorArray);
-                console.warn(domain)
-
-                return d3v5.scaleThreshold()
-                    //min, avg,
-                    .domain(domain)
-                    // .range(["#6e7c5a", "#a0b28f", "#d8b8b3", "#b45554", "#760000"]);
-                    .range(colorArray)
-
-
-                // var domain = params.arrs;
-                // var colorInterpolator = d3v5.interpolateRainbow;//("red", "green");
-
-                // //var colorInterpolator = d3v5.interpolateRgb("white", "green","red");
-
-                // var steps = domain.length + 1;
-
-                // var colorArray = d3v5.range(0, (1 + 1 / steps), 1 / (steps - 1)).map(function (d) {
-                //     return colorInterpolator(d)
-                // });
-
-                // console.log(colorArray)
-                // var range = colorArray
-
-                // return d3v5.scaleThreshold()
-                //     //min, avg,
-                //     .domain(domain)
-                //     // .range(["#6e7c5a", "#a0b28f", "#d8b8b3", "#b45554", "#760000"]);
-                //     .range(range)
-
-            }
-
             map.on('click', function (e) {
-                features_arr = [];
                 var all_f = map.querySourceFeatures("basins_06", {
                     sourceLayer: 'adm_0_level_6'
                 });
@@ -232,78 +177,10 @@
                     );
                 }
                 console.info(mousePos(e))
-
-                var features = map.querySourceFeatures("basins_06", {
-                    sourceLayer: 'adm_0_level_6',
-                    filter: ['any', ['==', 'adm_0_code', 204]]
-                });
-
-                features.forEach(function (d) {
-                    var val = parseInt(getRandomInRange(1, 100));
-                    features_arr.push(val)
-
-                    d.properties.value = val;
-                    //console.info(d)
-                })
-
-                var color_function = get_thresholds_colors(features);
-                console.info(color_function(40))
-
-
-                var filter = features.reduce(
-                    function (memo, feature) {
-                        //feature.properties.adm_0_pfaf.split
-                        console.log(feature.properties)
-                        if (memo.indexOf(feature.properties.adm_0_pfaf) == -1) {
-
-
-                            memo.push(feature.properties.adm_0_pfaf, color_function(45));
-                        }
-                        return memo;
-                    },
-                    ["match", ["get", "adm_0_pfaf"]]
-                );
-                // "85$232304"
-
-
-                var op_filter = filter;
-
-                console.info(op_filter)
-                var opacity_expression = op_filter.map(function (d, i) {
-                    console.log(i % 2)
-                    if (i > 1) {
-
-                        if (i % 2 == 1) {
-                            //  console.log('not odd ' + i)                  
-                            return 1
-
-                        }
-                        else {
-                            return d;
-                        }
-                    }
-                    else {
-                        return d
-                    }
-
-                });
-                opacity_expression.push(0);
-
-                filter.push("#d0c4c4");
-                console.log(filter)
-
-                console.warn(opacity_expression)
-                // var symbol_expression = ["match", ["get", "pfaf_id"]];
-                console.log(filter)
-                map.setPaintProperty('basins_6_adm_0', "fill-color", filter);
-                map.setPaintProperty('basins_6_adm_0', "fill-opacity", opacity_expression);
-                //    map.setLayoutProperty('basins_6_adm_0', "visibility", "visible");
-                console.warn(filter)
             })
             map.on('sourcedataloading', function (e) {
-                //  return false;
+                // return false;
                 console.log('sourcedataloading');
-                return false;
                 var checkLoaded = setInterval(loaded, 100);
                 function loaded() {
                     if (map.getLayer('basins_6_adm_0')) {
@@ -345,27 +222,13 @@
                                 return d.properties.adm_0_name;
                             })
                             console.warn(countries)
-
-                            //  var uniques = getUniqueFeatures(features, "adm_0_code");
-
-                            // Run through the selected features and set a filter
-                            // to match features with unique FIPS codes to activate
-                            // the `counties-highlighted` layer.
-                            var filter = features.reduce(
-                                function (memo, feature) {
-                                    memo.push(feature.properties.pfaf_id);
-                                    return memo;
-                                },
-                                ["in", "pfaf_id"]
-                            );
-                            console.warn(filter)
-                            // map.setFilter("counties-highlighted", filter);
+                            var uniques = getUniqueFeatures(features, "pfaf_id");
                             // var pfaf_arr = uniques.map(function (d) {
                             //     return d.properties.pfaf_id
                             // });
                             var symbol_expression = ["match", ["get", "pfaf_id"]];
                             var opacity_expression = ["match", ["get", "pfaf_id"]];
-                            var uniques = getUniqueFeatures(features, "pfaf_id");
+
                             uniques.forEach(function (d) {
                                 //    console.log(d)
                                 symbol_expression.push(d.properties.pfaf_id, getRandomColor());
@@ -379,12 +242,12 @@
                             map.setPaintProperty('basins_6_adm_0', "fill-color", symbol_expression);
                             map.setLayoutProperty('basins_6_adm_0', "visibility", "visible");
 
-                            // setTimeout(function () {
-                            //     var features = map.querySourceFeatures("basins_06", {
-                            //         sourceLayer: 'adm_0_level_6',
-                            //         filter: ['any', ['==', 'adm_0_code',]]
-                            //     });
-                            // })
+                            setTimeout(function () {
+                                var features = map.querySourceFeatures("basins_06", {
+                                    sourceLayer: 'adm_0_level_6',
+                                    filter: ['any', ['==', 'adm_0_code',]]
+                                });
+                            })
 
                             //   console.info(pfaf_arr.sort())
                         }, 100)

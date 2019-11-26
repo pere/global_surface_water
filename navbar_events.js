@@ -1,6 +1,56 @@
 $(document).ready(function () {
 
+    var arr_adm_names = {}
+    countries_data.forEach(function (d) {
+        arr_adm_names[d.adm_0_name] = null;
+    })
+    console.info(arr_adm_names)
+
+
+
     $('.collapsible').collapsible();
+    $('.sidenav .list').on('click', function (e) {
+        var target = $(e.target)
+        var container = target.parents().closest('.row');
+
+        if (target.hasClass('material-icons')) {
+            var info_type = container.attr('info_container');
+
+            if (info_type.indexOf('lake') !== -1) {
+                var main_li = $('.lakes_li');
+            }
+            if (info_type.indexOf('reservoirs') !== -1) {
+                var main_li = $('.reservoirs_li');
+            }
+
+            if (target.hasClass('info')) {
+                if (target.hasClass('on') == false) {
+                    //  alert(info_type.indexOf('lake'))
+
+                    // if ($('.lakes_li').is(':visible')) {
+                    //     $('.lakes_li').hide();
+                    //     $('.lakes_li').find('.collapsible-body').hide()
+                    // }
+                    // else {
+                    main_li.show()
+                    main_li.find('.collapsible-body').show()
+                    $('.' + info_type).show();
+
+                }
+                else {
+
+                    //   $('.lakes_li').show()
+                    //  $('.lakes_li').find('.collapsible-body').show()
+                    $('.' + info_type).hide();
+
+
+                }
+                target.toggleClass('on');
+
+            }
+        }
+    })
+
     $('.dropdown-trigger').dropdown({
         inDuration: 300,
         constrainWidth: false,
@@ -19,6 +69,25 @@ $(document).ready(function () {
     //     constrain_width: false, // Does not change width of drop
     //     alignment: 'left' // Displays dropdown with edge aligned to the left of button
     // });
+    $('input.autocomplete').autocomplete({
+        data: arr_adm_names,
+        onAutocomplete: function (txt) {
+            var adm_name = txt;
+            console.info(adm_name)
+            countries_data.forEach(function (d) {
+                if (d.adm_0_name == adm_name) {
+                    console.log(d.bbox)
+                    //var bbox = [coords[0][2], coords[0][0]];
+                    var bbox = [d.bbox[2], d.bbox[0]]
+                    //console.log(bbox)
+                    map.fitBounds(bbox);
+                }
+            })
+
+
+
+        }
+    })
 
     $("#map").on('mousemove', function (e) {
         // console.log('mouseovering map')
@@ -160,7 +229,7 @@ $(document).ready(function () {
         });
     })
 
-    $('#overlays_dropdown .material-icons').on('mouseout',function () {
+    $('#overlays_dropdown .material-icons').on('mouseout', function () {
         $(this).tooltip('close');
     })
 
