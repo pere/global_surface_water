@@ -163,7 +163,8 @@
                     map.setPaintProperty('eez_land_id', "fill-color", selects.gain_info.expression);
                     var param_to_plot = 'avg_gain';
                     $('#country_stats_highcharts h5').text('Gain data %')
-                    var li_title = '<li class="collection-header"><h5>Top 20 Gain</h5></li>';
+                    //<h5>Top 20 Gain</h5>
+                    var li_title = '<li class="collection-header"></li>';
 
                     selects.data.forEach(function (d) {
                         if (d.avg_gain > 3) {
@@ -177,7 +178,8 @@
                     map.setPaintProperty('eez_land_id', "fill-color", selects.loss_info.expression);
                     var param_to_plot = 'avg_loss';
                     $('#country_stats_highcharts h5').text('Loss data %')
-                    var li_title = '<li class="collection-header"><h5>Top 20 Loss</h5></li>'
+                    //<h5>Top 20 Loss</h5>
+                    var li_title = '<li class="collection-header"></li>'
 
                     selects.data.forEach(function (d) {
 
@@ -213,9 +215,9 @@
                 console.log(sorted_arr)
                 var li = li_title;
                 sorted_arr.forEach(function (d, i) {
-                    if (i < 20) {
-                        li += '<li class="collection-item" style="color:white;background-color:' + d.color + ';opacity:0.7">' + d.name + ' <span class="badge blue">' + d.y + '%</span></li>'
-                    }
+                    //  if (i < 20) {
+                    li += '<li class="collection-item" style="color:white;background-color:' + d.color + ';opacity:0.7">' + d.name + ' <span class="badge blue">' + d.y + '%</span></li>'
+                    // }
                 })
                 $('.top_countries ul').empty().append(li)
                 $('.my-custom-control').show().css('padding', '20px')
@@ -372,7 +374,7 @@
 
 
                 function get_thresholds_colors(gain_loss) {
-                    var buckets = 5;
+                    var buckets = 10;
                     console.log(gain_loss)
                     if (gain_loss == 'gain')
                         var bezier_1 = chroma_scale(buckets, chroma.bezier(['#fdfac4', 'blue', '#ff1a1a']));
