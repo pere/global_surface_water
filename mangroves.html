@@ -40,8 +40,19 @@
     </div>
 
     <script>
+
+        function sort_by_value(a, b) {
+
+            return a.y < b.y ? 1 : -1;
+        }
+
+        var options = { selected_param: 'gain' }
+        var mangroves_popup;
+
+        var selects = { gain_info: {}, loss_info: {} };
         $(document).ready(function () {
-            console.log(countries_data)
+
+
             mapboxgl.accessToken = 'pk.eyJ1IjoicGVyaWt1dCIsImEiOiJVNzBjMl9FIn0.38swLsSY2ao8E8rU8FYgyw';
             map = new mapboxgl.Map({
                 container: 'map',
@@ -57,29 +68,36 @@
                 _id: 'mapboxid'
             });
 
-            // Add zoom and rotation controls to the map.
-            // map.addControl(new mapboxgl.NavigationControl());
-            // class MyCustomControl {
-            //     onAdd(map) {
-            //         this.map = map;
-            //         this.container = document.createElement('div');
-            //         this.container.className = 'my-custom-control';
-            //         //this.container.textContent = '<h5>Just a test</h5>';
-            //         return this.container;
-            //     }
-            //     onRemove() {
-            //         this.container.parentNode.removeChild(this.container);
-            //         this.map = undefined;
-            //     }
-            // }
+            //   Add zoom and rotation controls to the map.
+            map.addControl(new mapboxgl.NavigationControl());
+            class MyCustomControl {
+                onAdd(map) {
+                    this.map = map;
+                    this.container = document.createElement('div');
+                    this.container.className = 'my-custom-control';
+                    //this.container.textContent = '<h5>Just a test</h5>';
+                    return this.container;
+                }
+                onRemove() {
+                    this.container.parentNode.removeChild(this.container);
+                    this.map = undefined;
+                }
+            }
 
-            // var myCustomControl = new MyCustomControl();
+            var myCustomControl = new MyCustomControl();
 
-            // map.addControl(myCustomControl, 'bottom-right');
+            map.addControl(myCustomControl, 'bottom-right');
+
+            $('.my-custom-control').show();
             var hovering_map = true;
 
-            $('.my-custom-control').html('<div class="row"><button class="btn white red-text waves-effect waves-red gain">Gain</button> <button class="btn white teal-text waves-effect waves-teal loss">Loss</button> <button class="btn white green-text waves-effect waves-green stable">Stable</button></div><div class="scale"><svg><g></g></svg></div>')
-            $('.my-custom-control').show().css('padding', '20px')
+            var control_html = '<div style="display:visible" class="row"><button class="btn white  red-text waves-effect waves-red gain">Gain</button> <button class="btn white teal-text waves-effect waves-teal loss">Loss</button> <button class="btn white green-text waves-effect waves-green stable">Stable</button></div>'
+                + '<div  id="country_stats_highcharts"><h5></h5><div></div></div>'
+                + '<div class="top_countries"><ul class="collection with-header"></ul></div>'
+                + '<div class="scale"><svg><g></g></svg></div>';
+            $('.my-custom-control').html(control_html)
+
+
             $('.mapboxgl-control-container').on('mouseenter', function (e) {
                 console.log($(e.target))
                 console.log('mouseover custom')
@@ -94,8 +112,27 @@
 
 
                     var param_arr = $(this).attr('class').split(' ');
-                    var param = param_arr[param_arr.length - 1]
-                    alert(param)
+                    var param = param_arr[param_arr.length - 1];
+                    $('.btn.selected').removeClass('selected');
+                    //   $('.btn.' + param + ')'.addClass('selected');
+                    $('.top_countries,#country_stats_highcharts').show();
+                    if (param == 'gain') {
+                        $('.btn.gain').addClass('selected');
+                        plot('gain')
+                    }
+                    if (param == 'loss') {
+                        $('.btn.loss').addClass('selected');
+                        plot('loss')
+                    }
+
+                    if (param == 'stable') {
+                        alert('Stable still not ready')
+                    }
+
+
+
+
+                    //alert(param)
                 }
             })
 
@@ -110,12 +147,146 @@
                     // 'filter': ['any', ['==', 'adm_0_code', '']]
                     ["match", ["get", "iso3"]]
                 );
-                console.log(opacity_expression)
+
                 opacity_expression.push(0)
                 return opacity_expression;
 
             }
+
+            function plot(gain_loss) {
+
+                console.warn(selects)
+                //options.selected_param = 'gain';
+                var countries_data = [];
+                if (gain_loss == 'gain') {
+
+                    map.setPaintProperty('eez_land_id', "fill-color", selects.gain_info.expression);
+                    var param_to_plot = 'avg_gain';
+                    $('#country_stats_highcharts h5').text('Gain data %')
+                    var li_title = '<li class="collection-header"><h5>Top 20 Gain</h5></li>';
+
+                    selects.data.forEach(function (d) {
+                        if (d.avg_gain > 3) {
+                            console.warn(d)
+                            countries_data.push({ name: d.adm_0_name, color: d.avg_gain_color, y: d.avg_gain });
+                        }
+
+                    });
+                }
+                else {
+                    map.setPaintProperty('eez_land_id', "fill-color", selects.loss_info.expression);
+                    var param_to_plot = 'avg_loss';
+                    $('#country_stats_highcharts h5').text('Loss data %')
+                    var li_title = '<li class="collection-header"><h5>Top 20 Loss</h5></li>'
+
+                    selects.data.forEach(function (d) {
+
+                        if (d.avg_loss > 3) {
+                            console.warn(d)
+                            countries_data.push({ name: d.adm_0_name, color: d.avg_loss_color, y: d.avg_loss });
+                        }
+
+                    });
+                }
+
+
+                /*
+                    data: [{
+                        name: 'Point 1',
+                        color: '#00FF00',
+                        y: 0
+                    }, {
+                        name: 'Point 2',
+                        color: '#FF00FF',
+                        y: 5
+                    }]
+                
+                */
+
+
+
+                console.warn(countries_data)
+                var sorted_arr = countries_data.sort(sort_by_value);
+                var countries_arr = sorted_arr.map(function (d) {
+                    return d.name;
+                })
+                console.log(sorted_arr)
+                var li = li_title;
+                sorted_arr.forEach(function (d, i) {
+                    if (i < 20) {
+                        li += '<li class="collection-item" style="color:white;background-color:' + d.color + ';opacity:0.7">' + d.name + ' <span class="badge blue">' + d.y + '%</span></li>'
+                    }
+                })
+                $('.top_countries ul').empty().append(li)
+                $('.my-custom-control').show().css('padding', '20px')
+                var $container = $('#country_stats_highcharts div');
+
+                var t = $container[0]
+                console.log(t)
+
+                //Highcharts.chart(container, {
+                window.chart = new Highcharts.Chart({
+
+                    chart: {
+                        type: 'column',
+                        zoomType: 'xy',
+                        renderTo: t
+
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    title: {
+                        text: null
+                    },
+                    legend: {
+                        enabled: false,
+                        //   align: 'right',
+                        //   verticalAlign: 'middle'
+                    },
+
+                    xAxis: {
+                        type: 'column',
+                        categories: countries_arr,
+                        labels: {
+                            style: {
+                                color: 'black',
+                                fontName: 'Montserrat'
+                                //   fontSize:xAxis_size
+                            }
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: null,
+                            labels: {
+                                style: {
+                                    color: 'black',
+                                    fontName: 'Montserrat'
+                                    //  fontSize:xAxis_size
+                                }
+                            }
+                        }
+
+                    },
+                    plotOptions: {
+                        column: {
+                            pointPadding: 0.2,
+                            borderWidth: 0
+                        }
+                    },
+
+
+
+                    series: [{
+
+                        data: sorted_arr
+
+                    }]
+                });
+            }
             map.on('load', function () {
+
 
                 mangroves_popup = new mapboxgl.Popup({
                     closeButton: false,
@@ -141,8 +312,6 @@
                 //   );
 
                 var eez_filter = mangroves_data.reduce(function (memo, data) {
-
-
                     memo.push(data.adm_0_id);
                     return memo;
                 },
@@ -164,6 +333,14 @@
                         memo.min_gain = min;
                     }
 
+                    if (data.avg_loss > 0) {
+                        var max = memo.max_loss > data.avg_loss ? memo.max_loss : data.avg_loss;
+                        memo.max_loss = max;
+
+                        var min = memo.min_loss < data.avg_loss ? memo.min_loss : data.avg_loss;
+                        memo.min_loss = min;
+                    }
+
                     if (index == mangroves_data.length - 1) {
                         memo.avg_gain = Number((memo.total_gain / mangroves_data.length).toFixed(2));
                         memo.avg_loss = Number((memo.total_loss / mangroves_data.length).toFixed(2));
@@ -175,7 +352,7 @@
                 console.info(mangroves_data)
                 console.info(avg_summary)
 
-                var class_function = get_thresholds_class(avg_summary, 'gain');
+                //      var class_function = get_thresholds_class(avg_summary, 'gain');
                 var scale = d3v5.scaleLinear();
                 function chroma_scale(length, chroma_scale) {
                     var colors = [];
@@ -193,16 +370,22 @@
                     return colors;
                 }
 
-                function get_thresholds_colors() {
+
+                function get_thresholds_colors(gain_loss) {
                     var buckets = 5;
-                    var colorInterpolator = d3v5.interpolateRainbow;//("red", "green");
-                    var bezier_1 = chroma_scale(buckets, chroma.bezier(['#fdfac4', 'blue', '#ff1a1a']));
+                    console.log(gain_loss)
+                    if (gain_loss == 'gain')
+                        var bezier_1 = chroma_scale(buckets, chroma.bezier(['#fdfac4', 'blue', '#ff1a1a']));
+
+                    if (gain_loss == 'loss')
+                        var bezier_1 = chroma_scale(buckets, chroma.bezier(['#e91e63', '#ffea35', '#03a9f4']));
+
                     console.log(bezier_1)
                     var colors = bezier_1.map(function (d) {
                         console.log(d.hex())
                         return d.hex()
                     })
-                    console.log(bezier_1)
+                    console.log(colors)
                     //_class list
                     var domain = d3v5.range(0, buckets, 1).map(function (d) {
                         return d
@@ -215,19 +398,26 @@
                         .range(colors)
                 }
 
-                var color_function = get_thresholds_colors();
+
                 mangroves_data.forEach(function (d) {
-                    console.warn(d.avg_gain);
+
+                    var color_function = get_thresholds_colors('gain');
+                    var class_function = get_thresholds_class(avg_summary, 'gain');
+
                     var gain_class = class_function(d.avg_gain);
                     //  console.info(_class + ' for value ' + d.avg_gain + ' COLOR ' + color_function(_class))
                     d.avg_gain_class = gain_class;
                     d.avg_gain_color = color_function(gain_class);
+
+                    var color_function = get_thresholds_colors('loss');
+                    var class_function = get_thresholds_class(avg_summary, 'loss');
 
                     var loss_class = class_function(d.avg_loss);
                     d.avg_loss_class = loss_class;
                     d.avg_loss_color = color_function(loss_class);
 
                 })
+                selects.data = mangroves_data;
                 var sums_gain_class = mangroves_data.reduce(function (memo, data, index) {
                     //[fruit]: (map[fruit] || 0) + 1,
                     if (memo[data.avg_gain_class]) {
@@ -256,8 +446,6 @@
                 }, []);
 
 
-
-
                 var eez_gain_color_expression = mangroves_data.reduce(function (memo, data) {
                     memo.push(data.adm_0_id, data.avg_gain_color);
                     return memo;
@@ -265,6 +453,9 @@
                     // 'filter': ['any', ['==', 'adm_0_code', '']]
                     ["match", ["get", "iso3"]]
                 );
+                eez_gain_color_expression.push("#d0c4c4");
+
+                selects.gain_info.expression = eez_gain_color_expression;
 
 
                 var eez_loss_color_expression = mangroves_data.reduce(function (memo, data) {
@@ -274,10 +465,13 @@
                     // 'filter': ['any', ['==', 'adm_0_code', '']]
                     ["match", ["get", "iso3"]]
                 );
-                eez_gain_color_expression.push("#d0c4c4");
+                //   eez_gain_color_expression.push("#d0c4c4");
 
                 eez_loss_color_expression.push("#d0c4c4");
-                console.info(eez_loss_color_expression)
+                console.log(eez_loss_color_expression)
+                selects.loss_info.expression = eez_loss_color_expression;
+
+
 
                 function get_thresholds_class(avg_summary, param) {
 
@@ -347,25 +541,16 @@
                         "fill-opacity": 0.7
 
                     },
-                    //  ,
-                    //  'filter': ['any', ['==', 'adm_0_id', 'BRA']]
-                    //  'filter': ['any', ['==', 'pfaf_id', '']]
+
                 }
+
+
 
 
                 map.addLayer(layer, 'country-label');
                 //["in", "class", "street_major", "street_minor", "street_limited"]
                 map.setFilter('eez_land_id', eez_filter);
-                // setTimeout(function () {
-                //     eez_gain_color_expression.push("#d0c4c4");
-                //     map.setPaintProperty('eez_land_id', "fill-color", eez_gain_color_expression);
 
-                //     // setTimeout(function () {
-                //     //     var class_function = get_thresholds_class(avg_summary, 'loss');
-                //     //     map.setPaintProperty('eez_land_id', "fill-color", eez_loss_color_expression);
-                //     // }, 3000)
-
-                // }, 1000)
 
                 map.addSource("gaul_0_simple", {
                     "type": "vector",
@@ -442,8 +627,9 @@
                     }
                 };
             }
-
-            map.on("mousemove", throttle(function (e) {
+            //throttle(
+            map.on("mousemove", function (e) {
+                if (!map.loaded()) { return }
 
                 if (hovering_map == false)
                     return false;
@@ -456,7 +642,7 @@
                     layers: ['eez_land_id'] // replace this with the name of the layer
                     //gaul_0_fixed
                 });
-                console.info(features)
+                //     console.info(features)
 
                 //only layers that we are mouseovering...
 
@@ -537,7 +723,8 @@
 
                 })
 
-            })
+            }
+                //)
 
             )
 

@@ -33,6 +33,11 @@
      display: none;
  }
  
+ #country_stats_highcharts div
+ {
+     width:350px;
+     height:300px;
+ }
  .d3_legend,
  .d3_legend svg {
      width: 550px;
@@ -75,14 +80,39 @@
      min-width:240px;
      
  } 
- 
+ .my-custom-control .collection-item {
+     color:white!important;
+     padding: 6px 10px!important;
+
+ }
+ .my-custom-control .collection-item .badge
+ {
+     font-size: 0.8rem;
+     color:white!important;
+ }
+ .mapboxgl-ctrl-top-left, .mapboxgl-ctrl-top-right, .mapboxgl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-right
+ {
+     pointer-events: auto!important;
+ }
+ .btn.selected
+ {
+     background-color: rgb(241, 208, 59)!important;
+     
+ }
  .my-custom-control {
+     max-height: 700px;
+     overflow: auto;
      bottom: -20px;
      color: rgb(11, 26, 75);
      background-color: white;
      padding: 4px;
      border-radius: 4px;
      margin: 4px;
+     display: none;
+     z-index: 1;
+ }
+ .scale,.top_countries,#country_stats_highcharts
+ {
      display: none;
  }
  
