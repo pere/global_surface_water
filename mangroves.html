@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Global Water Explorer</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src='./d3_v5.min.js'></script>
+    <!-- <link rel="stylesheet" href="./materialize.min.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    </link>
+    <link rel="stylesheet" href="./main_mangroves.css">
+    <link rel="stylesheet" href="./navbar.css">
+    <!-- <script src='./jquery-3.3.1.min.js'></script> -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.1.1/chroma.min.js'></script>
+    <script src="./data/mangroves.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <!-- <script src='./materialize_100_2.min.js'></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> -->
+    <script src='./materialize_v1.js'></script>
+    <script src="./highcharts.js"></script>
+    <!-- <script src="./mapbox_init.js"></script>
+    <script src="./helpers.js"></script> -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+
+</head>
+<script>
+
+</script>
+
+<body>
+
+    <div id='map'>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            console.log(countries_data)
+            mapboxgl.accessToken = 'pk.eyJ1IjoicGVyaWt1dCIsImEiOiJVNzBjMl9FIn0.38swLsSY2ao8E8rU8FYgyw';
+            map = new mapboxgl.Map({
+                container: 'map',
+                // style: 'mapbox://styles/mapbox/light-v10',
+                style: 'mapbox://styles/perikut/ck1xa74kk1c2c1cmtdho498go',
+                //style: 'mapbox://styles/perikut/ck1xa74kk1c2c1cmtdho498go',
+                center: [-100, 22],
+                //   center: [1.087646, 44.613934],
+                // center: [102.612305, 61.752331],
+                //    center: [-2, 41],
+                //center: [73, 62],
+                zoom: 2,
+                _id: 'mapboxid'
+            });
+
+            // Add zoom and rotation controls to the map.
+            // map.addControl(new mapboxgl.NavigationControl());
+            // class MyCustomControl {
+            //     onAdd(map) {
+            //         this.map = map;
+            //         this.container = document.createElement('div');
+            //         this.container.className = 'my-custom-control';
+            //         //this.container.textContent = '<h5>Just a test</h5>';
+            //         return this.container;
+            //     }
+            //     onRemove() {
+            //         this.container.parentNode.removeChild(this.container);
+            //         this.map = undefined;
+            //     }
+            // }
+
+            // var myCustomControl = new MyCustomControl();
+
+            // map.addControl(myCustomControl, 'bottom-right');
+            var hovering_map = true;
+
+            $('.my-custom-control').html('<div class="row"><button class="btn white red-text waves-effect waves-red gain">Gain</button> <button class="btn white teal-text waves-effect waves-teal loss">Loss</button> <button class="btn white green-text waves-effect waves-green stable">Stable</button></div><div class="scale"><svg><g></g></svg></div>')
+            $('.my-custom-control').show().css('padding', '20px')
+            $('.mapboxgl-control-container').on('mouseenter', function (e) {
+                console.log($(e.target))
+                console.log('mouseover custom')
+                hovering_map = false;
+            }).on('mouseleave', function (e) {
+                console.log($(e.target))
+                console.log('mouseOUT custom')
+                hovering_map = true;
+            })
+            $('.my-custom-control button').on('click', function () {
+                if (hovering_map == false) {
+
+
+                    var param_arr = $(this).attr('class').split(' ');
+                    var param = param_arr[param_arr.length - 1]
+                    alert(param)
+                }
+            })
+
+            function create_opacity_expression(code) {
+                var opacity_expression = mangroves_data.reduce(function (memo, data) {
+                    if (data.adm_0_id == code)
+                        memo.push(data.adm_0_id, 0.7);
+                    else
+                        memo.push(data.adm_0_id, 0.2);
+                    return memo;
+                },
+                    // 'filter': ['any', ['==', 'adm_0_code', '']]
+                    ["match", ["get", "iso3"]]
+                );
+                console.log(opacity_expression)
+                opacity_expression.push(0)
+                return opacity_expression;
+
+            }
+            map.on('load', function () {
+
+                mangroves_popup = new mapboxgl.Popup({
+                    closeButton: false,
+                    closeOnClick: true,
+                    //offset: [20, -20]
+                    offset: {
+                        'bottom': [0, -20],
+                        'top': [0, -15],
+                        'top-left': [0, 0],//[linearOffset, (markerHeight - markerRadius - linearOffset) * -1],
+                        'top-right': [0, 0],//[-linearOffset, (markerHeight - markerRadius - linearOffset) * -1],
+
+                        // 'bottom-left': [linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
+                        // 'bottom-right': [-linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
+                        //'left': [markerRadius, (markerHeight - markerRadius) * -1],
+                        //'right': [-markerRadius, (markerHeight - markerRadius) * -1]
+                    }
+                });
+
+
+                // return memo;
+                //       },
+                //       ["match", ["get", "adm_0_pfaf"]]
+                //   );
+
+                var eez_filter = mangroves_data.reduce(function (memo, data) {
+
+
+                    memo.push(data.adm_0_id);
+                    return memo;
+                },
+                    // 'filter': ['any', ['==', 'adm_0_code', '']]
+                    ['in', 'iso3']
+                );
+
+                var avg_summary = mangroves_data.reduce(function (memo, data, index) {
+                    // memo.code = data.adm_0_id;
+                    memo.total_gain += data.avg_gain;
+                    memo.total_loss += data.avg_loss;
+                    memo.total_stable += data.avg_stable;
+
+                    if (data.avg_gain > 0) {
+                        var max = memo.max_gain > data.avg_gain ? memo.max_gain : data.avg_gain;
+                        memo.max_gain = max;
+
+                        var min = memo.min_gain < data.avg_gain ? memo.min_gain : data.avg_gain;
+                        memo.min_gain = min;
+                    }
+
+                    if (index == mangroves_data.length - 1) {
+                        memo.avg_gain = Number((memo.total_gain / mangroves_data.length).toFixed(2));
+                        memo.avg_loss = Number((memo.total_loss / mangroves_data.length).toFixed(2));
+                        memo.avg_stable = Number((memo.total_stable / mangroves_data.length).toFixed(2));
+                        console.info(memo.avg_stable)
+                    }
+                    return memo;
+                }, { 'total_gain': 0, 'total_loss': 0, 'total_stable': 0, 'num_features': mangroves_data.length });
+                console.info(mangroves_data)
+                console.info(avg_summary)
+
+                var class_function = get_thresholds_class(avg_summary, 'gain');
+                var scale = d3v5.scaleLinear();
+                function chroma_scale(length, chroma_scale) {
+                    var colors = [];
+
+                    scale.domain([1, length])
+
+
+                    var color_scale = chroma.scale();
+
+                    for (var i = 1; i <= length; i++) {
+                        var val = scale(i)
+                        colors.push(chroma_scale(val));
+                    }
+
+                    return colors;
+                }
+
+                function get_thresholds_colors() {
+                    var buckets = 5;
+                    var colorInterpolator = d3v5.interpolateRainbow;//("red", "green");
+                    var bezier_1 = chroma_scale(buckets, chroma.bezier(['#fdfac4', 'blue', '#ff1a1a']));
+                    console.log(bezier_1)
+                    var colors = bezier_1.map(function (d) {
+                        console.log(d.hex())
+                        return d.hex()
+                    })
+                    console.log(bezier_1)
+                    //_class list
+                    var domain = d3v5.range(0, buckets, 1).map(function (d) {
+                        return d
+                    })
+
+                    return d3v5.scaleThreshold()
+                        //min, avg,
+                        .domain(domain)
+                        // .range(["#6e7c5a", "#a0b28f", "#d8b8b3", "#b45554", "#760000"]);
+                        .range(colors)
+                }
+
+                var color_function = get_thresholds_colors();
+                mangroves_data.forEach(function (d) {
+                    console.warn(d.avg_gain);
+                    var gain_class = class_function(d.avg_gain);
+                    //  console.info(_class + ' for value ' + d.avg_gain + ' COLOR ' + color_function(_class))
+                    d.avg_gain_class = gain_class;
+                    d.avg_gain_color = color_function(gain_class);
+
+                    var loss_class = class_function(d.avg_loss);
+                    d.avg_loss_class = loss_class;
+                    d.avg_loss_color = color_function(loss_class);
+
+                })
+                var sums_gain_class = mangroves_data.reduce(function (memo, data, index) {
+                    //[fruit]: (map[fruit] || 0) + 1,
+                    if (memo[data.avg_gain_class]) {
+                        memo[data.avg_gain_class].sum++;
+                    }
+                    else {
+                        console.info('non existent ' + data.avg_gain_class)
+                        memo[data.avg_gain_class] = { sum: 1 }
+
+                    }
+                    return memo
+                }, []);
+                console.log(sums_gain_class)
+
+                var sums_loss_class = mangroves_data.reduce(function (memo, data, index) {
+                    //[fruit]: (map[fruit] || 0) + 1,
+                    if (memo[data.avg_loss_class]) {
+                        memo[data.avg_loss_class].sum++;
+                    }
+                    else {
+                        console.info('non existent ' + data.avg_loss_class)
+                        memo[data.avg_loss_class] = { sum: 1 }
+
+                    }
+                    return memo
+                }, []);
+
+
+
+
+                var eez_gain_color_expression = mangroves_data.reduce(function (memo, data) {
+                    memo.push(data.adm_0_id, data.avg_gain_color);
+                    return memo;
+                },
+                    // 'filter': ['any', ['==', 'adm_0_code', '']]
+                    ["match", ["get", "iso3"]]
+                );
+
+
+                var eez_loss_color_expression = mangroves_data.reduce(function (memo, data) {
+                    memo.push(data.adm_0_id, data.avg_loss_color);
+                    return memo;
+                },
+                    // 'filter': ['any', ['==', 'adm_0_code', '']]
+                    ["match", ["get", "iso3"]]
+                );
+                eez_gain_color_expression.push("#d0c4c4");
+
+                eez_loss_color_expression.push("#d0c4c4");
+                console.info(eez_loss_color_expression)
+
+                function get_thresholds_class(avg_summary, param) {
+
+                    var domain = []
+                    var buckets = 10;
+                    console.log(avg_summary)
+
+                    if (param == 'gain') {
+                        var min = avg_summary.min_gain;
+                        var max = avg_summary.max_gain;
+                        var avg = avg_summary.avg_gain;
+
+                    }
+                    else {
+                        var min = avg_summary.min_loss;
+                        var max = avg_summary.max_loss;
+                        var avg = avg_summary.avg_loss;
+                    }
+
+
+                    var each_step = ((max - min) / buckets);
+                    var domain = d3v5.range(min, max, each_step);
+
+                    var data_range = d3v5.range(0, buckets, 1).map(function (d) {
+                        console.info(d)
+                        return d
+                    })
+
+
+                    /*
+                    The domain is the complete set of values, so in this case that is all of your temperatures, from 33 to 64. 
+                    The range is the set of resulting values of a function, in this case the resulting values of scaling your temperatures 
+                    from 0 to 600.
+                    
+                    */
+                    return d3v5.scaleThreshold()
+                        //[min,each_step*1,each_step*2....,max]
+                        .domain(domain)
+                        //[0,1,2,3,4....20]
+                        .range(data_range)
+
+                }
+
+                map.addSource("eez_source", {
+                    "type": "vector",
+                    "tiles": ["https://geospatial.jrc.ec.europa.eu/geoserver/gwc/service/wmts?layer=hotspots:eez_land&tilematrixset=EPSG:900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application/x-protobuf;type=mapbox-vector&TileMatrix=EPSG:900913:{z}&TileCol={x}&TileRow={y}"]
+                });
+
+
+                var layer = {
+
+                    "id": "eez_land_id",
+                    "type": "fill",
+                    "source": "eez_source",
+
+                    "source-layer": "eez_land",
+                    'layout': {
+                        'visibility': 'visible'
+
+                    },
+
+
+                    'paint': {
+                        "fill-color": "#ff7f50",
+                        "fill-outline-color": "#fec46c",
+
+                        "fill-opacity": 0.7
+
+                    },
+                    //  ,
+                    //  'filter': ['any', ['==', 'adm_0_id', 'BRA']]
+                    //  'filter': ['any', ['==', 'pfaf_id', '']]
+                }
+
+
+                map.addLayer(layer, 'country-label');
+                //["in", "class", "street_major", "street_minor", "street_limited"]
+                map.setFilter('eez_land_id', eez_filter);
+                // setTimeout(function () {
+                //     eez_gain_color_expression.push("#d0c4c4");
+                //     map.setPaintProperty('eez_land_id', "fill-color", eez_gain_color_expression);
+
+                //     // setTimeout(function () {
+                //     //     var class_function = get_thresholds_class(avg_summary, 'loss');
+                //     //     map.setPaintProperty('eez_land_id', "fill-color", eez_loss_color_expression);
+                //     // }, 3000)
+
+                // }, 1000)
+
+                map.addSource("gaul_0_simple", {
+                    "type": "vector",
+                    "tiles": ["https://geospatial.jrc.ec.europa.eu/geoserver/gwc/service/wmts?layer=hotspots:gaul_0_simplified&tilematrixset=EPSG:900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application/x-protobuf;type=mapbox-vector&TileMatrix=EPSG:900913:{z}&TileCol={x}&TileRow={y}"]
+                });
+
+                var layer = {
+                    "id": "gaul_0_simple",
+                    "type": "fill",
+                    "source": "gaul_0_simple",
+                    "source-layer": "gaul_0_simplified",
+                    "minzom": 1,
+                    // 'layout': {
+                    //     'visibility': 'none'
+
+                    // },
+                    'maxzoom': 5,
+
+                    'paint': {
+                        "fill-color": "#8bc34a",
+                        "fill-outline-color": "#fec46c",
+                        "fill-opacity": 0.2
+
+                    }
+
+                }
+                map.addLayer(layer, 'country-label');
+
+                map.addSource("gaul_0_simple_lines", {
+                    "type": "vector",
+                    "tiles": ["https://geospatial.jrc.ec.europa.eu/geoserver/gwc/service/wmts?layer=hotspots:gaul_0_simple_lines&tilematrixset=EPSG:900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application/x-protobuf;type=mapbox-vector&TileMatrix=EPSG:900913:{z}&TileCol={x}&TileRow={y}"]
+                });
+                map.addLayer({
+                    "id": "gaul_0_simple_lines",
+                    "type": "line",
+                    "source": "gaul_0_simple_lines",
+
+                    "source-layer": "gaul_0_simple_lines",
+                    'layout': {
+                        'visibility': 'none'
+
+                    },
+                    'paint': {
+
+                        'line-color': "#ffeb3b",
+                        'line-width': 3
+
+                    },
+                    'filter': ['any', ['==', 'adm_0_code', '']]
+
+                }, 'country-label');
+
+            });
+
+            function throttle(fn, threshhold, scope) {
+                threshhold || (threshhold = 150);
+                var last,
+                    deferTimer;
+                return function () {
+                    var context = scope || this;
+
+                    var now = +new Date,
+                        args = arguments;
+                    if (last && now < last + threshhold) {
+                        // hold on to it
+                        clearTimeout(deferTimer);
+                        deferTimer = setTimeout(function () {
+                            last = now;
+                            fn.apply(context, args);
+                        }, threshhold);
+                    } else {
+                        last = now;
+                        fn.apply(context, args);
+                    }
+                };
+            }
+
+            map.on("mousemove", throttle(function (e) {
+
+                if (hovering_map == false)
+                    return false;
+
+                var zoom = map.getZoom();
+
+                // var features = map.queryRenderedFeatures(e.point);
+
+                var features = map.queryRenderedFeatures(e.point, {
+                    layers: ['eez_land_id'] // replace this with the name of the layer
+                    //gaul_0_fixed
+                });
+                console.info(features)
+
+                //only layers that we are mouseovering...
+
+                //console.info(mouseov_layers)
+                var html = '';
+
+
+                // if (mouseov_layers.length == 1 && mouseov_layers[0] !== 'eez_land_id') {
+                //     if ($('.bassins_popup').length > 0)
+                //         mangroves_popup.remove();
+                //     if ($('.country_popup').length > 0)
+                //         country_popup.remove();
+                // }
+                /*{ "adm_0_id": "IRN", "adm_0_name": "Iran", "pfaf_features": [], "years":
+                [1996, 2007, 2008, 2009, 2010, 2015, 2016],
+                "data": { "1996": { "gain": 0, "loss": 0, "stable": 79.48913922 }, 
+                            "2007": { "gain": 0.761204143, "loss": 1.352846162, "stable": 78.13629305 }, "2008": { "gain": 0.51886109, "loss": 1.335055378, "stable": 78.15408384 }, "2009": { "gain": 0.516437743, "loss": 1.284943517, "stable": 78.2041957 }
+                */
+
+                if (features.length == 0) {
+                    //map.setFilter('gaul_0_simple_lines', ['==', 'adm_0_id', '']);
+                    map.setLayoutProperty('gaul_0_simple_lines', "visibility", "none");
+                    map.setPaintProperty('eez_land_id', "fill-opacity", 0.7);
+                    mangroves_popup.remove();
+                }
+                features.forEach(function (f) {
+                    if (f.layer.id == 'eez_land_id') {
+                        console.log(f.properties)
+                        console.warn('mangroves ' + f.properties.iso3)
+                        var this_data = mangroves_data.filter(function (d) {
+                            return d.adm_0_id == f.properties.iso3;
+                        })[0];
+                        console.info(this_data)
+                        if (!this_data)
+                            return false;
+                        html += ' <div class="country_popup small_popup" attr-id="' + this_data.adm_0_id + '">'
+                            + '<div class="section"> <div class="adm_name">'
+                            + this_data.adm_0_name + '</div></div>'
+                            + '<div>Gain - Loss</div>'
+
+                            + '<div id="popup_container"></div>'
+                            + '</div>'
+                        console.log(html)
+                        mangroves_popup.setLngLat(e.lngLat);
+
+                        if ($('.country_popup').length == 0) {
+                            //if not present the popup or we are on a different country... 
+                            mangroves_popup.setHTML(html) //<hr>'+feature.properties.adm_0_name)
+                                .addTo(map);
+                            setTimeout(function () {
+                                map.setFilter('gaul_0_simple_lines', ['==', 'adm_0_id', this_data.adm_0_id]);
+                                map.setLayoutProperty('gaul_0_simple_lines', "visibility", "visible");
+                                highcharts_popup(this_data)
+                            }, 10)
+                        }
+                        else {
+                            // return false
+                            if ($('.country_popup').attr('attr-id') !== this_data.adm_0_id) {
+                                mangroves_popup.setHTML(html)
+                                setTimeout(function () {
+                                    map.setFilter('gaul_0_simple_lines', ['==', 'adm_0_id', this_data.adm_0_id]);
+                                    map.setLayoutProperty('gaul_0_simple_lines', "visibility", "visible");
+
+                                    // eez_gain_color_expression.push("#d0c4c4");
+                                    // map.setPaintProperty('eez_land_id', "fill-color", eez_gain_color_expression);
+
+                                    map.setPaintProperty('eez_land_id', "fill-opacity", create_opacity_expression(this_data.adm_0_id));
+                                    highcharts_popup(this_data)
+                                }, 10)
+                            }
+                        }
+
+
+                    }
+
+
+
+
+                })
+
+            })
+
+            )
+
+            function highcharts_popup(this_data) {
+                console.log(this_data.data)
+                //    "data": { "1996": { "gain": 0, "loss": 0, "stable": 79.48913922 }, 
+                //"2007": { "gain": 0.761204143, "loss": 1.352846162, "stable": 78.13629305 }, "2008": { "gain": 0.51886109, "loss": 1.335055378, "stable": 78.15408384 }, "2009": { "gain": 0.516437743, "loss": 1.284943517, "stable": 78.2041957 }
+                var gain_arr = [];
+                var loss_arr = [];
+                for (var p in this_data.data) {
+                    var _t = this_data.data[p];
+                    gain_arr.push(_t.gain);
+
+                    loss_arr.push(_t.loss);
+
+
+                }
+                console.warn(this_data.years)
+                console.info(gain_arr)
+                Highcharts.chart('popup_container', {
+                    chart: {
+                        type: 'column',
+                        width: 240,
+                        height: 200
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    title: {
+                        text: null
+                    },
+                    xAxis: {
+                        type: 'category',
+                        categories: this_data.years,
+                        labels: {
+                            style: {
+                                color: 'black',
+                                fontName: 'Montserrat'
+                                //   fontSize:xAxis_size
+                            }
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: null,
+                            labels: {
+                                style: {
+                                    color: 'black',
+                                    fontName: 'Montserrat'
+                                    //  fontSize:xAxis_size
+                                }
+                            }
+                        }
+
+                    },
+                    plotOptions: {
+                        column: {
+                            pointPadding: 0.2,
+                            borderWidth: 0
+                        }
+                    },
+
+
+
+                    series: [{
+
+                        name: 'Gain',
+                        data: gain_arr
+                    }, {
+                        name: 'Loss',
+                        data: loss_arr
+
+                    }]
+                });
+            }
+            function getRandomColor() {
+                var letters = '0123456789ABCDEF';
+                var color = '#';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+            function getUniqueFeatures(array, comparatorProperty) {
+
+                var existingFeatureKeys = {};
+                var uniqueFeatures = array.filter(function (el) {
+                    if (existingFeatureKeys[el.properties[comparatorProperty]]) {
+                        return false;
+                    } else {
+                        existingFeatureKeys[el.properties[comparatorProperty]] = true;
+                        return true;
+                    }
+                });
+
+                return uniqueFeatures;
+            }
+            var y = 1;
+            var canvas = map.getCanvasContainer();
+            function getRandomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            var features_arr = [];
+
+            function get_thresholds_colors(features) {
+
+                var colorInterpolator = d3v5.interpolateRainbow;
+                var domain = features_arr;
+                console.log(features_arr)
+
+                //  console.log(d3v5.range(1, 100, 10))
+                var range = d3v5.range(0, 100, 5);
+                var colorArray = range.map(function (d) {
+                    console.info(d)
+                    return colorInterpolator(d)
+                });
+
+
+                console.log(colorArray);
+                console.warn(domain)
+
+                return d3v5.scaleThreshold()
+                    //min, avg,
+                    .domain(domain)
+                    // .range(["#6e7c5a", "#a0b28f", "#d8b8b3", "#b45554", "#760000"]);
+                    .range(colorArray)
+            }
+
+            map.on('click', function (e) {
+
+                if (hovering_map == false)
+                    return false;
+                var country_f = map.queryRenderedFeatures(e.point, {
+                    layers: ['eez_land_id'] // replace this with the name of the layer
+                    //gaul_0_fixed
+                })[0];
+                console.info(country_f)
+
+                if (country_f) {
+                    console.info(country_f.properties.iso3)
+                    var this_data = countries_data.filter(function (d) {
+                        console.warn(d)
+                        return d.adm_0_iso == country_f.properties.iso3;
+                    })[0];
+                    console.log(this_data)
+                    var coords = this_data.bbox.coordinates;
+                    //USA
+                    if (this_data.adm_0_code == 259) {
+                        var bbox = [[-198.281250, 19.808054], [-31.025391, 69.595890]];
+                    }
+                    else {
+                        var bbox = [coords[0][2], coords[0][0]];
+                        //  var bbox = [[-198.281250 19.808054], [-31.025391 69.595890]];
+                    }
+                    console.log(bbox)
+
+                    map.fitBounds(bbox);
+                    //return false
+                }
+
+            })
+            map.on('sourcedataloading', function (e) {
+                return false;
+                console.log('sourcedataloading');
+                return false;
+                var checkLoaded = setInterval(loaded, 100);
+                function loaded() {
+                    if (map.getLayer('basins_6_adm_0')) {
+                        //  console.log('tiles loaded: ', map.areTilesLoaded());
+                    }
+                    if (map.areTilesLoaded()) {
+
+
+                        window.clearInterval(checkLoaded);
+                        console.log('tiles loaded: ', map.areTilesLoaded());
+                        setTimeout(function () {
+                            //  if (y == 0) return false;
+                            var features = map.querySourceFeatures("basins_06", {
+                                sourceLayer: 'adm_0_level_6',
+                                filter: ['any', ['==', 'adm_0_code', 85]]
+                            });
+                            console.info(features);
+                            if (features.length == 0) {
+                                // y = 0;
+                                console.info(features.length)
+                                return false;
+                            }
+                            else {
+                                if (y == 1) {
+                                    console.log('y == 1')
+                                    y = 0;
+                                    var all_f = map.querySourceFeatures("basins_06", {
+                                        sourceLayer: 'adm_0_level_6'
+                                    })
+                                    //   return false;
+                                }
+                                else {
+                                    return false;
+                                }
+                            }
+
+                            var uniques_by_country = getUniqueFeatures(all_f, "adm_0_name");
+                            var countries = uniques_by_country.map(function (d) {
+                                return d.properties.adm_0_name;
+                            })
+                            console.warn(countries)
+
+                            //  var uniques = getUniqueFeatures(features, "adm_0_code");
+
+                            // Run through the selected features and set a filter
+                            // to match features with unique FIPS codes to activate
+                            // the `counties-highlighted` layer.
+                            var filter = features.reduce(
+                                function (memo, feature) {
+                                    memo.push(feature.properties.pfaf_id);
+                                    return memo;
+                                },
+                                ["in", "pfaf_id"]
+                            );
+                            console.warn(filter)
+                            // map.setFilter("counties-highlighted", filter);
+                            // var pfaf_arr = uniques.map(function (d) {
+                            //     return d.properties.pfaf_id
+                            // });
+                            var symbol_expression = ["match", ["get", "pfaf_id"]];
+                            var opacity_expression = ["match", ["get", "pfaf_id"]];
+                            var uniques = getUniqueFeatures(features, "pfaf_id");
+                            uniques.forEach(function (d) {
+                                //    console.log(d)
+                                symbol_expression.push(d.properties.pfaf_id, getRandomColor());
+                                opacity_expression.push(d.properties.pfaf_id, 1);
+                            })
+                            console.info(symbol_expression)
+                            symbol_expression.push("#d0c4c4");
+                            opacity_expression.push(0);
+
+                            map.setPaintProperty('basins_6_adm_0', "fill-opacity", opacity_expression);
+                            map.setPaintProperty('basins_6_adm_0', "fill-color", symbol_expression);
+                            map.setLayoutProperty('basins_6_adm_0', "visibility", "visible");
+
+                            // setTimeout(function () {
+                            //     var features = map.querySourceFeatures("basins_06", {
+                            //         sourceLayer: 'adm_0_level_6',
+                            //         filter: ['any', ['==', 'adm_0_code',]]
+                            //     });
+                            // })
+
+                            //   console.info(pfaf_arr.sort())
+                        }, 100)
+                    }
+                }
+            });
+
+        })
+    </script>
+
+</body>
+<script src='./data/countries_stats.js'></script>
+
+</html>
