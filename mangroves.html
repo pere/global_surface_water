@@ -162,7 +162,7 @@
 
                     map.setPaintProperty('eez_land_id', "fill-color", selects.gain_info.expression);
                     var param_to_plot = 'avg_gain';
-                    $('#country_stats_highcharts h5').text('Gain data %')
+                    $('#country_stats_highcharts h5').text('Gain data sqKm')
                     //<h5>Top 20 Gain</h5>
                     var li_title = '<li class="collection-header"></li>';
 
@@ -177,7 +177,7 @@
                 else {
                     map.setPaintProperty('eez_land_id', "fill-color", selects.loss_info.expression);
                     var param_to_plot = 'avg_loss';
-                    $('#country_stats_highcharts h5').text('Loss data %')
+                    $('#country_stats_highcharts h5').text('Loss data sqKm')
                     //<h5>Top 20 Loss</h5>
                     var li_title = '<li class="collection-header"></li>'
 
@@ -192,7 +192,7 @@
                 }
 
 
-                /*
+                /*fbucket
                     data: [{
                         name: 'Point 1',
                         color: '#00FF00',
@@ -216,7 +216,7 @@
                 var li = li_title;
                 sorted_arr.forEach(function (d, i) {
                     //  if (i < 20) {
-                    li += '<li class="collection-item" style="color:white;background-color:' + d.color + ';opacity:0.7">' + d.name + ' <span class="badge blue">' + d.y + '%</span></li>'
+                    li += '<li class="collection-item" style="color:white;background-color:' + d.color + ';opacity:0.7">' + d.name + ' <span class="badge blue">' + d.y + 'sqKm</span></li>'
                     // }
                 })
                 $('.top_countries ul').empty().append(li)
