@@ -26,7 +26,10 @@
      width: 550px;
      height: 450px;
  }
- 
+ .stable
+ {
+     display: none;
+ }
  .highcharts_container_bottom {
      width: 450px;
      height: 350px;
