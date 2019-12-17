@@ -9,27 +9,30 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src='./d3_v5.min.js'></script>
     <!-- <link rel="stylesheet" href="./materialize.min.css"> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="./materialize.min.css">
     </link>
     <link rel="stylesheet" href="./mangroves/main_mangroves.css">
     <link rel="stylesheet" href="./mangroves/navbar.css">
     <!-- <script src='./jquery-3.3.1.min.js'></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.1.1/chroma.min.js'></script>
-    <script src=".//mangroves/eez_navbar_events.js"></script>
+    <script src="./jquery.js"></script>
+    <script src='./chroma.min.js'></script>
+    <script src="./mangroves/eez_navbar_events.js"></script>
     <script src="./mangroves/mangroves.js"></script>
-
+    <script src="./jquery.counterup2.min.js"></script>
 
     <!-- <script src='./materialize_100_2.min.js'></script> -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> -->
     <script src='./materialize_v1.js'></script>
+
     <script src="./highcharts.js"></script>
+    <script src="./highcharts-more.js"></script>
+    <script src="./solid-gauge.js"></script>
     <!-- <script src="./mapbox_init.js"></script>
     <script src="./helpers.js"></script> -->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.4.0/mapbox-gl.css' rel='stylesheet' />
-    <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+    <!-- <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet"> -->
+    <script src='./mapbox-gl.js'></script>
+    <link href='./mapbox-gl.css' rel='stylesheet' />
+    <script src='./turf.min.js'></script>
 
 </head>
 <script>
@@ -274,7 +277,7 @@
                     <ul class="list">
 
                         <li>
-                            <div class="valign-wrapper row" info_container="mangroves">
+                            <div class="valign-wrapper row mangroves_summary" info_container="mangroves">
                                 <div class="col s2">
                                     <i class="material-icons left highlight layers">layers</i>
                                     <i class="material-icons left show info">info_outline</i>
@@ -283,8 +286,7 @@
                                     <span class="title">Mangroves area</span>
                                 </div>
                                 <div class="col s6">
-                                    <span class="title"><span class='gain_loss #8bc34a light-green'>2% gain</span>
-                                        since year 2000 - 70 sqKm</span>
+
                                 </div>
 
 
@@ -326,7 +328,65 @@
                 </div>
                 <div class="collapsible-body">
                     <div class="mangroves">
+                        <!-- <div class='row'>
+                            <div id="mangroves_gain" class="col s5"></div>
+                            <div id="mangroves_loss" class="col s5"></div>
+                        </div> -->
+                        <div class="row">
+
+                            <div class="legend col s4">
+                                <div class='gain_loss_title'>Gain</div>
+                                <div><i style="background:#308de4"></i>
+                                    Less 5% Stable</div>
+                                <div><i style="background:#f3d05c"></i> 5% – 10% Some
+                                </div>
+                                <div><i style="background:#f0aa06"></i> 10% – 30% High</div>
+                                <div><i style="background:#e63c26"></i> 30% – 100% Extreme</div>
+                                <div><i style="background:#dc05f8a1"></i> Extremely high</div>
+
+                            </div>
+                            <div class="circle_container col s2">
+
+                                <svg width="100px" height="100px">
+                                    <circle cx="50" cy="50" fill="#1f77b4" r="40"></circle>
+                                    <text id="gain_circle_text" x="50%" y="50%" text-anchor="middle" fill="white"
+                                        font-size="30px" font-family="Arial" dy="10px">2.2</text>
+                                </svg>
+                                <!-- <div class="circle">
+                                        ICON
+                                    </div> -->
+                            </div>
+
+                            <div class="legend col s4">
+                                <div class='gain_loss_title'>Loss</div>
+                                <div><i style="background:#308de4"></i>
+                                    Less 5% Stable</div>
+                                <div><i style="background:#f3d05c"></i> 5% – 10% Some
+                                </div>
+                                <div><i style="background:#f0aa06"></i> 10% – 30% High</div>
+                                <div><i style="background:#e63c26"></i> 30% – 100% Extreme</div>
+                                <div><i style="background:#dc05f8a1"></i> Extremely high</div>
+
+                            </div>
+                            <div class="circle_container col s2">
+
+                                <svg width="100px" height="100px">
+                                    <circle cx="50" cy="50" fill="#1f77b4" r="40"></circle>
+                                    <text id="loss_circle_text" x="50%" y="50%" text-anchor="middle" fill="white"
+                                        font-size="30px" font-family="Arial" dy="10px">2.2</text>
+                                </svg>
+                                <!-- <div class="circle">
+                                            ICON
+                                        </div> -->
+                            </div>
+                        </div>
+
+                        <div class='row'>
+                            <div id="mangroves_double_chart" class="col s12"></div>
+                        </div>
                         <!-- <h3 class="subheader">Mangroves</h3> -->
+
+
                         <div class="mangroves_table"></div>
                     </div>
                 </div>
@@ -483,7 +543,15 @@
 
             return a.y < b.y ? 1 : -1;
         }
-
+        function round_this(someNumber, digits) {
+            switch (digits) {
+                case 1: var p = 1e1; break;
+                case 2: var p = 1e2; break;
+                case 3: var p = 1e3; break;
+                case 4: var p = 1e4; break;
+            }
+            return Math.round(someNumber * p) / p;
+        }
         var options = { selected_param: 'gain' }
         var mangroves_popup;
 
@@ -526,7 +594,7 @@
 
             map.addControl(myCustomControl, 'bottom-right');
 
-            $('.my-custom-control').show();
+            //     $('.my-custom-control').show();
             var hovering_map = true;
 
             var control_html = '<div style="display:visible" class="row"><button class="btn white  red-text waves-effect waves-red gain">Gain</button> <button class="btn white teal-text waves-effect waves-teal loss">Loss</button> <button class="btn white green-text waves-effect waves-green stable">Stable</button></div>'
@@ -686,6 +754,9 @@
 
                 //Highcharts.chart(container, {
                 window.chart = new Highcharts.Chart({
+                    credits: {
+                        enabled: false
+                    },
 
                     chart: {
                         type: 'column',
@@ -998,7 +1069,7 @@
                         "fill-color": "#ff7f50",
                         "fill-outline-color": "#fec46c",
 
-                        "fill-opacity": 0.7
+                        "fill-opacity": 0.01
 
                     },
 
@@ -1191,7 +1262,7 @@
                 if (feature.length == 0) {
                     //map.setFilter('gaul_0_simple_lines', ['==', 'adm_0_id', '']);
                     map.setLayoutProperty('gaul_0_mouseover', "visibility", "none");
-                    map.setPaintProperty('eez_land_id', "fill-opacity", 0.7);
+                    map.setPaintProperty('eez_land_id', "fill-opacity", 0.01);
                     if (mangroves_popup) mangroves_popup.remove();
                 }
                 feature.forEach(function (f) {
@@ -1207,7 +1278,7 @@
                     html += ' <div class="country_popup small_popup" attr-id="' + this_data.adm_0_id + '">'
                         + '<div class="section"> <div class="adm_name">'
                         + this_data.adm_0_name + '</div></div>'
-                        + '<div>Gain - Loss</div>'
+                        // + '<div>Gain - Loss</div>'
 
                         + '<div id="popup_container"></div>'
                         + '</div>'
@@ -1221,7 +1292,7 @@
                         setTimeout(function () {
                             map.setFilter('gaul_0_mouseover', ['==', 'adm_0_id', this_data.adm_0_id]);
                             map.setLayoutProperty('gaul_0_mouseover', "visibility", "visible");
-                            highcharts_popup(this_data)
+                            //   highcharts_popup(this_data)
                         }, 10)
                     }
                     else {
@@ -1233,8 +1304,8 @@
                                 map.setLayoutProperty('gaul_0_mouseover', "visibility", "visible");
                                 // eez_gain_color_expression.push("#d0c4c4");
                                 // map.setPaintProperty('eez_land_id', "fill-color", eez_gain_color_expression);
-                                map.setPaintProperty('eez_land_id', "fill-opacity", create_opacity_expression(this_data.adm_0_id));
-                                highcharts_popup(this_data)
+                                //   map.setPaintProperty('eez_land_id', "fill-opacity", create_opacity_expression(this_data.adm_0_id));
+                                //  highcharts_popup(this_data)
                             }, 10)
                         }
                     }
@@ -1260,6 +1331,9 @@
                 console.warn(this_data.years)
                 console.info(gain_arr)
                 Highcharts.chart('popup_container', {
+                    credits: {
+                        enabled: false
+                    },
                     chart: {
                         type: 'column',
                         width: 240,
@@ -1369,6 +1443,189 @@
                     .range(colorArray)
             }
 
+            function create_gauge_chart(param, data) {
+
+                var gaugeOptions = {
+                    'chart': {
+                        'type': 'solidgauge'
+
+
+                    },
+                    title: {
+                        y: -70
+                    },
+                    'tooltip': {
+                        'enabled': false
+                    },
+
+                    'pane': {
+                        'center': ['50%', '50%'],
+                        // 'size': container.width() + 'px',
+                        'size': '200px',
+                        'startAngle': -90,
+                        'endAngle': 90,
+                        'background': {
+                            'backgroundColor': '#EEE',
+                            'innerRadius': '90%',
+                            'outerRadius': '100%',
+                            'borderWidth': 0,
+                            'shape': 'arc'
+                        }
+                    },
+
+                    'yAxis': {
+                        'min': 0,
+
+                        'labels': {
+                            'enabled': true,
+                            y: 16
+                        },
+
+                        'lineWidth': 0,
+                        'minorTickInterval': null,
+                        'tickPixelInterval': 400,
+                        'tickWidth': 0
+                    },
+
+                    'plotOptions': {
+                        'solidgauge': {
+                            'innerRadius': '90%',
+                            dataLabels: {
+                                y: 5,
+                                borderWidth: 0,
+                                useHTML: true,
+                                format: '<div style="text-align:center">' +
+                                    '<span style="font-size:15px">{y} sqKm</span><br/>' +
+
+                                    '</div>'
+                                //gauge_info({ y })
+
+
+
+                            }
+                        }
+                    }
+
+
+                };
+
+                function gauge_info(y) {
+                    console.log(y)
+                    return '<div style="text-align:center">' +
+                        '<span style="font-size:15px">text sqKm</span><br/>' +
+
+                        '</div>'
+                }
+                if (param == 'gain') {
+
+                    Highcharts.chart('mangroves_gain', {
+                        credits: {
+                            enabled: false
+                        },
+
+                        chart: {
+                            type: 'solidgauge',
+
+                        },
+
+                        title: {
+                            text: ''
+                        },
+                        pane: {
+                            center: ['50%', '50%'],
+
+                            borderWidth: 0,
+                            size: '200px',
+                            startAngle: -90,
+                            endAngle: 90,
+                            background: {
+                                //backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                                'innerRadius': '90%',
+                                'outerRadius': '100%',
+                                'borderWidth': 0,
+                                shape: 'arc'
+                            }
+                        },
+
+                        yAxis: {
+                            min: 0,
+                            //  max: getRandomInRange(120, 150),
+                            max: 100,
+                            lineWidth: 0,
+                            minorTicks: false,
+                            tickWidth: 0,
+                            tickAmount: 2,
+                            labels: {
+                                y: 25,
+                                distance: '85%',
+                                style: {
+                                    "fontSize": "12px"
+                                }
+                            }
+
+                        },
+
+                        'plotOptions': {
+                            'solidgauge': {
+                                'innerRadius': '90%',
+                                dataLabels: {
+                                    y: 5,
+                                    borderWidth: 0,
+                                    useHTML: true,
+                                    'format':
+
+                                        '<div style="text-align:center">' +
+                                        '<span style="font-size:15px">{y} sqKm</span><br/>' +
+
+                                        '</div>'
+
+                                }
+                            }
+                        },
+                        series: [{
+                            name: 'Gain',
+                            // innerRadius: '50%',
+                            // radius: '100%',
+                            dataLabels: {
+                                enabled: true,
+                                borderWidth: 0,
+                                format: '{y} %',
+
+                                verticalAlign: 'middle',
+                                style: {
+                                    "fontSize": "30px"
+                                }
+                            },
+
+                            data: data.gain_data,
+
+                        }]
+                    });
+                    var container = $('#mangroves_gain');
+                    console.log(container)
+                    //   gaugeOptions.chart.renderTo = container[0];
+                    //  gaugeOptions.yAxis.max = data.gain + 100;
+
+                    //  Highcharts.chart('mangroves_gain', gaugeOptions);
+
+                }
+                else {
+                    gaugeOptions.yAxis.max = data.loss + 100;
+                    gaugeOptions.series = [{
+                        'name': 'Loss',
+                        'data': data.loss_data,
+                    }];
+                    //   Highcharts.chart('mangroves_loss', gaugeOptions);
+                }
+
+                $('.highcharts-solidgauge-series .highcharts-data-label').css(
+                    {
+                        'left': '',
+                        'top': '',
+                        'opacity': ''
+                    })
+            }
+
             fxs.click_map = function (sel_f) {  //// clicked_sel_f = { sel_code: code, sel_latlng: d.centroid };
                 if (sel_f.sel_ev) {
                     console.log(sel_f)
@@ -1434,19 +1691,213 @@
                 var this_data = mangroves_data.filter(function (d) {
                     return d.adm_0_id == code
                 })[0];
-                $('.country_li').find('.card-content .card-title').text(this_data.adm_0_name)
+                $('.country_li').find('.card-content .card-title').text(this_data.adm_0_name);
+                var data = {};
 
-                var mangroves_table = '<table class="striped highlight responsive-table"> <thead> <tr> <th></th> <th>Gain (sqKm)</th> <th>Loss (sqKm)</th> <th>Stable (sqKm)</th> </tr> </thead> <tbody>';
-                //this_data.data.forEach(function (d, i) {
+                var mangroves_table = '<table class="striped highlight responsive-table"> <thead> <tr> <th></th> <th>Total extent (sqKm)</th> <th>Gain (sqKm)</th> <th>Loss (sqKm)</th> </tr> </thead> <tbody>';
+
+                var perc_change = [];
+                var total_extent = [];
+                var data_length = Object.keys(this_data.data).length;
+                var i = 0;
+
+                var el_gain = document.querySelector('#gain_circle_text')
+
+                var el_loss = document.querySelector('#loss_circle_text');
+                var counterUp = window.counterUp["default"]; // import counterUp from "counterup2"
+
                 for (var p in this_data.data) {
                     var _t = this_data.data[p];
-                    console.info(_t)
-                    mangroves_table += '<tr><td>' + p + '</td><td>' + _t.gain + '</td><td>' + _t.loss + '</td><td>' + _t.stable + '</td></tr>'
+                    console.log(_t)
+                    perc_change.push(round_this(_t.percent_change, 2));
+                    total_extent.push(round_this(_t.total_extent, 2));
+                    if (i == data_length - 1) {
+
+                        data.gain = round_this(_t.gain, 2);
+                        data.gain_percent = round_this(_t.gain_percent_percent, 2);
+                        if (_t.gain_percent < 1) {
+                            data.gain_percent = round_this(_t.gain_percent, 2);
+                        }
+                        else {
+                            data.gain_percent = round_this(_t.gain_percent, 1);
+                        }
+
+                        switch (true) {
+                            case (data.gain_percent <= 5):
+                                var gain_color = '#308de4'; break;
+
+                            case (data.gain_percent >= 5 && data.gain_percent <= 10):
+                                var gain_color = '#f3d05c'; break;
+
+                            case (data.gain_percent >= 10 && data.gain_percent <= 30):
+                                var gain_color = '#f0aa06'; break;
+
+                            case (data.gain_percent >= 30 && data.gain_percent <= 100):
+                                var gain_color = '#e63c26'; break;
+                            case (data.gain_percent >= 100):
+                                var gain_color = '#dc05f8a1'; break;
+                        }
+
+
+                        $('#gain_circle_text').html(data.gain_percent).prev().attr('fill', gain_color);
+
+
+                        // <span class="loss title"><span class='gain_loss #8bc34a light-green'>2% gain</span>
+                        // since year 2000 - 70 sqKm</span>
+
+                        data.loss_percent = round_this(_t.loss_percent, 2);
+                        data.loss = round_this(_t.loss, 2);
+                        if (_t.loss_percent < 1) {
+                            data.loss_percent = round_this(_t.loss_percent, 2);
+
+                        }
+                        else {
+                            data.loss_percent = round_this(_t.loss_percent, 1);
+
+                        }
+
+                        switch (true) {
+                            case (data.loss_percent <= 5):
+                                var loss_color = '#308de4'; break;
+
+                            case (data.loss_percent >= 5 && data.loss_percent <= 10):
+                                var loss_color = '#f3d05c'; break;
+
+                            case (data.loss_percent >= 10 && data.loss_percent <= 30):
+                                var loss_color = '#f0aa06'; break;
+
+                            case (data.loss_percent >= 30 && data.loss_percent <= 100):
+                                var loss_color = '#e63c26'; break;
+                            case (data.loss_percent >= 100):
+                                var loss_color = '#dc05f8a1'; break;
+                        }
+                        var summary = "<span class='gain title'><span class='gain_loss light-green'>" + data.gain_percent + "% gain</span> since year 2000 - " + data.gain + " sqKm</span>";
+                        summary += "<span class='loss title'><span class='gain_loss  red accent3'>" + data.loss_percent + "% loss</span> since year 2000 - " + data.loss + " sqKm</span>";
+                        $('.mangroves_summary').find('.col.s6').html(summary)
+                        $('#loss_circle_text').html(data.loss_percent).prev().attr('fill', loss_color)
+
+                        // Start counting, do this on DOM ready or with Waypoints.
+                        counterUp(el_gain, {
+                            duration: 1000,
+                            delay: 16,
+                        })
+
+                        // Start counting, do this on DOM ready or with Waypoints.
+                        counterUp(el_loss, {
+                            duration: 1000,
+                            delay: 16,
+                        })
+
+                        var incomplete = 100 - data.gain;
+                        data.gain_data = [{
+                            "name": "Gain",
+                            "y": _t.gain,
+                            "color": '#b6e084'
+                        }
+                        ];
+                        data.loss = _t.loss;
+                        data.loss_data = [{
+                            "name": "Loss",
+                            "y": _t.loss,
+                            "color": '#e91e63'
+                        }
+                        ];
+                    }
+                    mangroves_table += '<tr><td>' + p + '</td><td>' + _t.total_extent + '</td><td>' + _t.gain + '</td><td>' + _t.loss + '</td></tr>'
+                    //mangroves_table += '<tr><td>' + p + '</td><td>' + _t.gain + '</td><td>' + _t.loss + '</td><td>' + _t.stable + '</td></tr>'
+                    i++;
                 }
 
                 mangroves_table += ' </tbody></table>';
                 console.info(mangroves_table)
                 $('.mangroves_table').empty().append(mangroves_table);
+
+
+
+                Highcharts.chart('mangroves_double_chart', {
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        zoomType: 'xy'
+                    },
+                    title: {
+                        text: ''
+                    },
+
+                    xAxis: [{
+                        className: 'xAxis-style',
+                        categories: this_data.years,
+                        crosshair: true
+                    }],
+                    yAxis: [{ // Primary yAxis
+                        className: 'yAxis-style',
+                        labels: {
+                            format: '{value} sqKm',
+                            // style: {
+                            //     color: Highcharts.getOptions().colors[1]
+                            // }
+                        },
+                        title: {
+                            text: 'Total extent',
+                            // style: {
+                            //     color: Highcharts.getOptions().colors[1]
+                            // }
+                        }
+                    }, { // Secondary yAxis
+                        title: {
+                            text: 'Percent change',
+                            style: {
+                                color: '#0a5ffb'
+                            }
+                            // style: {
+                            //     color: Highcharts.getOptions().colors[0]
+                            // }
+                        },
+                        labels: {
+                            format: '{value} %',
+                            style: {
+                                color: '#0a5ffb'
+                            }
+                        },
+                        opposite: true
+                    }],
+                    tooltip: {
+                        shared: true
+                    },
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        x: 40,
+                        verticalAlign: 'bottom',
+                        y: 20,
+                        floating: true,
+                        // backgroundColor:
+                        //     Highcharts.defaultOptions.legend.backgroundColor || // theme
+                        //     'rgba(255,255,255,0.25)'
+                    },
+                    series: [{
+                        name: 'Total extent',
+                        type: 'column',
+                        data: total_extent,
+                        color: '#2fce1ba1',
+                        tooltip: {
+                            valueSuffix: 'sqKm'
+                        }
+                    },
+                    {
+                        name: 'Percent change',
+                        type: 'spline',
+                        yAxis: 1,
+                        color: '#5396e8c4',
+                        data: perc_change,
+                        tooltip: {
+                            valueSuffix: ' %'
+
+
+                        }
+                    }]
+                });
 
                 if ($('.sidenav').hasClass('sidenav_on') == false) {
                     $('#slide-out').sidenav('open');
@@ -1457,7 +1908,12 @@
                 if ($('.mangroves_table').is(':visible') == false)
                     $('.country_li ul li .valign-wrapper[info_container="mangroves"]').find('.info').trigger('click');
 
+                setTimeout(function () {
+                    // create_gauge_chart('gain', data);
+                    // create_gauge_chart('loss', data)
+                }, 700)
 
+                //return false;
             }
 
             map.on('click', function (e) {
@@ -1498,25 +1954,6 @@
 
                     map.fitBounds(bbox);
 
-                    var this_data = mangroves_data.filter(function (d) {
-                        return d.adm_0_id == code
-                    })[0];
-
-                    var mangroves_table = '<table class="striped highlight responsive-table"> <thead> <tr> <th></th> <th>Gain (sqKm)</th> <th>Loss (sqKm)</th> <th>Stable (sqKm)</th> </tr> </thead> <tbody>';
-                    //this_data.data.forEach(function (d, i) {
-                    for (var p in this_data.data) {
-                        var _t = this_data.data[p];
-                        console.info(_t)
-                        mangroves_table += '<tr><td>' + p + '</td><td>' + _t.gain + '</td><td>' + _t.loss + '</td><td>' + _t.stable + '</td></tr>'
-                    }
-
-                    mangroves_table += ' </tbody></table>';
-                    console.info(mangroves_table)
-                    $('.mangroves_table').empty().append(mangroves_table)
-
-                    //map.flyTo({center: [0,0]});
-
-                    //return false
                 }
 
             })

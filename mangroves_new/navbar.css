@@ -1,0 +1,299 @@
+  .overlay_layers_collection .collection-item .title {
+      display: flex;
+       font-size: 0.8em; 
+      /* justify-content: center; */
+      align-items: center;
+  }
+  
+  .dropdown-content.active>li {
+      margin-top: 0px!important;
+  }
+  
+  .theme_container .collection-item {
+      border: 0px solid #e0e0e0!important;
+  }
+  
+  .theme_container .collection {
+      border: 0px solid #e0e0e0!important;
+  }
+  
+  .dropdown-button.active {
+      background-color: #7fafdf;
+  }
+  .highcharts-root,.highcharts-container {
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 16px !important;
+}
+  .highcharts-solidgauge-series .highcharts-data-label
+  {
+    font-family: 'Montserrat', sans-serif !important;
+      left:0px!important;
+      top:0px!important;
+      opacity: 1!important;
+  }
+  #mangroves_double_chart
+  {
+      height: 270px;
+      
+  }
+  .xAxis-style
+  {
+      color:blue;
+  }
+.mangroves .gain_loss_title
+ {
+    margin: 4px;
+    background-color: #03d0bd;
+    font-weight: bold;
+    text-align: center;
+    padding: 7px;
+    color: #fff;
+    font-size: 1.1em!important;
+    /* justify-content: center; */
+    align-items: center;
+}
+
+  .mangroves .legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    border-radius: 10px;
+    margin-top: -2px;
+    opacity: 1;
+    margin-top: 0px;
+    margin-right: 6px;
+    border: 2px solid white;
+    
+}
+.mangroves .legend > div
+{
+    width: 100%;
+    display: block;
+    float:left;
+    margin-top: 10px;
+    
+}
+
+.mangroves .circle_container
+{
+    margin-top: 35px;
+}
+.mangroves .circle {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 0;
+    padding: 50% 0;
+    border-radius: 50%;
+
+    /* Just making it pretty */
+    @shadow: rgba(0, 0, 0, .1);
+    @shadow-length: 4px;
+    -webkit-box-shadow: 0 @shadow-length 0 0 @shadow;
+    box-shadow: 0 @shadow-length 0 0 @shadow;
+    text-shadow: 0 @shadow-length 0 @shadow;
+    background: #38a9e4;
+    color: white;
+    font-family: Helvetica, Arial Black, sans;
+    font-size: 48px;
+    text-align: center;
+}
+
+
+  .overlay_layers_collection .collection-item .title span {
+      width: 98%!important;
+  }
+  
+  .nav-wrapper .collection .collection-item {
+      padding: 0px 10px!important;
+  }
+  
+  #overlays_dropdown {
+      min-width: 300px;
+  }
+
+  #overlays_dropdown .main.collection-item
+  {
+    min-height:35px;
+  }
+  
+  .overlay_layers_collection .collection-item i.material-icons {
+      font-size:19px!important;
+      padding-right:10px!important;
+  }
+  
+ 
+  .material-icons:hover,
+  .card-panel:hover {
+      cursor: pointer;
+  }
+  
+  .palette {
+      color: gray;
+      font-weight: bold;
+      opacity: 0.8;
+  }
+  
+  .palette.on {
+      color: cornflowerblue;
+      opacity: 1;
+  }
+  
+  .expanded_layer {
+      display: block!important;
+  }
+  
+  .expanded_layer .col {
+      background-color: aqua;
+  }
+  
+  .theme_container.collection-item {
+      background-color: rgb(170, 172, 166);
+  }
+  
+  .theme_container .collection-item.on {
+      background-color: rgb(194, 236, 78)!important;
+  }
+  
+  .theme_container .collection-item:hover {
+      background-color: rgb(233, 161, 29)!important;
+  }
+  
+  .theme_container {
+      display: none;
+  }
+  
+  .theme_container.on {
+      display: block;
+  }
+  
+  .sidenav {
+      top: 75px;
+      width: 35%;
+      font-size: 13px!important;
+      height: calc(91%)!important;
+      /* background-color: #7bd5ef; */
+  }
+  .sidenav .subheader
+  {
+      line-height: 15px!important;
+  }
+
+
+  .sidenav .card.collapsible-header
+  {
+    background-color: #90b8f3;
+    margin: 0 0;
+    line-height: 0px!important;
+    border-bottom: 1px solid grey; 
+  }
+  .sidenav .general_stats
+  {
+      margin-left:30px;
+  }
+  .general_stats .title
+  {
+      font-size: 1.1em;
+  }
+  .general_stats .data
+  {
+      font-size: 0.9em;
+      display: block;
+      
+  }
+  nav {
+      background-color: #6570ef!important;
+      pointer-events: auto!important;
+  }
+  
+  nav a.sidenav-trigger {
+      display: block!important;
+  }
+.sidenav .card .card-content
+{
+    padding-left: 10px;
+    padding-top: 10px;
+}
+.sidenav .collapsible-body 
+  {
+      border-bottom: 1px solid #d2c4c4;
+      background-color: transparent!important; 
+      /* background-color:#f3eded!important; */
+      
+  }
+  .sidenav .collapsible-body > div
+  {
+      display: none;
+  }
+
+  .sidenav div.collapsible-body  div.mangroves .highcharts-container
+  {
+/* margin-top: 70px; */
+  }
+  .sidenav div.collapsible-body  div#mangroves_gain,.sidenav div.collapsible-body  div#mangroves_loss
+  {
+    
+    margin: 15px;
+    height:240px;
+  }
+  .sidenav div.collapsible-body  div.mangroves_bar_chart
+  {
+    
+    margin: 5px;
+    height:300px;
+    margin-left:15px!important;
+  }
+
+
+  .sidenav li.active .collapsible-body{
+    background-color: #ffffff0d;
+}
+.sidenav li.active {
+    background-color: inherit;
+}
+
+  .sidenav table{
+      margin-left: 10px;
+      width: 94%important;
+  }
+
+  #topbarsearch .input-field .prefix { 
+    width:0rem !important;    
+    }        
+#topbarsearch nav ul li:hover, nav ul li.active {
+        background-color: none !important;
+    }
+.input-field .prefix ~ input, .input-field .prefix ~ textarea, .input-field .prefix ~ label, .input-field .prefix ~ .validate ~ label, .input-field .prefix ~ .autocomplete-content{
+    margin-left: 1rem !important;
+    }
+
+
+    .scale {
+        margin-bottom: 2vm;
+        margin-top: 30px;
+        pointer-events: auto;
+    }
+
+    .color {
+        float: left;
+        margin-right: 0.2vw;
+    }
+
+    .color:hover {
+        cursor: pointer;
+    }
+
+    /* .scale .title {
+        font-size: 1.4em;
+        text-align: center;
+
+        padding: 7px;
+        margin-bottom: 10px;
+        line-height: 22px;
+    } */
+    .gain.title,.loss.title
+    {
+        display: block;
+        width:100%;
+        margin-bottom: 15px;
+    }
