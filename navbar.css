@@ -43,17 +43,7 @@
       padding-right:10px!important;
   }
   
-  .highlight {
-      color: gray;
-      font-weight: bold;
-      opacity: 0.8;
-  }
-  
-  .highlight.on {
-      color: #fddc00;
-      opacity: 1;
-  }
-  
+ 
   .material-icons:hover,
   .card-panel:hover {
       cursor: pointer;
@@ -101,13 +91,21 @@
   .sidenav {
       top: 75px;
       width: 35%;
+      font-size: 13px!important;
       /* background-color: #7bd5ef; */
   }
-  .sidenav .collapsible-header
+  .sidenav .subheader
   {
-      line-height: 0px!important;
-      border-bottom: 1px solid grey; 
-      
+      line-height: 15px!important;
+  }
+
+
+  .sidenav .card.collapsible-header
+  {
+    background-color: #90b8f3;
+    margin: 0 0;
+    line-height: 0px!important;
+    border-bottom: 1px solid grey; 
   }
   .sidenav .general_stats
   {
@@ -125,21 +123,45 @@
   }
   nav {
       background-color: #6570ef!important;
+      pointer-events: auto!important;
   }
   
   nav a.sidenav-trigger {
       display: block!important;
   }
-.card .card-content
+.sidenav .card .card-content
 {
     padding-left: 10px;
     padding-top: 10px;
 }
-  .collapsible-body 
+.sidenav .collapsible-body 
   {
       border-bottom: 1px solid #d2c4c4;
       background-color: transparent!important;
       
+  }
+  .sidenav .collapsible-body > div
+  {
+      display: none;
+  }
+
+  
+  .sidenav div.collapsible-body  div.mangroves_gain.col.s5
+  {
+    background-color: red;
+    height:200px;
+  }
+  
+  .sidenav li.active .collapsible-body{
+    background-color: #ffffff0d;
+}
+.sidenav li.active {
+    background-color: inherit;
+}
+
+  .sidenav table{
+      margin-left: 10px;
+      width: 94%important;
   }
 
   #topbarsearch .input-field .prefix { 

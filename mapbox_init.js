@@ -57,7 +57,7 @@ function init_map() {
         });
         map.addSource("gaul_0_simple", {
             "type": "vector",
-            "tiles": ["https://geospatial.jrc.ec.europa.eu/geoserver/gwc/service/wmts?layer=hotspots:gaul_0_simplified_2&tilematrixset=EPSG:900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application/x-protobuf;type=mapbox-vector&TileMatrix=EPSG:900913:{z}&TileCol={x}&TileRow={y}"]
+            "tiles": ["https://geospatial.jrc.ec.europa.eu/geoserver/gwc/service/wmts?layer=hotspots:gaul_0_simplified&tilematrixset=EPSG:900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application/x-protobuf;type=mapbox-vector&TileMatrix=EPSG:900913:{z}&TileCol={x}&TileRow={y}"]
         });
 
 
@@ -80,15 +80,13 @@ function init_map() {
         var layers_correspondence_new = [];
 
 
-
-
         var layer = {
             "id": "basins_6_adm_0",
             "type": "fill",
             "source": "basins_06",
             "source-layer": "adm_0_level_6",
             'layout': {
-                'visibility': 'none'
+                'visibility': 'visible'
 
             },
             // "layout": {
@@ -226,7 +224,7 @@ function init_map() {
             "id": "gaul_0_simple",
             "type": "fill",
             "source": "gaul_0_simple",
-            "source-layer": "gaul_0_simplified_2",
+            "source-layer": "gaul_0_simplified",
             "minzom": 1,
             // 'layout': {
             //     'visibility': 'none'
@@ -237,7 +235,7 @@ function init_map() {
             'paint': {
                 "fill-color": "#0ff",
                 "fill-outline-color": "#fec46c",
-                "fill-opacity": 0
+                "fill-opacity": 0.2
 
             }
 
@@ -334,8 +332,8 @@ function init_map() {
             },
             'paint': {
 
-                'line-color': "#ffeb3b",
-                'line-width': 3
+                'line-color': "#e91e63",
+                'line-width': 2
 
             },
             'filter': ['any', ['==', 'adm_0_code', '']]

@@ -13,7 +13,6 @@ selects.avg_layer = 'basins_6';
 // var instance = new M.Sidenav(elem);
 // var collapsibleElem = document.querySelector('.collapsible');
 // var collapsibleInstance = new M.Collapsible(collapsibleElem, options);
-
 $(document).ready(function () {
 
     // var $toastContent = $('<span>Goal has been added</span>')
@@ -169,7 +168,39 @@ $(document).ready(function () {
 
             else {
                 console.info('not countries')
-                //var symbol_expression = ["match", ["get", "pfaf_id"]];
+
+                // var features_test = map.querySourceFeatures("basins_06", {
+                //     sourceLayer: 'adm_0_level_6',
+                //     filter: ['any', ['==', 'adm_0_code', adm_0_code]]
+                //     //204]]
+                // });
+                // console.log(features_test);
+
+                // var filter_expression = features_test.reduce(
+                //     function (memo, feature) {
+                //         //feature.properties.adm_0_pfaf.split
+                //         console.log(feature.properties)
+                //         var avg=feature.properties[avg_type];
+
+                //         if (memo.indexOf(feature.properties.adm_0_pfaf) == -1) {
+                //             id_avg_arr.push(avg);
+                //     total_avg += avg;
+                //     index++;
+                //             memo.push(feature.properties.adm_0_pfaf, '#5662d4');
+                //         }
+                //         return memo;
+                //     },
+                //     ["match", ["get", "adm_0_pfaf"]]
+                // );
+                // filter_expression.push("#d0c4c4");
+                // //     map.addLayer('basins_6_adm_0', 'country-label');
+
+                // //    map.setPaintProperty('basins_6_adm_0', "fill-opacity", 0.7);
+                // map.setPaintProperty('basins_6_adm_0', "fill-color", filter_expression);
+
+                // return false;
+
+
                 var symbol_expression = ["match", ["get", "pfaf_id"]];
                 //   if (selects.avg_type == 'avg_seasonal') {
                 for (var pfaf_id in this_data['pfaf_features']) {
@@ -193,6 +224,7 @@ $(document).ready(function () {
         } else {
             console.log(this_data)
             console.warn('doing countries symbols expression')
+
             var symbol_expression = ["match", ["get", "adm_0_code"]];
             this_data.forEach(function (d) {
                 id_avg_arr.push(d[selects.avg_type]);
@@ -286,7 +318,9 @@ $(document).ready(function () {
 
             }
             else {
-
+                //map.setFilter('basins_06', { filter: ['any', ['==', 'adm_0_code', country_f[0].properties.adm_0_code]] })
+                //  map.setFilter('basins_06_lines', { filter: ['any', ['==', 'adm_0_code', adm_0_code]] });
+                map.setFilter('basins_6_adm_0', ['==', 'adm_0_code', adm_0_code]);
 
                 for (var pfaf_id in this_data['pfaf_features']) {
                     var this_avg = this_data['pfaf_features'][pfaf_id][selects.avg_type];
@@ -345,7 +379,6 @@ $(document).ready(function () {
         do_legend(params);
         $('.mapboxgl-ctrl-bottom-right').show();
 
-
         //set up transparent by default not working...
         //https://stackoverflow.com/questions/18189201/is-there-a-color-code-for-transparent-in-html/18189313
         symbol_expression.push("#d0c4c4");
@@ -382,6 +415,9 @@ $(document).ready(function () {
                 case 'basins_5': var layer_name = 'basins_5_adm_0_fill'; break;
                 default: break;
             }
+            // map.setLayoutProperty('gaul_0_simple_lines', 'visibility', 'visible');
+            // map.setPaintProperty('basins_6_adm_0', "fill-opacity", 0);
+            map.setPaintProperty('basins_06_lines', "line-width", 2);
 
             //  var point = [bbox[0][1] + bbox.width/2, bbox.y + bbox.height/2];
             map.setLayoutProperty('basins_06_lines', "visibility", "visible");
@@ -435,32 +471,51 @@ $(document).ready(function () {
             plot_thematic_map()
         }
         else {
-            var features = map.queryRenderedFeatures(e.point);
+            // var features = map.querySourceFeatures(e.point);
+            var country_f = map.queryRenderedFeatures(e.point, {
+                layers: ['gaul_0_simple'] // replace this with the name of the layer
+            });
+            console.info(country_f)
+            var adm_0_code = country_f[0].properties.adm_0_code;
+
+            map.setFilter('gaul_0_simple_lines', ['==', 'adm_0_code', adm_0_code]);
+            var features = map.querySourceFeatures("basins_06", {
+                sourceLayer: 'adm_0_level_6',
+                filter: ['any', ['==', 'adm_0_code', adm_0_code]]
+                //204]]
+            });
+            map.setFilter('basins_6_adm_0', ['==', 'adm_0_code', adm_0_code]);
+
+
+
+
+
             features.forEach(function (d) {
-                if (d.layer.id == 'gaul_0_fixed' ||
-                    d.layer.id == 'gaul_0_simple' || d.layer.id == 'basins_6_adm_0') {
-                    console.log(d)
+                console.log(d)
+                // if (d.layer.id == 'gaul_0_fixed' ||
+                //     d.layer.id == 'gaul_0_simple' || d.layer.id == 'basins_6_adm_0') {
+                console.log(d)
 
-                    var adm_0_code = d.properties.adm_0_code;
-                    if (adm_0_code == selects.adm_0_code) {
-                        console.log('re-clicked same country!')
-                        return false;
+                //var adm_0_code = d.properties.adm_0_code;
+                if (adm_0_code == selects.adm_0_code) {
+                    console.log('re-clicked same country!')
+                    return false;
 
-                    }
-
-                    console.log(adm_0_code)
-                    map.setFilter('gaul_0_simple_lines', ['==', 'adm_0_code', adm_0_code]);
-                    map.setLayoutProperty('gaul_0_simple_lines', 'visibility', 'visible');
-                    // ['any', ['==', 'adm_0_code', 85]]
-                    //  map.setPaintProperty('gaul_0_simple_lines', "fill-color", ['any', ['==', 'adm_0_code', 126]]);
-                    // return false;
-
-
-
-                    options.map_element = e;
-                    selects.adm_0_code = adm_0_code;
-                    plot_thematic_map(adm_0_code)
                 }
+
+                console.log(adm_0_code)
+
+
+                // ['any', ['==', 'adm_0_code', 85]]
+                //  map.setPaintProperty('gaul_0_simple_lines', "fill-color", ['any', ['==', 'adm_0_code', 126]]);
+                // return false;
+
+
+
+                options.map_element = e;
+                selects.adm_0_code = adm_0_code;
+                plot_thematic_map(adm_0_code)
+                // }
             })
         }
 
@@ -491,6 +546,13 @@ $(document).ready(function () {
     map.on("click", function (e) {
         options.map_element = e;
         console.log(e)
+        map.setPaintProperty('basins_6_adm_0', "fill-opacity", 0);
+        map.setPaintProperty('basins_06_lines', "line-width", 0);
+        map.setFilter('basins_6_adm_0', ['has', 'adm_0_code']);
+        setTimeout(function () {
+
+            map.setPaintProperty('basins_06_lines', "line-width", 2);
+        }, 1000)
         app.plot_features_on_click(e);
     })
 

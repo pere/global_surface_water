@@ -301,12 +301,8 @@ function get_thresholds_class(params) {
 function get_thresholds_colors(params) {
     var domain = params.arrs;
     var colorInterpolator = d3v5.interpolateRainbow;//("red", "green");
-
-    //var colorInterpolator = d3v5.interpolateRgb("white", "green","red");
-
     var steps = domain.length + 1;
     //14
-
     var colorArray = d3v5.range(0, (1 + 1 / steps), 1 / (steps - 1)).map(function (d) {
         return colorInterpolator(d)
     });
