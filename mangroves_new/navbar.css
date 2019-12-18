@@ -40,19 +40,60 @@
   {
       color:blue;
   }
-.mangroves .gain_loss_title
+.gain_loss_title
  {
     margin: 4px;
     background-color: #03d0bd;
     font-weight: bold;
     text-align: center;
-    padding: 7px;
+    
     color: #fff;
-    font-size: 1.1em!important;
+    
     /* justify-content: center; */
     align-items: center;
 }
+.mangroves .gain_loss_title
+{
+    padding: 7px;
+    font-size: 1.1em!important;
+}
+.mapboxgl-popup .pop_summary .no_data
+{
+    font-weight: bold;
+}
+.mapboxgl-popup .pop_summary span
+{
+ text-align: center;
+}
+.mapboxgl-popup .gain_loss_title
+{
+    padding: 2px;
+    font-size: 1.4em!important;
+}
+.gain.title,.loss.title
+{
+    display: block;
+    width:100%;
+}
+li.country_li.main_li > div.collapsible-body div.col.s6 > span.title
+/* .main_li .mangroves_summary .multiple_lines .col.s6 .title */
+{
+    margin-bottom: 12px;
+}
+.mangroves .row 
+{
+    padding-left:10px;
+    padding-right:10px;
+}
+.mangroves .gain.title,.mangroves .loss.title
+{
+    margin-bottom: 15px;
+}
 
+.mapboxgl-popup .gain.title,.mapboxgl-popup .loss.title
+{
+    margin-bottom: 3px;
+}
   .mangroves .legend i {
     width: 18px;
     height: 18px;
@@ -291,9 +332,4 @@
         margin-bottom: 10px;
         line-height: 22px;
     } */
-    .gain.title,.loss.title
-    {
-        display: block;
-        width:100%;
-        margin-bottom: 15px;
-    }
+ 

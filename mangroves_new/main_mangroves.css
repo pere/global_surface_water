@@ -102,11 +102,11 @@
  
  .mapboxgl-map {
      font-family: 'Montserrat', sans-serif !important;
-     font-size: 15px !important;
+     /* font-size: 15px !important; */
  }
  
  .mapboxgl-popup {
-     min-width: 255px !important;
+     min-width: 280px !important;
  }
 
  .avg_popup
@@ -294,7 +294,7 @@
      text-align: center;
      background-color: #3bd230;
      padding: 7px;
-     margin-bottom: 10px;
+     /* margin-bottom: 10px; */
      line-height: 22px;
  }
 
@@ -330,7 +330,7 @@
  {
      
      margin-bottom: 7px;
-     font-size: 1.1em!important;
+     font-size: 0.8em!important;
      /* justify-content: center; */
      align-items: center;
  }
@@ -340,12 +340,9 @@
  }
  .mapboxgl-popup .country_popup.small_popup
  {
-    font-size: 0.8em!important;
+    font-size: 0.9em!important;
  }
- .mapboxgl-popup .bassins_popup.small_popup .row  div:first-child
- {
 
- }
  .mapboxgl-popup .bassins_popup .row  div:first-child,
  .mapboxgl-popup .country_popup .row  div:first-child
  {
