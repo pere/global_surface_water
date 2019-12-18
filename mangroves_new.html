@@ -277,7 +277,7 @@
                     <ul class="list">
 
                         <li>
-                            <div class="valign-wrapper row mangroves_summary" info_container="mangroves">
+                            <div class="valign-wrapper row mangroves_summary multiple_lines" info_container="mangroves">
                                 <div class="col s2">
                                     <i class="material-icons left highlight layers">layers</i>
                                     <i class="material-icons left show info">info_outline</i>
@@ -1223,7 +1223,8 @@
                     // var features = map.queryRenderedFeatures(e.point);
 
                     var features = map.queryRenderedFeatures(e.point, {
-                        layers: ['eez_land_id'] // replace this with the name of the layer
+                        //   layers: ['eez_land_id'] // replace this with the name of the layer
+                        layers: ['gaul_0_simple']
                         //gaul_0_fixed
                     });
                 }
@@ -1268,16 +1269,38 @@
                 feature.forEach(function (f) {
                     //if (f.layer.id == 'eez_land_id') {
                     console.log(f.properties)
-                    console.warn('mangroves ' + f.properties.iso3)
+                    var adm_0_id = f.properties.adm_0_id;
+                    console.warn('mangroves ' + adm_0_id)
                     var this_data = mangroves_data.filter(function (d) {
-                        return d.adm_0_id == f.properties.iso3;
+                        // return d.adm_0_id == f.properties.iso3;
+                        return d.adm_0_id == adm_0_id;
+
                     })[0];
                     console.info(this_data)
+                    var summary = '<div class="mangroves_summary pop_summary"><div class="gain_loss_title">Mangroves</div>'
                     if (!this_data)
-                        return false;
-                    html += ' <div class="country_popup small_popup" attr-id="' + this_data.adm_0_id + '">'
+                    //return false;
+                    {
+
+                        summary += "<span class='gain title no_data'><b>No mangroves in this country</b></span></div>"
+                        console.log(summary)
+
+                    }
+                    else {
+                        summary += "<span class='gain title'><span class='gain_loss light-green'>" + round_this(this_data.last_gain_percent, 2) + "% gain</span> since year 2000 - " + +this_data.last_year + " " + round_this(this_data.last_gain, 1) + " sqKm</span>";
+                        summary += "<span class='loss title'><span class='gain_loss  red accent3'>" + round_this(this_data.last_loss_percent, 2) + "% loss</span> since year 2000 - " + this_data.last_year + " " + round_this(this_data.last_loss, 1) + " sqKm</span>";
+                        summary += '</div>'; //closing .mangroves_summary pop_summary
+
+                    }
+
+
+
+
+                    var others = '<div class="lakes_summary pop_summary no_data"><div class="gain_loss_title">Lakes</div><span class="loss title">No data yet</span></div><div class="reservoirs_summary pop_summary no_data"><div class="gain_loss_title">Reservoirs</div><span class="loss title">No data yet</span></div><div class="rivers_summary pop_summary no_data"><div class="gain_loss_title">Rivers</div><span class="loss title">No data yet</span></div><div class="groundwater_summary pop_summary no_data"><div class="gain_loss_title">Groundwater</div><span class="loss title">No data yet</span></div>'
+                    html += ' <div class="country_popup small_popup" attr-id="' + f.properties.adm_0_name + '">'
                         + '<div class="section"> <div class="adm_name">'
-                        + this_data.adm_0_name + '</div></div>'
+                        + f.properties.adm_0_name + '</div></div>' +
+                        summary + others
                         // + '<div>Gain - Loss</div>'
 
                         + '<div id="popup_container"></div>'
@@ -1290,17 +1313,18 @@
                         mangroves_popup.setHTML(html) //<hr>'+feature.properties.adm_0_name)
                             .addTo(map);
                         setTimeout(function () {
-                            map.setFilter('gaul_0_mouseover', ['==', 'adm_0_id', this_data.adm_0_id]);
+                            map.setFilter('gaul_0_mouseover', ['==', 'adm_0_id', adm_0_id]);
                             map.setLayoutProperty('gaul_0_mouseover', "visibility", "visible");
+
                             //   highcharts_popup(this_data)
                         }, 10)
                     }
                     else {
                         // return false
-                        if ($('.country_popup').attr('attr-id') !== this_data.adm_0_id) {
+                        if ($('.country_popup').attr('attr-id') !== adm_0_id) {
                             mangroves_popup.setHTML(html)
                             setTimeout(function () {
-                                map.setFilter('gaul_0_mouseover', ['==', 'adm_0_id', this_data.adm_0_id]);
+                                map.setFilter('gaul_0_mouseover', ['==', 'adm_0_id', adm_0_id]);
                                 map.setLayoutProperty('gaul_0_mouseover', "visibility", "visible");
                                 // eez_gain_color_expression.push("#d0c4c4");
                                 // map.setPaintProperty('eez_land_id', "fill-color", eez_gain_color_expression);
@@ -1771,8 +1795,8 @@
                             case (data.loss_percent >= 100):
                                 var loss_color = '#dc05f8a1'; break;
                         }
-                        var summary = "<span class='gain title'><span class='gain_loss light-green'>" + data.gain_percent + "% gain</span> since year 2000 - " + data.gain + " sqKm</span>";
-                        summary += "<span class='loss title'><span class='gain_loss  red accent3'>" + data.loss_percent + "% loss</span> since year 2000 - " + data.loss + " sqKm</span>";
+                        var summary = "<span class='gain title'><span class='gain_loss light-green'>" + data.gain_percent + "% gain</span> since year 2000 - " + p + " " + data.gain + " sqKm</span>";
+                        summary += "<span class='loss title'><span class='gain_loss  red accent3'>" + data.loss_percent + "% loss</span> since year 2000 - " + p + " " + data.loss + " sqKm</span>";
                         $('.mangroves_summary').find('.col.s6').html(summary)
                         $('#loss_circle_text').html(data.loss_percent).prev().attr('fill', loss_color)
 
@@ -2053,6 +2077,6 @@
     </script>
 
 </body>
-<script src='./mangroves/countries_stats.js'></script>
+<script src='./mangroves_new/countries_stats.js'></script>
 
 </html>
