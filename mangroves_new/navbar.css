@@ -50,6 +50,9 @@ cursor: pointer;
   .mangroves .row{
       padding:0px!important;
   }
+  .mangroves_balance div{
+      display: inline-block;
+  }
   .mangroves_balance 
   {
       font-size: 1.2em;
