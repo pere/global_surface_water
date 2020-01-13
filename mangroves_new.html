@@ -1896,7 +1896,7 @@
                         // summary += "<span class='loss title'><span class='gain_loss  red accent3'>" + round_this(this_data.last_loss_percent, 2) + "% loss</span> since year 2000 - " + this_data.last_year + " " + round_this(this_data.last_loss, 1) + " sqKm</span>";
                         summary += '</div>'; //closing .mangroves_summary pop_summary
                         $('.mangroves_summary').find('.col.s6').html(summary);
-                        $('.mangroves_balance').html(summary);
+                        $('.mangroves_balance').html('<div style="margin-right:10px">Balance: </div>' + summary);
 
                         // $('#loss_circle_text').html(data.loss_percent).prev().attr('fill', loss_color)
 
