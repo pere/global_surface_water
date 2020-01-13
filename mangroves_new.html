@@ -26,13 +26,14 @@
 
     <script src="./highcharts.js"></script>
     <script src="./highcharts-more.js"></script>
-    <script src="./solid-gauge.js"></script>
+    <!-- <script src="./solid-gauge.js"></script> -->
     <!-- <script src="./mapbox_init.js"></script>
     <script src="./helpers.js"></script> -->
     <!-- <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet"> -->
     <script src='./mapbox-gl.js'></script>
     <link href='./mapbox-gl.css' rel='stylesheet' />
     <script src='./turf.min.js'></script>
+
 
 </head>
 <script>
@@ -128,7 +129,7 @@
     </ul>
     <nav>
         <div class="nav-wrapper">
-            <a href="#!" class="brand-logo">Global Water Explorer</a>
+            <a href="#!" class="brand-logo">SDG 6.6.1</a>
 
 
             <form>
@@ -198,13 +199,13 @@
                     <ul class="list">
 
                         <li>
-                            <div class="valign-wrapper row" info_container="permanent_lake">
+                            <div class="valign-wrapper row summary" info_container="permanent_lake">
                                 <div class="col s2">
                                     <i class="material-icons left highlight layers">layers</i>
                                     <i class="material-icons left show info">info_outline</i>
                                 </div>
                                 <div class="col s4">
-                                    <span class="title">permanent lake area</span>
+                                    <span class="title show">Permanent lake area</span>
                                 </div>
                                 <div class="col s6">
                                     <span class="title"><span class='gain_loss #ff1744 red accent-3'>6% loss</span>
@@ -214,13 +215,13 @@
 
 
                             </div>
-                            <div class="valign-wrapper row" info_container="seasonal_lake">
+                            <div class="valign-wrapper row summary" info_container="seasonal_lake">
                                 <div class="col s2">
                                     <i class="material-icons left highlight layers">layers</i>
                                     <i class="material-icons left show info">info_outline</i>
                                 </div>
                                 <div class="col s4">
-                                    <span class="title">seasonal lake area</span>
+                                    <span class="title show">Seasonal lake area</span>
                                 </div>
                                 <div class="col s6 multiple_lines">
                                     <p class="title">3 lakes with high trophic state events</p>
@@ -229,13 +230,13 @@
 
 
                             </div>
-                            <div class="valign-wrapper row" info_container="quality_lake">
+                            <div class="valign-wrapper row summary" info_container="quality_lake">
                                 <div class="col s2">
                                     <i class="material-icons left highlight layers">layers</i>
                                     <i class="material-icons left show info">info_outline</i>
                                 </div>
                                 <div class="col s4">
-                                    <span class="title">lake quality</span>
+                                    <span class="title show">Lake quality</span>
                                 </div>
                                 <div class="col s6">
                                     <span class="title"><span class='gain_loss #8bc34a light-green'>4% gain</span> since
@@ -252,13 +253,13 @@
                     <ul class="list">
 
                         <li>
-                            <div class="valign-wrapper row" info_container="reservoirs">
+                            <div class="valign-wrapper row summary" info_container="reservoirs">
                                 <div class="col s2">
                                     <i class="material-icons left highlight layers">layers</i>
                                     <i class="material-icons left show info">info_outline</i>
                                 </div>
                                 <div class="col s4">
-                                    <span class="title">Reservoir area</span>
+                                    <span class="title show">Reservoir area</span>
                                 </div>
                                 <div class="col s6">
                                     <span class="title"><span class='gain_loss #8bc34a light-green'>23% gain</span>
@@ -277,13 +278,14 @@
                     <ul class="list">
 
                         <li>
-                            <div class="valign-wrapper row mangroves_summary multiple_lines" info_container="mangroves">
+                            <div class="valign-wrapper row mangroves_summary multiple_lines summary"
+                                info_container="mangroves">
                                 <div class="col s2">
                                     <i class="material-icons left highlight layers">layers</i>
                                     <i class="material-icons left show info">info_outline</i>
                                 </div>
                                 <div class="col s4">
-                                    <span class="title">Mangroves area</span>
+                                    <span class="title show">Mangroves area</span>
                                 </div>
                                 <div class="col s6">
 
@@ -322,7 +324,8 @@
                     <div class="card-stacked">
                         <div class="card-content">
                             <span class="card-title">Mangroves</span>
-                            <p>Mangroves data</p>
+                            <span class="years_info"></span>
+
                         </div>
                     </div>
                 </div>
@@ -334,59 +337,32 @@
                         </div> -->
                         <div class="row">
 
-                            <div class="legend col s4">
+                            <div id="gauge_gain" class="col s6">
                                 <div class='gain_loss_title'>Gain</div>
-                                <div><i style="background:#308de4"></i>
-                                    Less 5% Stable</div>
-                                <div><i style="background:#f3d05c"></i> 5% – 10% Some
-                                </div>
-                                <div><i style="background:#f0aa06"></i> 10% – 30% High</div>
-                                <div><i style="background:#e63c26"></i> 30% – 100% Extreme</div>
-                                <div><i style="background:#dc05f8a1"></i> Extremely high</div>
+                                <div id="gauge_gain_graph"></div>
 
                             </div>
-                            <div class="circle_container col s2">
 
-                                <svg width="100px" height="100px">
-                                    <circle cx="50" cy="50" fill="#1f77b4" r="40"></circle>
-                                    <text id="gain_circle_text" x="50%" y="50%" text-anchor="middle" fill="white"
-                                        font-size="30px" font-family="Arial" dy="10px">2.2</text>
-                                </svg>
-                                <!-- <div class="circle">
-                                        ICON
-                                    </div> -->
-                            </div>
 
-                            <div class="legend col s4">
+
+                            <div id="gauge_loss" class="col s6">
                                 <div class='gain_loss_title'>Loss</div>
-                                <div><i style="background:#308de4"></i>
-                                    Less 5% Stable</div>
-                                <div><i style="background:#f3d05c"></i> 5% – 10% Some
-                                </div>
-                                <div><i style="background:#f0aa06"></i> 10% – 30% High</div>
-                                <div><i style="background:#e63c26"></i> 30% – 100% Extreme</div>
-                                <div><i style="background:#dc05f8a1"></i> Extremely high</div>
-
+                                <div id="gauge_loss_graph"></div>
                             </div>
-                            <div class="circle_container col s2">
 
-                                <svg width="100px" height="100px">
-                                    <circle cx="50" cy="50" fill="#1f77b4" r="40"></circle>
-                                    <text id="loss_circle_text" x="50%" y="50%" text-anchor="middle" fill="white"
-                                        font-size="30px" font-family="Arial" dy="10px">2.2</text>
-                                </svg>
-                                <!-- <div class="circle">
-                                            ICON
-                                        </div> -->
-                            </div>
                         </div>
+
+                        <div class='row'>
+                            <div class="mangroves_balance col s9 offset-s3"></div>
+                        </div>
+
 
                         <div class='row'>
                             <div id="mangroves_double_chart" class="col s12"></div>
                         </div>
                         <!-- <h3 class="subheader">Mangroves</h3> -->
 
-
+                        <div class='btn-small btn-extra-small show_hide_table'>Show table</div>
                         <div class="mangroves_table"></div>
                     </div>
                 </div>
@@ -536,6 +512,283 @@
     </div>
 
     <script>
+
+
+        function parse_gauge_Data(value) {
+            if (value === 0 || value === 1) {
+                return 0
+            } else if (1 < value && value <= 10) {
+                return value * 0.8 - 1
+            } else if (10 < value && value <= 20) {
+                return ((value - 10) / 2.5) + 7
+            } else {
+                //8 categories, 40 
+                return ((value - 20) / 10) + 11.5
+            }
+        }
+
+
+        //wanted value to set 
+
+        function create_gauge(value, _container) {
+            console.info(arguments)
+
+            Highcharts.setOptions({
+                chart: {
+                    style: {
+                        fontFamily: 'Montserrat'
+                    }
+                }
+            });
+            var g_h = $('#gauge_loss').height() + ($('#gauge_loss').height() / 2);
+            if (_container == 'gauge_loss') {
+                var this_title = 'LOSS';
+            }
+            else {
+                var this_title = 'GAIN';
+            }
+            Highcharts.chart(_container, {
+                //var chart = new Highcharts.Chart({
+                credits: {
+                    enabled: false
+                },
+                title:
+                {
+                    //  text: this_title
+                    text: null
+                },
+
+                chart: {
+                    type: 'gauge',
+                    height: g_h,
+                    width: $('#gauge_loss').width() + 80
+
+                },
+                pane: {
+                    startAngle: -90,
+                    endAngle: 90,
+                    center: ['37%', '40%'],
+                    background: {
+                        backgroundColor: Highcharts.defaultOptions.legend.backgroundColor || '#EEE',
+                        innerRadius: '60%',
+                        outerRadius: '100%',
+                        shape: 'arc'
+                    }
+                },
+
+                plotOptions: {
+                    pie: {
+                        startAngle: -90,
+                        endAngle: 90,
+                        center: ['37%', '40%']
+                    },
+                    borderWidth: 0 // < set this option
+                },
+
+                yAxis: [{
+                    visible: false,
+                    min: 0,
+                    max: 20,
+                    lineWidth: 0
+                }, {
+                    lineWidth: 0
+                }],
+
+                series: [{
+                    data: [parse_gauge_Data(value)],
+                    zIndex: 50,
+                    dataLabels: {
+                        formatter() {
+
+                            return value
+                        }
+                    }
+                }, {
+                    enableMouseTracking: false,
+                    animation: true,
+                    type: 'pie',
+                    innerSize: '55%',
+                    size: '60%',
+                    dataLabels: {
+                        enabled: true,
+                        distance: -30,
+                        style: {
+
+                            color: 'white'
+                        }
+                    },
+                    data: [{
+                        name: 'Moderate',
+                        y: 20,
+                        color: '#87b7e0'
+                    },
+                    {
+                        name: 'High',
+                        y: 20,
+                        color: '#ec4918'
+                    },
+
+                    {
+                        name: 'Extreme',
+                        y: 60,
+                        color: '#d447f7'
+                    },
+                    ]
+                }, {
+                    enableMouseTracking: false,
+                    animation: false,
+                    type: 'pie',
+                    innerSize: '72%',
+                    size: '85%',
+                    endAngle: 18,
+                    dataLabels: {
+                        enabled: false,
+                        distance: -30,
+                        style: {
+                            fontWeight: 'bold',
+                            color: 'black'
+                        }
+                    },
+                    data: [{
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: true,
+                            format: '2.5'
+                        }
+                    },
+                    {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: true,
+                            format: '5'
+                        }
+                    },
+                    {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: true,
+                            format: '7.5'
+                        }
+                    },
+                    {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: true,
+                            format: '10'
+                        }
+                    },
+                    {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: true,
+                            format: '15'
+                        }
+                    },
+                    {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: true,
+                            format: '20'
+                        }
+                    }
+                    ]
+                }, {
+                    enableMouseTracking: false,
+                    animation: false,
+                    type: 'pie',
+                    innerSize: '72%',
+                    size: '85%',
+                    startAngle: 18,
+                    endAngle: 90,
+                    dataLabels: {
+                        enabled: false,
+                        distance: -30,
+                        style: {
+                            fontWeight: 'bold',
+                            color: 'white'
+                        }
+                    },
+                    data: [{
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: true,
+                            format: '30'
+                        }
+                    },
+                    {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: true,
+                            format: '40'
+                        }
+                    },
+                    {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: true,
+                            format: '50'
+                        }
+                    },
+                    {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: true,
+                            format: '60'
+                        }
+                    },
+                    {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: true,
+                            format: '70'
+                        }
+                    },
+                    {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: true,
+                            format: '80'
+                        }
+                    },
+                    {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: true,
+                            format: '90'
+                        }
+                    },
+                    {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: true,
+                            format: '100'
+                        }
+                    }
+                    ]
+                }]
+            });
+            //   $('#' + _container).css('height', $('#gauge_loss').height())
+            // var g_h = $('#gauge_loss').height() + ($('#gauge_loss').height() / 2);
+            setTimeout(function () {
+                $('#' + _container).css('height', '220px')
+            }, 500)
+
+
+        }
         var flying_sel_f, clicked_sel_f;
         var fxs = {};
         var flying = false;
@@ -562,10 +815,12 @@
             mapboxgl.accessToken = 'pk.eyJ1IjoicGVyaWt1dCIsImEiOiJVNzBjMl9FIn0.38swLsSY2ao8E8rU8FYgyw';
             map = new mapboxgl.Map({
                 container: 'map',
+                attributionControl: false,
                 // style: 'mapbox://styles/mapbox/light-v10',
                 style: 'mapbox://styles/perikut/ck1xa74kk1c2c1cmtdho498go',
                 //style: 'mapbox://styles/perikut/ck1xa74kk1c2c1cmtdho498go',
-                center: [-100, 22],
+                // center: [-100, 22],
+                center: [24, 10],
                 //   center: [1.087646, 44.613934],
                 // center: [102.612305, 61.752331],
                 //    center: [-2, 41],
@@ -1287,8 +1542,18 @@
 
                     }
                     else {
-                        summary += "<span class='gain title'><span class='gain_loss light-green'>" + round_this(this_data.last_gain_percent, 2) + "% gain</span> since year 2000 - " + +this_data.last_year + " " + round_this(this_data.last_gain, 1) + " sqKm</span>";
-                        summary += "<span class='loss title'><span class='gain_loss  red accent3'>" + round_this(this_data.last_loss_percent, 2) + "% loss</span> since year 2000 - " + this_data.last_year + " " + round_this(this_data.last_loss, 1) + " sqKm</span>";
+                        var balance = round_this((this_data.last_gain_percent - this_data.last_loss_percent), 2);
+                        console.log(balance)
+                        var balance_sqkm = this_data.last_gain - this_data.last_loss;
+                        if (balance > 0) {
+
+                            summary += "<span class='gain_loss light-green'>" + balance + "% gain</span> since year 2000 - " + +this_data.last_year + " " + round_this(balance_sqkm, 1) + " sqKm</span>";
+                        }
+                        else {
+                            summary += "<span class='gain_loss red accent3'>" + balance + "% loss</span> since year 2000 - " + +this_data.last_year + " " + round_this(balance_sqkm, 1) + " sqKm</span>";
+                        }
+                        //   summary += "<span class='gain title'><span class='gain_loss light-green'>" + round_this(this_data.last_gain_percent, 2) + "% gain</span> since year 2000 - " + +this_data.last_year + " " + round_this(this_data.last_gain, 1) + " sqKm</span>";
+                        // summary += "<span class='loss title'><span class='gain_loss  red accent3'>" + round_this(this_data.last_loss_percent, 2) + "% loss</span> since year 2000 - " + this_data.last_year + " " + round_this(this_data.last_loss, 1) + " sqKm</span>";
                         summary += '</div>'; //closing .mangroves_summary pop_summary
 
                     }
@@ -1467,188 +1732,7 @@
                     .range(colorArray)
             }
 
-            function create_gauge_chart(param, data) {
 
-                var gaugeOptions = {
-                    'chart': {
-                        'type': 'solidgauge'
-
-
-                    },
-                    title: {
-                        y: -70
-                    },
-                    'tooltip': {
-                        'enabled': false
-                    },
-
-                    'pane': {
-                        'center': ['50%', '50%'],
-                        // 'size': container.width() + 'px',
-                        'size': '200px',
-                        'startAngle': -90,
-                        'endAngle': 90,
-                        'background': {
-                            'backgroundColor': '#EEE',
-                            'innerRadius': '90%',
-                            'outerRadius': '100%',
-                            'borderWidth': 0,
-                            'shape': 'arc'
-                        }
-                    },
-
-                    'yAxis': {
-                        'min': 0,
-
-                        'labels': {
-                            'enabled': true,
-                            y: 16
-                        },
-
-                        'lineWidth': 0,
-                        'minorTickInterval': null,
-                        'tickPixelInterval': 400,
-                        'tickWidth': 0
-                    },
-
-                    'plotOptions': {
-                        'solidgauge': {
-                            'innerRadius': '90%',
-                            dataLabels: {
-                                y: 5,
-                                borderWidth: 0,
-                                useHTML: true,
-                                format: '<div style="text-align:center">' +
-                                    '<span style="font-size:15px">{y} sqKm</span><br/>' +
-
-                                    '</div>'
-                                //gauge_info({ y })
-
-
-
-                            }
-                        }
-                    }
-
-
-                };
-
-                function gauge_info(y) {
-                    console.log(y)
-                    return '<div style="text-align:center">' +
-                        '<span style="font-size:15px">text sqKm</span><br/>' +
-
-                        '</div>'
-                }
-                if (param == 'gain') {
-
-                    Highcharts.chart('mangroves_gain', {
-                        credits: {
-                            enabled: false
-                        },
-
-                        chart: {
-                            type: 'solidgauge',
-
-                        },
-
-                        title: {
-                            text: ''
-                        },
-                        pane: {
-                            center: ['50%', '50%'],
-
-                            borderWidth: 0,
-                            size: '200px',
-                            startAngle: -90,
-                            endAngle: 90,
-                            background: {
-                                //backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
-                                'innerRadius': '90%',
-                                'outerRadius': '100%',
-                                'borderWidth': 0,
-                                shape: 'arc'
-                            }
-                        },
-
-                        yAxis: {
-                            min: 0,
-                            //  max: getRandomInRange(120, 150),
-                            max: 100,
-                            lineWidth: 0,
-                            minorTicks: false,
-                            tickWidth: 0,
-                            tickAmount: 2,
-                            labels: {
-                                y: 25,
-                                distance: '85%',
-                                style: {
-                                    "fontSize": "12px"
-                                }
-                            }
-
-                        },
-
-                        'plotOptions': {
-                            'solidgauge': {
-                                'innerRadius': '90%',
-                                dataLabels: {
-                                    y: 5,
-                                    borderWidth: 0,
-                                    useHTML: true,
-                                    'format':
-
-                                        '<div style="text-align:center">' +
-                                        '<span style="font-size:15px">{y} sqKm</span><br/>' +
-
-                                        '</div>'
-
-                                }
-                            }
-                        },
-                        series: [{
-                            name: 'Gain',
-                            // innerRadius: '50%',
-                            // radius: '100%',
-                            dataLabels: {
-                                enabled: true,
-                                borderWidth: 0,
-                                format: '{y} %',
-
-                                verticalAlign: 'middle',
-                                style: {
-                                    "fontSize": "30px"
-                                }
-                            },
-
-                            data: data.gain_data,
-
-                        }]
-                    });
-                    var container = $('#mangroves_gain');
-                    console.log(container)
-                    //   gaugeOptions.chart.renderTo = container[0];
-                    //  gaugeOptions.yAxis.max = data.gain + 100;
-
-                    //  Highcharts.chart('mangroves_gain', gaugeOptions);
-
-                }
-                else {
-                    gaugeOptions.yAxis.max = data.loss + 100;
-                    gaugeOptions.series = [{
-                        'name': 'Loss',
-                        'data': data.loss_data,
-                    }];
-                    //   Highcharts.chart('mangroves_loss', gaugeOptions);
-                }
-
-                $('.highcharts-solidgauge-series .highcharts-data-label').css(
-                    {
-                        'left': '',
-                        'top': '',
-                        'opacity': ''
-                    })
-            }
 
             fxs.click_map = function (sel_f) {  //// clicked_sel_f = { sel_code: code, sel_latlng: d.centroid };
                 if (sel_f.sel_ev) {
@@ -1763,7 +1847,7 @@
                         }
 
 
-                        $('#gain_circle_text').html(data.gain_percent).prev().attr('fill', gain_color);
+                        // $('#gain_circle_text').html(data.gain_percent).prev().attr('fill', gain_color);
 
 
                         // <span class="loss title"><span class='gain_loss #8bc34a light-green'>2% gain</span>
@@ -1780,6 +1864,7 @@
 
                         }
 
+
                         switch (true) {
                             case (data.loss_percent <= 5):
                                 var loss_color = '#308de4'; break;
@@ -1795,24 +1880,39 @@
                             case (data.loss_percent >= 100):
                                 var loss_color = '#dc05f8a1'; break;
                         }
-                        var summary = "<span class='gain title'><span class='gain_loss light-green'>" + data.gain_percent + "% gain</span> since year 2000 - " + p + " " + data.gain + " sqKm</span>";
-                        summary += "<span class='loss title'><span class='gain_loss  red accent3'>" + data.loss_percent + "% loss</span> since year 2000 - " + p + " " + data.loss + " sqKm</span>";
-                        $('.mangroves_summary').find('.col.s6').html(summary)
-                        $('#loss_circle_text').html(data.loss_percent).prev().attr('fill', loss_color)
+                        $('.mangroves_li .years_info').text(' Years 2000 - ' + this_data.last_year);
+                        var summary = '<div>';
+                        var balance = round_this((data.gain_percent - data.loss_percent), 2);
 
-                        // Start counting, do this on DOM ready or with Waypoints.
-                        counterUp(el_gain, {
-                            duration: 1000,
-                            delay: 16,
-                        })
+                        var balance_sqkm = data.gain - data.loss;
+                        if (balance > 0) {
 
-                        // Start counting, do this on DOM ready or with Waypoints.
-                        counterUp(el_loss, {
-                            duration: 1000,
-                            delay: 16,
-                        })
+                            summary += "<span class='gain_loss light-green'>" + balance + "% gain</span> since year 2000 - " + +this_data.last_year + " " + round_this(balance_sqkm, 1) + " sqKm</span>";
+                        }
+                        else {
+                            summary += "<span class='gain_loss red accent3'>" + balance + "% loss</span> since year 2000 - " + +this_data.last_year + " " + round_this(balance_sqkm, 1) + " sqKm</span>";
+                        }
+                        //   summary += "<span class='gain title'><span class='gain_loss light-green'>" + round_this(this_data.last_gain_percent, 2) + "% gain</span> since year 2000 - " + +this_data.last_year + " " + round_this(this_data.last_gain, 1) + " sqKm</span>";
+                        // summary += "<span class='loss title'><span class='gain_loss  red accent3'>" + round_this(this_data.last_loss_percent, 2) + "% loss</span> since year 2000 - " + this_data.last_year + " " + round_this(this_data.last_loss, 1) + " sqKm</span>";
+                        summary += '</div>'; //closing .mangroves_summary pop_summary
+                        $('.mangroves_summary').find('.col.s6').html(summary);
+                        $('.mangroves_balance').html(summary);
 
-                        var incomplete = 100 - data.gain;
+                        // $('#loss_circle_text').html(data.loss_percent).prev().attr('fill', loss_color)
+
+                        // // Start counting, do this on DOM ready or with Waypoints.
+                        // counterUp(el_gain, {
+                        //     duration: 1000,
+                        //     delay: 16,
+                        // })
+
+                        // // Start counting, do this on DOM ready or with Waypoints.
+                        // counterUp(el_loss, {
+                        //     duration: 1000,
+                        //     delay: 16,
+                        // })
+
+                        //  var incomplete = 100 - data.gain;
                         data.gain_data = [{
                             "name": "Gain",
                             "y": _t.gain,
@@ -1833,95 +1933,11 @@
                 }
 
                 mangroves_table += ' </tbody></table>';
+
                 console.info(mangroves_table)
                 $('.mangroves_table').empty().append(mangroves_table);
 
 
-
-                Highcharts.chart('mangroves_double_chart', {
-                    credits: {
-                        enabled: false
-                    },
-                    chart: {
-                        zoomType: 'xy'
-                    },
-                    title: {
-                        text: ''
-                    },
-
-                    xAxis: [{
-                        className: 'xAxis-style',
-                        categories: this_data.years,
-                        crosshair: true
-                    }],
-                    yAxis: [{ // Primary yAxis
-                        className: 'yAxis-style',
-                        labels: {
-                            format: '{value} sqKm',
-                            // style: {
-                            //     color: Highcharts.getOptions().colors[1]
-                            // }
-                        },
-                        title: {
-                            text: 'Total extent',
-                            // style: {
-                            //     color: Highcharts.getOptions().colors[1]
-                            // }
-                        }
-                    }, { // Secondary yAxis
-                        title: {
-                            text: 'Percent change',
-                            style: {
-                                color: '#0a5ffb'
-                            }
-                            // style: {
-                            //     color: Highcharts.getOptions().colors[0]
-                            // }
-                        },
-                        labels: {
-                            format: '{value} %',
-                            style: {
-                                color: '#0a5ffb'
-                            }
-                        },
-                        opposite: true
-                    }],
-                    tooltip: {
-                        shared: true
-                    },
-                    legend: {
-                        layout: 'horizontal',
-                        align: 'center',
-                        x: 40,
-                        verticalAlign: 'bottom',
-                        y: 20,
-                        floating: true,
-                        // backgroundColor:
-                        //     Highcharts.defaultOptions.legend.backgroundColor || // theme
-                        //     'rgba(255,255,255,0.25)'
-                    },
-                    series: [{
-                        name: 'Total extent',
-                        type: 'column',
-                        data: total_extent,
-                        color: '#2fce1ba1',
-                        tooltip: {
-                            valueSuffix: 'sqKm'
-                        }
-                    },
-                    {
-                        name: 'Percent change',
-                        type: 'spline',
-                        yAxis: 1,
-                        color: '#5396e8c4',
-                        data: perc_change,
-                        tooltip: {
-                            valueSuffix: ' %'
-
-
-                        }
-                    }]
-                });
 
                 if ($('.sidenav').hasClass('sidenav_on') == false) {
                     $('#slide-out').sidenav('open');
@@ -1929,13 +1945,110 @@
                 }
 
                 //if ($('.country_li ul li .valign-wrapper[info_container="mangroves"]').is('visible') == false) {
-                if ($('.mangroves_table').is(':visible') == false)
+                if ($('.show_hide_table').is(':visible') == false)
                     $('.country_li ul li .valign-wrapper[info_container="mangroves"]').find('.info').trigger('click');
 
                 setTimeout(function () {
-                    // create_gauge_chart('gain', data);
-                    // create_gauge_chart('loss', data)
-                }, 700)
+                    console.info(data.loss_percent)
+                    create_gauge(data.loss_percent, 'gauge_loss_graph');
+                    create_gauge(data.gain_percent, 'gauge_gain_graph');
+
+
+                    var w = $('#slide-out .collapsible-header').eq(0).width();
+                    //   $('#mangroves_double_chart').css('width', w)
+                    // alert(w + (w / 2))
+
+                    Highcharts.chart('mangroves_double_chart', {
+                        credits: {
+                            enabled: false
+                        },
+                        chart: {
+                            zoomType: 'xy',
+                            width: w,
+                            height: w / 2
+                        },
+                        title: {
+                            text: ''
+                        },
+
+                        xAxis: [{
+                            className: 'xAxis-style',
+                            categories: this_data.years,
+                            crosshair: true
+                        }],
+                        yAxis: [{ // Primary yAxis
+                            className: 'yAxis-style',
+                            labels: {
+                                format: '{value}',
+                                // style: {
+                                //     color: Highcharts.getOptions().colors[1]
+                                // }
+                            },
+                            title: {
+                                text: 'Total extent (sqKm)',
+                                // style: {
+                                //     color: Highcharts.getOptions().colors[1]
+                                // }
+                            }
+                        }, { // Secondary yAxis
+                            title: {
+                                text: 'Percent change',
+                                style: {
+                                    color: '#0a5ffb'
+                                }
+                                // style: {
+                                //     color: Highcharts.getOptions().colors[0]
+                                // }
+                            },
+                            labels: {
+                                format: '{value} %',
+                                style: {
+                                    color: '#0a5ffb'
+                                }
+                            },
+                            opposite: true
+                        }],
+                        tooltip: {
+                            shared: true
+                        },
+                        legend: {
+                            layout: 'horizontal',
+                            align: 'center',
+                            x: 40,
+                            verticalAlign: 'bottom',
+                            y: 20,
+                            floating: true,
+                            // backgroundColor:
+                            //     Highcharts.defaultOptions.legend.backgroundColor || // theme
+                            //     'rgba(255,255,255,0.25)'
+                        },
+                        series: [{
+                            name: 'Total extent',
+                            type: 'column',
+                            data: total_extent,
+                            color: '#2fce1ba1',
+                            tooltip: {
+                                valueSuffix: 'sqKm'
+                            }
+                        },
+                        {
+                            name: 'Percent change',
+                            type: 'spline',
+                            yAxis: 1,
+                            color: '#5396e8c4',
+                            data: perc_change,
+                            tooltip: {
+                                valueSuffix: ' %'
+
+
+                            }
+                        }]
+                    });
+
+                }, 100)
+
+
+
 
                 //return false;
             }
