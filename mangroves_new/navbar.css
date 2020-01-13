@@ -31,10 +31,40 @@
       top:0px!important;
       opacity: 1!important;
   }
+
+  /* applied to show_hide_table */
+
+  .btn-extra-small {
+    margin-left: 10px;
+    height: 25.4px;
+    line-height: 25.4px;
+    font-size: 8px;
+}
+  .show_hide_table:hover{
+cursor: pointer;
+  }
+  .mangroves_table
+  {
+      display: none;
+  }
+  .mangroves .row{
+      padding:0px!important;
+  }
+  .mangroves_balance 
+  {
+      font-size: 1.2em;
+  }
+ #gauge_gain_graph,#gauge_loss_graph
+  {
+      /* border:1px solid blue; */
+      height: 230px;
+     
+      
+  }
+
   #mangroves_double_chart
   {
-      height: 270px;
-      
+      width: auto;
   }
   .xAxis-style
   {
@@ -51,6 +81,11 @@
     
     /* justify-content: center; */
     align-items: center;
+}
+.title.show:hover
+{
+ cursor: pointer;
+ color: #6570ef;
 }
 .mangroves .gain_loss_title
 {
@@ -144,7 +179,10 @@ li.country_li.main_li > div.collapsible-body div.col.s6 > span.title
   .overlay_layers_collection .collection-item .title span {
       width: 98%!important;
   }
-  
+  .nav-wrapper
+  {
+      margin-left: 10px!important;
+  }
   .nav-wrapper .collection .collection-item {
       padding: 0px 10px!important;
   }
@@ -211,7 +249,7 @@ li.country_li.main_li > div.collapsible-body div.col.s6 > span.title
   .sidenav {
       top: 75px;
       width: 35%;
-      font-size: 13px!important;
+  
       height: calc(91%)!important;
       /* background-color: #7bd5ef; */
   }

@@ -44,13 +44,102 @@
     src: local('Montserrat Regular'), local('Montserrat-Regular'), url(https://fonts.gstatic.com/s/montserrat/v14/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2) format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
   }
+
+  
+  
  body {
      margin: 0;
      padding: 0;
      font-family: 'Montserrat', sans-serif !important;
-     font-size: 13px!important;
+     
  }
  
+ /*------------------------------------------
+  Responsive Grid Media Queries - 1280, 1024, 768, 480
+   1280-1024   - desktop (default grid)
+   1024-768    - tablet landscape
+   768-480     - tablet 
+   480-less    - phone landscape & smaller
+--------------------------------------------*/
+@media all and (min-width: 1500px)
+{ 
+    body {
+        font-size: 12px!important;
+    }
+        
+    }
+
+@media all and (min-width: 1280px) and (max-width: 1500px) { 
+    body {
+        font-size: 11px!important;
+    }
+        
+    }
+
+@media all { 
+body {
+    font-size: 10px!important;
+}
+    
+}
+
+
+@media all and (min-width: 1024px) and (max-width: 1280px) and (max-height: 700px) { 
+    body {
+        font-size: 10px!important;
+    }
+        
+    }
+ 
+@media all and (min-width: 768px) and (max-width: 1024px) { 
+    * 
+    {
+        font-size: 10px!important;
+    }
+}
+ 
+@media all and (min-width: 480px) and (max-width: 768px) { 
+    html 
+    {
+        font-size: 10px!important;
+    }
+    
+}
+ 
+@media all and (max-width: 480px) {
+    body {
+        font-size: 9px!important;
+    }
+ }
+ 
+/*------------------------------------------
+  Foundation Media Queries 
+   http://foundation.zurb.com/docs/media-queries.html
+--------------------------------------------*/
+ 
+/* Small screens - MOBILE */
+@media only screen { } /* Define mobile styles - Mobile First */
+ 
+@media only screen and (max-width: 40em) { } /* max-width 640px, mobile-only styles, use when QAing mobile issues */
+ 
+/* Medium screens - TABLET */
+@media only screen and (min-width: 40.063em) { } /* min-width 641px, medium screens */
+ 
+@media only screen and (min-width: 40.063em) and (max-width: 64em) { } /* min-width 641px and max-width 1024px, use when QAing tablet-only issues */
+ 
+/* Large screens - DESKTOP */
+@media only screen and (min-width: 64.063em) { } /* min-width 1025px, large screens */
+ 
+@media only screen and (min-width: 64.063em) and (max-width: 90em) { } /* min-width 1024px and max-width 1440px, use when QAing large screen-only issues */
+ 
+/* XLarge screens */
+@media only screen and (min-width: 90.063em) { } /* min-width 1441px, xlarge screens */
+ 
+@media only screen and (min-width: 90.063em) and (max-width: 120em) { } /* min-width 1441px and max-width 1920px, use when QAing xlarge screen-only issues */
+ 
+/* XXLarge screens */
+@media only screen and (min-width: 120.063em) { } /* min-width 1921px, xlarge screens */
+
  .dropdown-content {
      /* top: 63px!important; */
      width: auto!important;
@@ -375,7 +464,11 @@
     margin-right: 16px;
     margin-left: 75px;
 }
-
+.years_info
+{
+    font-size: 0.7rem;
+    font-style: italic;
+}
 .list {
     margin: 0;
 }
