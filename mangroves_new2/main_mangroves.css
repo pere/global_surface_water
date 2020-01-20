@@ -1,0 +1,605 @@
+ 
+ /* cyrillic-ext */
+@font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local('Montserrat Regular'), local('Montserrat-Regular'), url(https://fonts.gstatic.com/s/montserrat/v14/JTUSjIg1_i6t8kCHKm459WRhyzbi.woff2) format('woff2');
+    unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+  }
+  /* cyrillic */
+  @font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local('Montserrat Regular'), local('Montserrat-Regular'), url(https://fonts.gstatic.com/s/montserrat/v14/JTUSjIg1_i6t8kCHKm459W1hyzbi.woff2) format('woff2');
+    unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  }
+  /* vietnamese */
+  @font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local('Montserrat Regular'), local('Montserrat-Regular'), url(https://fonts.gstatic.com/s/montserrat/v14/JTUSjIg1_i6t8kCHKm459WZhyzbi.woff2) format('woff2');
+    unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+  }
+  /* latin-ext */
+  @font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local('Montserrat Regular'), local('Montserrat-Regular'), url(https://fonts.gstatic.com/s/montserrat/v14/JTUSjIg1_i6t8kCHKm459Wdhyzbi.woff2) format('woff2');
+    unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  }
+  /* latin */
+  @font-face {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local('Montserrat Regular'), local('Montserrat-Regular'), url(https://fonts.gstatic.com/s/montserrat/v14/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+
+  
+  
+ body {
+     margin: 0;
+     padding: 0;
+     font-family: 'Montserrat', sans-serif !important;
+     
+     
+ }
+ 
+ /*------------------------------------------
+  Responsive Grid Media Queries - 1280, 1024, 768, 480
+   1280-1024   - desktop (default grid)
+   1024-768    - tablet landscape
+   768-480     - tablet 
+   480-less    - phone landscape & smaller
+--------------------------------------------*/
+@media all and (min-width: 1500px)
+{ 
+    body {
+        font-size: 12px!important;
+    }
+        
+    }
+
+@media all and (min-width: 1280px) and (max-width: 1500px) { 
+    body {
+        font-size: 11px!important;
+    }
+        
+    }
+
+@media all { 
+body {
+    font-size: 10px!important;
+}
+    
+}
+
+
+@media all and (min-width: 1248px) and (max-width: 1280px) and (max-height: 700px) { 
+    body {
+        font-size: 10px!important;
+    }
+    .highcharts-axis
+    {
+        font-size: 0.8em;
+    }
+
+    .highcharts-container 
+    {
+        font-size: 0.8em;
+    }
+        
+    }
+ 
+/* 13 inches     */
+@media all and (min-width: 768px) and (max-width: 1248px) { 
+    * 
+    {
+        font-size: 10px!important;
+    }
+
+    #mangroves_double_chart
+    {
+        font-size: 8px!important;
+    }
+
+    
+    .highcharts-container 
+    {
+        font-size: 8px!important;
+    }
+}
+ 
+@media all and (min-width: 480px) and (max-width: 768px) { 
+    html 
+    {
+        font-size: 10px!important;
+    }
+    
+}
+ 
+@media all and (max-width: 480px) {
+    body {
+        font-size: 9px!important;
+    }
+ }
+ 
+/*------------------------------------------
+  Foundation Media Queries 
+   http://foundation.zurb.com/docs/media-queries.html
+--------------------------------------------*/
+ 
+/* Small screens - MOBILE */
+@media only screen { } /* Define mobile styles - Mobile First */
+ 
+@media only screen and (max-width: 40em) { } /* max-width 640px, mobile-only styles, use when QAing mobile issues */
+ 
+/* Medium screens - TABLET */
+@media only screen and (min-width: 40.063em) { } /* min-width 641px, medium screens */
+ 
+@media only screen and (min-width: 40.063em) and (max-width: 64em) { } /* min-width 641px and max-width 1024px, use when QAing tablet-only issues */
+ 
+/* Large screens - DESKTOP */
+@media only screen and (min-width: 64.063em) { } /* min-width 1025px, large screens */
+ 
+@media only screen and (min-width: 64.063em) and (max-width: 90em) { } /* min-width 1024px and max-width 1440px, use when QAing large screen-only issues */
+ 
+/* XLarge screens */
+@media only screen and (min-width: 90.063em) { } /* min-width 1441px, xlarge screens */
+ 
+@media only screen and (min-width: 90.063em) and (max-width: 120em) { } /* min-width 1441px and max-width 1920px, use when QAing xlarge screen-only issues */
+ 
+/* XXLarge screens */
+@media only screen and (min-width: 120.063em) { } /* min-width 1921px, xlarge screens */
+
+ .dropdown-content {
+     /* top: 63px!important; */
+     width: auto!important;
+     height: auto;
+ }
+ 
+ #overlays_dropdown.dropdown-content,
+ #baselayers_dropdown.dropdown-content {
+     top: 63px!important;
+     padding: 13px;
+     /* min-height:300px; */
+ }
+ 
+ .dropdown_legend_btn {
+     background-color: #00bcd4;
+ }
+ 
+ .highcharts_container {
+     width: 550px;
+     height: 450px;
+ }
+ .stable
+ {
+     display: none;
+ }
+ .highcharts_container_bottom {
+     width: 450px;
+     height: 350px;
+     display: none;
+ }
+ 
+ #country_stats_highcharts div
+ {
+     width:350px;
+     height:300px;
+ }
+ .d3_legend,
+ .d3_legend svg {
+     width: 550px;
+     height: 150px;
+     background-color: #343a3f;
+ }
+ 
+ .d3_legend g {
+     padding: 20px;
+     font-family: 'Montserrat', sans-serif !important;
+     font-size: 15px !important;
+ }
+ 
+ .mapboxgl-map {
+     font-family: 'Montserrat', sans-serif !important;
+     /* font-size: 15px !important; */
+ }
+ 
+ .mapboxgl-popup {
+     /* min-width: 280px !important; */
+     max-width: 109px !important;
+ }
+
+ .avg_popup
+ {
+    max-width: 150px !important;
+    min-height: 150px !important;
+    font-size:0.7em!important;
+ }
+ 
+ .mapboxgl-popup-content {
+     position: relative;
+     border-radius: 3px;
+     padding: 10px 10px 15px;
+     background:rgba(255,255,255,0.7);
+    }
+    /* .mangorves_popup  */
+ .popup_container
+ {
+     max-height:300px;
+     min-width:240px;
+     
+ } 
+ .my-custom-control .collection-item {
+     color:white!important;
+     padding: 6px 10px!important;
+
+ }
+ .my-custom-control .collection-item .badge
+ {
+     font-size: 0.8rem;
+     color:white!important;
+ }
+ .mapboxgl-ctrl-top-left, .mapboxgl-ctrl-top-right, .mapboxgl-ctrl-bottom-left, .mapboxgl-ctrl-bottom-right
+ {
+     pointer-events: auto!important;
+     max-height: 90%!important;
+ }
+ .btn.selected
+ {
+     background-color: rgb(241, 208, 59)!important;
+     
+ }
+ .my-custom-control {
+     max-height: 700px;
+     overflow: auto;
+     bottom: -20px;
+     color: rgb(11, 26, 75);
+     background-color: white;
+     padding: 4px;
+     border-radius: 4px;
+     margin: 4px;
+     display: none;
+     z-index: 1;
+ }
+ .scale,.top_countries,#country_stats_highcharts
+ {
+     display: none;
+ }
+ 
+.top_countries li:hover
+{
+    cursor: pointer;
+}
+.top_countries li.selected{
+    border: 2px solid #ff0;
+}
+
+ .menu {
+     background: #fff;
+     position: absolute;
+     z-index: 1;
+     right: 10px;
+     border-radius: 3px;
+     border: 1px solid rgba(0, 0, 0, 0.4);
+     font-family: 'Open Sans', sans-serif;
+ }
+ 
+ nav ul a,
+ nav ul .search_div label {
+     transition: background-color .3s;
+     font-size: 1rem;
+     color: #fff;
+     display: block;
+     padding: 0 15px;
+     cursor: pointer;
+ }
+ 
+ #layers_menu {
+     width: 120px;
+ }
+ 
+ #avg_menu {
+     max-width: 200px;
+ }
+ 
+ .menu a {
+     font-size: 13px;
+     color: #404040;
+     display: block;
+     margin: 0;
+     padding: 0;
+     /* padding: 10px; */
+     text-decoration: none;
+     border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+     text-align: center;
+ }
+ 
+ .menu a:last-child {
+     border: none;
+ }
+ 
+ .menu a:hover {
+     background-color: #f8f8f8;
+     color: #404040;
+     cursor: pointer;
+ }
+ 
+ .menu a.active {
+     background-color: #3887be;
+     color: #ffffff;
+ }
+ 
+ .menu a.inactive {
+     background-color: #e4e68b;
+     color: #201c1c;
+ }
+ 
+ .menu a.active:hover {
+     background: #3074a4;
+ }
+ 
+ .input-field input[type="search"]~.material-icons.icon-close {
+     right: 2rem;
+ }
+ 
+ .search_div {
+     max-width: 350px;
+ }
+ 
+ #baselayers_dropdown {
+     min-width: 300px!important;
+ }
+ 
+ .dropdown-content [type="checkbox"]+label {
+     top: -10px!important;
+ }
+ 
+ input[type="checkbox"]+label {
+     top: 10px!important;
+     margin-left: 16px!important;
+ }
+ 
+
+ nav{
+     height: 75px!important;
+     line-height: 75px!important;
+ }
+ 
+ .material-icons {
+     display: inline-flex;
+     vertical-align: top;
+ }
+ /* .dropdown-button span {
+            top: -61px;
+            position: relative;
+            font-size: 1.3em;
+            line-height: 24px;
+            padding-left: 30px;
+        } */
+ /* .dropdown-content.active>li {
+            margin-top: 10px!important;
+        }
+         */
+ 
+ #map {
+     position: absolute;
+     top: 64px;
+     bottom: 0;
+     width: 100%;
+     /* height: 1500px; */
+ }
+ 
+ .adm_name {
+     font-size: 1.4em;
+     text-align: center;
+     background-color: #3bd230;
+     padding: 7px;
+     /* margin-bottom: 10px; */
+     line-height: 22px;
+ }
+
+ .bassins_popup.adm_name
+ {
+   font-size:1.3em;
+        padding: 11px;
+        background-color: #2e91ee;
+   padding: 5px;
+   line-height: 11px;
+
+ }
+ 
+ /* .leaflet-popup-content  */
+ 
+ 
+ nav .dropdown-trigger
+ {
+     height: 100%!important;
+ }
+
+ 
+ .mapboxgl-popup .bassins_popup .row
+ {
+     
+     margin-bottom: 7px;
+     font-size: 0.8em!important;
+     /* justify-content: center; */
+     align-items: center;
+ }
+ 
+ .mapboxgl-popup .country_popup .row
+ {
+     
+     margin-bottom: 7px;
+     font-size: 0.8em!important;
+     /* justify-content: center; */
+     align-items: center;
+ }
+ .mapboxgl-popup .section
+ {
+     padding: 0px;
+ }
+ .mapboxgl-popup .country_popup.small_popup
+ {
+    font-size: 0.9em!important;
+ }
+
+ .mapboxgl-popup .bassins_popup .row  div:first-child,
+ .mapboxgl-popup .country_popup .row  div:first-child
+ {
+     font-size: 1.3em;
+     color :rgb(79, 108, 191);
+     font-weight: bold;
+ }
+
+ .mapboxgl-popup .country_popup.small_popup .row  div:first-child
+ {
+    font-size: 1.3em;
+ }
+
+ /* country stats */
+ 
+ .subheader {
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+    line-height: 1.5rem;
+    margin: 0.75rem 8px;
+    text-align: left;
+    padding-left: 12px;
+}
+
+.list-divider {
+    border: 0;
+    height: 1px;
+    overflow: hidden;
+    background-color: #e0e0e0;
+    margin-right: 16px;
+    margin-left: 75px;
+}
+.years_info
+{
+    font-size: 0.7rem;
+    font-style: italic;
+}
+.list {
+    margin: 0;
+}
+
+.list li {
+    padding: 0 16px;
+}
+
+ .list li .valign-wrapper {
+    min-height: 30px;
+} 
+
+.list i.circle {
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.26);
+}
+
+.list .title span {
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.ml-auto {
+    margin-left: auto;
+}
+
+i.ml-auto {
+    color: rgba(0, 0, 0, 0.26);
+}
+
+.country_li li {
+    width: 100%;
+}
+.multiple_lines
+{
+    line-height: 14px;
+}
+li.country_li>div.collapsible-body
+{
+/* background-color: #250c0c17!important; */
+}
+
+li.country_li>div.collapsible-body>ul {
+    /* margin: 0.75rem 8px;
+    margin-left: 1.8rem !important; */
+}
+.collapsible-body table
+{
+width: 97%;
+color: black;
+line-height: 6px;
+}
+i.material-icons {
+    font-size: 15px !important;
+    padding-right: 10px !important;
+    display: block;
+    margin-right: 0px!important;
+}
+
+.list .row {
+    /* border-bottom: 0.5px solid grey; */
+    margin-bottom: 0px;
+}
+
+.list p {
+    margin: 5px;
+}
+
+.highlight {
+    /* color: gray;
+    font-weight: bold;
+    opacity: 0.8; */
+}
+
+.highlight.on {
+    color: #fddc00;
+    opacity: 1;
+}
+
+.show {
+    color: gray;
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+.show.on {
+    color: #fddc00;
+    opacity: 1;
+}
+
+.sidenav li {
+    float: none;
+    line-height: 12px!important;
+}
+.gain_loss
+{
+    font-size: 0.8em!important;
+    margin-top: 10px;
+    margin-bottom: -5px;
+    color: #fff!important;
+    font-weight: bold;
+    border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+    text-align: center!important;
+    padding: 3px;
+    
+}
+.sidenav .list li .col.s6
+{
+    /* font-size: 0.9rem; */
+}
+  /* END country stats */
