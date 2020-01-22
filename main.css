@@ -32,7 +32,11 @@
      height: 350px;
      display: none;
  }
- 
+ .scale_params span
+ {
+     padding:6px;
+     font-size:0.9em;
+ }
  .d3_legend,
  .d3_legend svg {
      width: 550px;

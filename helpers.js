@@ -177,10 +177,12 @@ function do_legend(params) {
         var d = color_function.invertExtent(color);
         if (d[0] == null) d[0] = x.domain()[0];//+30;
         if (d[1] == null) d[1] = x.domain()[1];
-        console.log(d)
+
         return d;
     })
-    console.log(all)
+    //console.log(all)
+
+    //params.total_features
     var params_html = '<div class="scale_params"><span>Min: ' + params.min + '</span><span> Average: ' + params.avg + '</span><span>Max ' + params.max + '</span></div>';
 
     all.forEach(function (d, i) {
@@ -196,7 +198,7 @@ function do_legend(params) {
 
     });
 
-    $('.scale').append(params_html)
+    $('.scale').append('<span>' + params.total_features + ' features symbolized</span>' + params_html)
     setTimeout(function () {
         $('.scale .color').each(function () {
             var cat = $(this).attr('class').split('_')[1];
@@ -205,7 +207,7 @@ function do_legend(params) {
                 // console.log(d)
                 return d._class == cat;
             })[0];
-            console.info(filtered)
+            //console.info(filtered)
             if (filtered) {
 
                 var range_txt = filtered.data_range[0] + ' - ' + filtered.data_range[1];

@@ -257,9 +257,10 @@ $(document).ready(function () {
 
             return Number(d.toFixed(2));
         })
-        console.info(JSON.stringify(arrs_decimals))
+        // console.info(JSON.stringify(arrs_decimals))
 
         params = {
+            total_features: index,
             max: max,
             min: min,
             avg: avg,
@@ -422,20 +423,20 @@ $(document).ready(function () {
             //  var point = [bbox[0][1] + bbox.width/2, bbox.y + bbox.height/2];
             map.setLayoutProperty('basins_06_lines', "visibility", "visible");
 
-            map.setPaintProperty(layer_name, "fill-opacity", 0.7);
+            map.setPaintProperty(layer_name, "fill-opacity", 1);
             map.setPaintProperty(layer_name, "fill-color", symbol_expression);
 
             map.setLayoutProperty(layer_name, "visibility", "visible");
 
 
-            map.setLayoutProperty('gaul_0_simple', "visibility", "none");
+            //  map.setLayoutProperty('gaul_0_simple', "visibility", "none");
             map.setLayoutProperty('gaul_0_fixed', "visibility", "none");
             map.setLayoutProperty('gaul1_simple', "visibility", "none");
             map.setLayoutProperty('gaul_1', "visibility", "none");
         } else {
-            map.setLayoutProperty('gaul_0_simple', "visibility", 'visible');
+            //  map.setLayoutProperty('gaul_0_simple', "visibility", 'visible');
             map.setPaintProperty('gaul_0_simple', "fill-color", symbol_expression);
-            map.setPaintProperty('gaul_0_simple', "fill-opacity", 0.6);
+            map.setPaintProperty('gaul_0_simple', "fill-opacity", 1);
         }
         // map.setFilter('basins_6_adm_0', ['==', 'adm_0_code', adm_0_code]);
         selects.pfafs_avg_expression = symbol_expression;
@@ -484,39 +485,39 @@ $(document).ready(function () {
                 filter: ['any', ['==', 'adm_0_code', adm_0_code]]
                 //204]]
             });
-            map.setFilter('basins_6_adm_0', ['==', 'adm_0_code', adm_0_code]);
+            // map.setFilter('basins_6_adm_0', ['==', 'adm_0_code', adm_0_code]);
+
+
+            options.map_element = e;
+            selects.adm_0_code = adm_0_code;
+            plot_thematic_map(adm_0_code)
+
+
+            // features.forEach(function (d) {
+            //     console.log(d)
+            //     // if (d.layer.id == 'gaul_0_fixed' ||
+            //     //     d.layer.id == 'gaul_0_simple' || d.layer.id == 'basins_6_adm_0') {
+            //     console.log(d)
+
+            //     //var adm_0_code = d.properties.adm_0_code;
+            //     if (adm_0_code == selects.adm_0_code) {
+            //         console.log('re-clicked same country!')
+            //         return false;
+
+            //     }
+
+            //     console.log(adm_0_code)
+
+
+            //     // ['any', ['==', 'adm_0_code', 85]]
+            //     //  map.setPaintProperty('gaul_0_simple_lines', "fill-color", ['any', ['==', 'adm_0_code', 126]]);
+            //     // return false;
 
 
 
 
-
-            features.forEach(function (d) {
-                console.log(d)
-                // if (d.layer.id == 'gaul_0_fixed' ||
-                //     d.layer.id == 'gaul_0_simple' || d.layer.id == 'basins_6_adm_0') {
-                console.log(d)
-
-                //var adm_0_code = d.properties.adm_0_code;
-                if (adm_0_code == selects.adm_0_code) {
-                    console.log('re-clicked same country!')
-                    return false;
-
-                }
-
-                console.log(adm_0_code)
-
-
-                // ['any', ['==', 'adm_0_code', 85]]
-                //  map.setPaintProperty('gaul_0_simple_lines', "fill-color", ['any', ['==', 'adm_0_code', 126]]);
-                // return false;
-
-
-
-                options.map_element = e;
-                selects.adm_0_code = adm_0_code;
-                plot_thematic_map(adm_0_code)
-                // }
-            })
+            //     // }
+            // })
         }
 
         // if (selects.avg_layer == 'basins_6') {
