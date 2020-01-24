@@ -1,0 +1,2447 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Global Water Explorer</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src='./d3_v5.min.js'></script>
+    <!-- <link rel="stylesheet" href="./materialize.min.css"> -->
+    <link rel="stylesheet" href="./materialize.min.css">
+    </link>
+    <link rel="stylesheet" href="./mangroves_new2/main_mangroves.css">
+    <link rel="stylesheet" href="./mangroves_new/navbar.css">
+    <!-- <script src='./jquery-3.3.1.min.js'></script> -->
+    <script src="./jquery.js"></script>
+    <script src='./chroma.min.js'></script>
+    <script src="./mangroves_new2/eez_navbar_events.js"></script>
+    <script src="./mangroves_new2/mangroves.js"></script>
+    <script src="./jquery.counterup2.min.js"></script>
+
+    <!-- <script src='./materialize_100_2.min.js'></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script> -->
+    <script src='./materialize_v1.js'></script>
+
+    <script src="./highcharts.js"></script>
+    <script src="./highcharts-more.js"></script>
+    <!-- <script src="./solid-gauge.js"></script> -->
+    <!-- <script src="./mapbox_init.js"></script>
+    <script src="./helpers.js"></script> -->
+    <!-- <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet"> -->
+    <script src='./mapbox-gl.js'></script>
+    <link href='./mapbox-gl.css' rel='stylesheet' />
+    <script src='./turf.min.js'></script>
+
+
+</head>
+<script>
+</script>
+
+<body>
+    <ul id="overlays_dropdown" class="overlay_layers_collection dropdown-content">
+        <li class="main collection-item" data-layer="countries">
+            <div class="title">
+                <span>Countries</span>
+                <i class="material-icons highlight on show_hide_layer">layers</i>
+                <i class="material-icons highlight palette">palette</i>
+                <i class="material-icons highlight grade">grade</i>
+            </div>
+            <div class='row theme_container'>
+                <ul class="collection">
+                    <li class="collection-item" data-avg="avg_permanent">Permanent</li>
+                    <li class="collection-item" data-avg="avg_seasonal">Seasonal</li>
+                    <li class="collection-item">Other</li>
+                </ul>
+            </div>
+
+        </li>
+
+        <li class="main collection-item" data-layer="gaul_1">
+            <div class="title">
+                <span>Gaul Level 1</span>
+                <i class="material-icons highlight show_hide_layer">layers</i>
+                <i class="material-icons highlight palette">palette</i>
+                <i class="material-icons highlight grade">grade</i>
+            </div>
+            <div class='row theme_container'>
+                <ul class="collection">
+                    <li class="collection-item" data-avg="avg_permanent">Permanent</li>
+                    <li class="collection-item" data-avg="avg_seasonal">Seasonal</li>
+                    <li class="collection-item">Other</li>
+                </ul>
+            </div>
+
+        </li>
+        <li class="main collection-item" data-layer="basins_5">
+            <div class="title">
+                <span>Global basins Level 5</span>
+                <i class="material-icons highlight show_hide_layer">layers</i>
+                <i class="material-icons highlight palette">palette</i>
+                <i class="material-icons highlight grade">grade</i>
+            </div>
+            <div class='row theme_container'>
+                <ul class="collection">
+                    <li class="collection-item" data-avg="avg_permanent">Permanent</li>
+                    <li class="collection-item" data-avg="avg_seasonal">Seasonal</li>
+                    <li class="collection-item">Other</li>
+                </ul>
+            </div>
+
+        </li>
+
+        <li class="main collection-item" data-layer="basins_6">
+            <div class="title">
+                <span>Basins Level 6</span>
+                <i class="material-icons highlight show_hide_layer">layers</i>
+                <i class="material-icons highlight palette">palette</i>
+                <i class="material-icons highlight grade">grade</i>
+            </div>
+            <div class='row theme_container'>
+                <ul class="collection">
+                    <li class="collection-item" data-avg="avg_permanent">Permanent</li>
+                    <li class="collection-item" data-avg="avg_seasonal">Seasonal</li>
+                    <li class="collection-item">Other</li>
+                </ul>
+            </div>
+
+        </li>
+
+    </ul>
+    <ul id="baselayers_dropdown" class="dropdown-content">
+        <li>
+            <span>
+                <input id='own_map' type="checkbox" checked />
+                <label for='own_map'>Own map</label>
+            </span>
+
+            <span>
+                <input id='osm' type="checkbox" />
+                <label for='osm'>OpenStreet Map</label>
+            </span>
+            <span>
+                <input id='satellite' type="checkbox" />
+                <label for='satellite'>Satellite</label>
+            </span>
+        </li>
+    </ul>
+    <nav>
+        <div class="nav-wrapper">
+            <a href="#!" class="brand-logo">SDG 6.6.1</a>
+
+
+            <form>
+
+
+                <ul class="right hide-on-med-and-down">
+
+                    <li>
+                        <a class="dropdown-trigger btn waves-effect waves-light" href="#!"
+                            data-target="overlays_dropdown">
+                            <span>Overlay Layers</span></a>
+                        <a style="display: none" class="dropdown-trigger btn btn-large waves-effect waves-light"
+                            href="#!" data-target="baselayers_dropdown">
+                            <span>Base Layers</span></a>
+
+                    </li>
+                    <li><a href="#" data-target="slide-out" class="sidenav-trigger" style="display: block!important;"><i
+                                class="material-icons">view_module</i></a></li>
+
+                    <li>
+
+                        <div class="center row">
+                            <div class="col s12 ">
+                                <div class="row" id="topbarsearch">
+                                    <div class="input-field col s6 s12">
+                                        <i class="material-icons prefix">search</i>
+                                        <input type="text" placeholder="search" id="autocomplete-input"
+                                            class="autocomplete red-text">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="input-field">
+                                    <a href="#"><i class="material-icons">search</i></a>
+        
+                                    <input type="text" id="autocomplete-input" class="autocomplete">
+                                </div>
+                                <label for="autocomplete-input">Search a country</label> -->
+                    </li>
+                    <!-- <div class="col s4 center search input-field"> 
+                                <input class="autocomplete" type="text" id="autocomplete-input" placeholder="Search" />
+                            </div> -->
+                    <li><a href="mobile.html"><i class="material-icons">more_vert</i></a></li>
+                </ul>
+            </form>
+        </div>
+    </nav>
+    <ul id="slide-out" class="sidenav">
+
+        <ul class="collapsible">
+            <li class='country_li main_li'>
+
+                <div class="card horizontal collapsible-header">
+                    <div class="card-image">
+                        <!-- <img src="./img/sdg6.png" style="width:100px;height:100px">-->
+                    </div>
+                    <div class="card-stacked">
+                        <div class="card-content">
+                            <span class="card-title">Country data</span>
+                            <p></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="collapsible-body" style="display: block">
+
+                    <h3 class="subheader">Lakes</h3>
+                    <ul class="list">
+
+                        <li>
+                            <div class="valign-wrapper row summary" info_container="permanent_lake">
+                                <div class="col s2">
+                                    <i class="material-icons left highlight layers">layers</i>
+                                    <i class="material-icons left show info">info_outline</i>
+                                </div>
+                                <div class="col s4">
+                                    <span class="title show">Permanent lake area</span>
+                                </div>
+                                <div class="col s6">
+                                    <span class="title"><span class='gain_loss #ff1744 red accent-3'>6% loss</span>
+                                        since year 2000 - 40,000 sqKm</span>
+                                </div>
+
+
+                            </div>
+                            <div class="valign-wrapper row summary" info_container="seasonal_lake">
+                                <div class="col s2">
+                                    <i class="material-icons left highlight layers">layers</i>
+                                    <i class="material-icons left show info">info_outline</i>
+                                </div>
+                                <div class="col s4">
+                                    <span class="title show">Seasonal lake area</span>
+                                </div>
+                                <div class="col s6 multiple_lines">
+                                    <p class="title">3 lakes with high trophic state events</p>
+                                    <p class="title">10 lakes with low trophic state events</p>
+                                </div>
+
+
+                            </div>
+                            <div class="valign-wrapper row summary" info_container="quality_lake">
+                                <div class="col s2">
+                                    <i class="material-icons left highlight layers">layers</i>
+                                    <i class="material-icons left show info">info_outline</i>
+                                </div>
+                                <div class="col s4">
+                                    <span class="title show">Lake quality</span>
+                                </div>
+                                <div class="col s6">
+                                    <span class="title"><span class='gain_loss #8bc34a light-green'>4% gain</span> since
+                                        year 2000 - 40,000 sqKm</span>
+                                </div>
+
+
+                            </div>
+                        </li>
+
+                    </ul>
+                    <hr class="list-divider">
+                    <h3 class="subheader">Reservoirs</h3>
+                    <ul class="list">
+
+                        <li>
+                            <div class="valign-wrapper row summary" info_container="reservoirs">
+                                <div class="col s2">
+                                    <i class="material-icons left highlight layers">layers</i>
+                                    <i class="material-icons left show info">info_outline</i>
+                                </div>
+                                <div class="col s4">
+                                    <span class="title show">Reservoir area</span>
+                                </div>
+                                <div class="col s6">
+                                    <span class="title"><span class='gain_loss #8bc34a light-green'>23% gain</span>
+                                        since year 2000 - 40,000 sqKm</span>
+                                </div>
+
+
+                            </div>
+
+                        </li>
+
+                    </ul>
+
+                    <hr class="list-divider">
+                    <h3 class="subheader">Mangroves</h3>
+                    <ul class="list">
+
+                        <li>
+                            <div class="valign-wrapper row mangroves_summary multiple_lines summary"
+                                info_container="mangroves">
+                                <div class="col s2">
+                                    <i class="material-icons left highlight layers">layers</i>
+                                    <i class="material-icons left show info">info_outline</i>
+                                </div>
+                                <div class="col s4">
+                                    <span class="title show">Mangroves area</span>
+                                </div>
+                                <div class="col s6">
+
+                                </div>
+
+
+                            </div>
+
+                        </li>
+
+                    </ul>
+
+
+                </div>
+                <!--  <div class="general_stats">
+                            <div class="permanent_stats">
+                                <div class='title'>Permanent</div>
+                                <div class="data"></div>
+                            </div>
+                            <div class="seasonal_stats">
+                                <div class='title'>Seasonal data</div>
+                                <div class="data"></div>
+                            </div>
+                        </div>
+                        <div class='graph_container highcharts_general'></div>
+                        -->
+
+            </li>
+
+            <li class='mangroves_li main_li' style="display: none">
+
+                <div class="card horizontal collapsible-header">
+                    <div class="card-image">
+                        <!----  <img src="./img/sdg6.png" style="width:100px;height:100px"> -->
+                    </div>
+                    <div class="card-stacked">
+                        <div class="card-content">
+                            <span class="card-title">Mangroves</span>
+                            <span class="years_info"></span>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="collapsible-body">
+                    <div class="mangroves">
+
+                        <div class="row">
+
+                            <div class="legend col s6">
+                                <div class='gain_loss_title'>Gain</div>
+
+                                <div class="col s4">
+                                    <div><i style="background:#308de4"></i>
+                                        Less 5% Stable</div>
+                                    <div><i style="background:#f3d05c"></i> 5% – 10% Some
+                                    </div>
+                                    <div><i style="background:#f006dc"></i> > 10% Extreme</div>
+                                </div>
+
+
+
+
+                                <div class="circle_container col s4">
+
+                                    <svg width="100px" height="100px">
+                                        <circle cx="50" cy="50" fill="#1f77b4" r="40"></circle>
+                                        <text id="gain_circle_text" x="50%" y="50%" text-anchor="middle" fill="white"
+                                            font-size="30px" font-family="Arial" dy="10px">2.2</text>
+                                    </svg>
+                                    <!-- <div class="circle">
+                                                ICON
+                                            </div> -->
+                                </div>
+
+                            </div>
+
+                            <div class="legend col s6">
+                                <div class='gain_loss_title'>Loss</div>
+
+                                <div class="col s4">
+                                    <div><i style="background:#308de4"></i>
+                                        Less 5% Stable</div>
+                                    <div><i style="background:#f3d05c"></i> 5% – 10% Some
+                                    </div>
+                                    <div><i style="background:#f006dc"></i> > 10% Extreme</div>
+                                </div>
+
+
+
+
+                                <div class="circle_container col s4">
+
+                                    <svg width="100px" height="100px">
+                                        <circle cx="50" cy="50" fill="#1f77b4" r="40"></circle>
+                                        <text id="loss_circle_text" x="50%" y="50%" text-anchor="middle" fill="white"
+                                            font-size="30px" font-family="Arial" dy="10px">2.2</text>
+                                    </svg>
+                                    <!-- <div class="circle">
+                                                    ICON
+                                                </div> -->
+                                </div>
+
+                            </div>
+                            <!-- <div class='row'>
+                            <div id="mangroves_gain" class="col s5"></div>
+                            <div id="mangroves_loss" class="col s5"></div>
+                        </div> -->
+                            <!--
+                        <div class="row">
+
+                            <div id="gauge_gain" class="col s6">
+                                <div class='gain_loss_title'>Gain</div>
+                                <div class="col s4">
+                                    <div><i style="background:#308de4"></i>
+                                        Less 5% Stable</div>
+                                    <div><i style="background:#f3d05c"></i> 5% – 10% High
+                                    </div>
+                                    <div><i style="background:#f0aa06"></i> > 10% Extreme</div>
+                                </div>
+
+                                <div class="col s2">
+                                    <svg width="100px" height="100px">
+                                        <circle cx="50" cy="50" fill="#1f77b4" r="40"></circle>
+                                        <text id="gain_circle_text" x="50%" y="50%" text-anchor="middle" fill="white"
+                                            font-size="30px" font-family="Arial" dy="10px">2.2</text>
+                                    </svg>
+                                </div>
+                                 <div id="gauge_gain_graph"></div> 
+
+                            </div>
+
+
+
+                            <div id="gauge_loss" class="col s6">
+                                <div class='gain_loss_title'>Loss</div>
+                                <div id="gain_loss_text"></div>
+                                 <div id="gauge_loss_graph"></div> 
+                            </div>
+
+                        </div>
+
+                    -->
+
+                            <div class='row'>
+                                <div class="mangroves_balance col s9 offset-s3"></div>
+                            </div>
+
+
+                            <div class='row'>
+                                <div id="mangroves_double_chart" class="col s12"></div>
+                            </div>
+                            <!-- <h3 class="subheader">Mangroves</h3> -->
+
+                            <div class='btn-small btn-extra-small show_hide_table'>Show table</div>
+                            <div class="mangroves_table"></div>
+                        </div>
+                    </div>
+            </li>
+            <li class='lakes_li main_li' style="display: none">
+
+                <div class="card horizontal collapsible-header">
+                    <div class="card-image">
+                        <!----  <img src="./img/sdg6.png" style="width:100px;height:100px"> -->
+                    </div>
+                    <div class="card-stacked">
+                        <div class="card-content">
+                            <span class="card-title">Lakes</span>
+                            <p>Lakes data</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="collapsible-body">
+                    <div class="permanent_lake">
+                        <h3 class="subheader">Permanent lakes</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Spatial Area (sqKm)</th>
+                                    <th>Change from baseline (sqKm)</th>
+                                    <th>Change from baseline %</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>2000-2004 (baseline)</td>
+                                    <td>980,000</td>
+                                    <td>90,000</td>
+                                    <td>0.87</td>
+                                </tr>
+                                <tr>
+                                    <td>2005-209</td>
+                                    <td>380,000</td>
+                                    <td>10,000</td>
+                                    <td>3.76</td>
+                                </tr>
+                                <tr>
+                                    <td>2009-2015</td>
+                                    <td>150,000</td>
+                                    <td>10,000</td>
+                                    <td>7.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="seasonal_lake">
+                        <h3 class="subheader">Seasonal lakes</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Spatial Area (sqKm)</th>
+                                    <th>Change from baseline (sqKm)</th>
+                                    <th>Change from baseline %</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>2000-2004 (baseline)</td>
+                                    <td>980,000</td>
+                                    <td>90,000</td>
+                                    <td>0.87</td>
+                                </tr>
+                                <tr>
+                                    <td>2005-209</td>
+                                    <td>380,000</td>
+                                    <td>10,000</td>
+                                    <td>3.76</td>
+                                </tr>
+                                <tr>
+                                    <td>2009-2015</td>
+                                    <td>150,000</td>
+                                    <td>10,000</td>
+                                    <td>7.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="quality_lake">
+                        <h3 class="subheader">Lake quality</h3>
+                        <h5>No data available</h5>
+                    </div>
+
+            </li>
+
+            <li class='reservoirs_li main_li' style="display: none">
+
+                <div class="card horizontal collapsible-header">
+                    <div class="card-image">
+                        <!----  <img src="./img/sdg6.png" style="width:100px;height:100px"> -->
+                    </div>
+                    <div class="card-stacked">
+                        <div class="card-content">
+                            <span class="card-title">Reservoirs</span>
+                            <p>Reservoirs data</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="collapsible-body">
+                    <div class="reservoirs">
+                        <h3 class="subheader">Reservoirs area</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Spatial Area (sqKm)</th>
+                                    <th>Change from baseline (sqKm)</th>
+                                    <th>Change from baseline %</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>2000-2004 (baseline)</td>
+                                    <td>80,000</td>
+                                    <td>10,000</td>
+                                    <td>0.87</td>
+                                </tr>
+                                <tr>
+                                    <td>2005-209</td>
+                                    <td>380,000</td>
+                                    <td>10,000</td>
+                                    <td>3.76</td>
+                                </tr>
+                                <tr>
+                                    <td>2009-2015</td>
+                                    <td>150,000</td>
+                                    <td>10,000</td>
+                                    <td>7.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </ul>
+    <div id='map'>
+    </div>
+
+    <script>
+        function parse_gauge_Data_old(value) {
+            if (value <= 1.3) {
+                return value * 0.2
+            } else if (1 < value && value <= 10) {
+                return value * 0.8 - 1
+            } else if (10 < value && value <= 20) {
+                return ((value - 10) / 2.5) + 7
+            } else {
+                return ((value - 20) / 10) + 11.5
+            }
+        }
+
+        function parse_gauge_Data(value) {
+            if (value <= 1.3) {
+                return value * 0.2
+            } else if (1 < value && value <= 10) {
+                if (value == 10)
+                    return 8
+                else
+                    return value * 0.9 - 0.5
+            } else if (10 < value && value <= 20) {
+                return ((value - 10) / 2.5) + 7
+            } else {
+                return ((value - 20) / 10) + 11.5
+            }
+        }
+
+
+        //wanted value to set 
+
+        function create_gauge(value, _container) {
+            console.info(arguments)
+
+            Highcharts.setOptions({
+                chart: {
+                    style: {
+                        fontFamily: 'Montserrat'
+                    }
+                }
+            });
+
+            if ($('#gauge_loss_graph').width() < 220) {
+                var g_w = $('#gauge_loss').width() + 40;
+                var g_h = $('#gauge_loss_graph').height()
+            } else {
+                var g_w = $('#gauge_loss_graph').width() + 60
+                var g_h = $('#gauge_loss_graph').height() + ($('#gauge_loss_graph').height() / 2);
+            }
+
+            var g_w = $('#gauge_loss_graph').width();
+            var g_h = $('#gauge_loss_graph').height();
+
+            var g_w = 305;
+            var g_h = 150;
+            if (_container == 'gauge_loss_graph') {
+                var this_title = 'LOSS';
+            } else {
+                var this_title = 'GAIN';
+            }
+
+            //         width:305px!important;
+            // height:150px!important;
+            Highcharts.chart(_container, {
+                //var chart = new Highcharts.Chart({
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    //  text: this_title
+                    text: null
+                },
+
+                chart: {
+                    type: 'gauge',
+                    height: g_h,
+                    width: g_w,
+                    tooltip: {
+                        enabled: false
+                    },
+                    spacingTop: 0,
+                    spacingBottom: 0,
+                    spacingLeft: 0,
+                    spacingRight: 0,
+                    plotBorderWidth: null,
+                    margin: [0, 0, 0, 0],
+                    spacing: [0, 0, 0, 0]
+
+                },
+                pane: {
+                    startAngle: -90,
+                    endAngle: 90,
+                    // center: ['37%', '40%'],
+                    center: ['50%', '95%'],
+                    background: {
+                        backgroundColor: 'red',
+                        innerRadius: '60%',
+                        outerRadius: '100%',
+                        shape: 'arc'
+                    }
+                },
+
+                plotOptions: {
+                    series: {
+                        enableMouseTracking: false,
+                        center: ['50%', '105%']
+                    },
+
+                    states: {
+                        hover: {
+                            enabled: false
+                        }
+
+                    },
+                    gauge: {
+
+                        pivot: {
+                            radius: 0,
+                        },
+                        dial: {
+                            // center: ['60%', '100%'],
+                            radius: '195%',
+                            borderColor: '#57adf9',
+                            backgroundColor: 'silver',
+                            borderWidth: 1,
+                            baseWidth: 2,
+                            topWidth: 0.5,
+
+                            baseLength: '40%', // of radius
+                            //	rearLength: '50%'
+                        }
+                    },
+                    pie: {
+                        startAngle: -90,
+                        endAngle: 90,
+
+                    },
+                    borderWidth: 0 // < set this option
+                },
+
+                yAxis: [{
+                    visible: false,
+                    min: 0,
+                    max: 20,
+                    lineWidth: 0
+                }, {
+                    lineWidth: 0
+                }],
+
+                series: [{
+
+                    data: [parse_gauge_Data(value)],
+                    zIndex: 50,
+
+
+                    dataLabels: {
+                        //borderRadius:3
+                        borderWidth: 0,
+                        color: '#ff00b1',
+
+                        y: -40,
+                        allowHTML: true,
+                        formatter() {
+
+                            return '<span class="main_label">Loss: ' + value + '%</span>'
+                        }
+                    }
+                }, {
+
+                    enableMouseTracking: false,
+                    animation: false,
+                    type: 'pie',
+                    //The size of the inner diameter for the pie. A size greater than 0 renders a donut char
+                    innerSize: '85%',
+                    //The diameter of the pie relative to the plot area
+                    size: g_w,
+
+                    dataLabels: {
+                        enabled: true,
+                        allowHTML: true,
+
+                        style: {
+
+                            color: 'grey'
+                        }
+                    },
+                    data: [{
+
+                        name: '<div class="label_container"><span class="this_label">Some (0 to 5)</span></div>',
+
+                        dataLabels: {
+                            distance: -60,
+                        },
+                        y: 20,
+                        color: '#87b7e0'
+                    }, {
+                        name: '<div class="label_container"><span class="this_label">High <br/>(5 to 10)</span></div>',
+                        y: 20,
+                        dataLabels: {
+                            distance: -30,
+                        },
+                        color: '#ec4918'
+                    },
+
+                    {
+                        name: '<span class="this_label">Extreme <br/>(10 to 100)</span>',
+                        y: 60,
+                        color: '#d447f7',
+                        dataLabels: {
+                            distance: -30,
+                        }
+                    },
+                    ]
+                }, {
+                    enableMouseTracking: false,
+                    animation: false,
+                    type: 'pie',
+                    innerSize: '97%',
+                    size: g_w,
+                    endAngle: 18,
+                    dataLabels: {
+                        // connectorWidth: 0,
+
+                        borderWidth: 0,
+
+                        // y:-20,
+
+                        enabled: true,
+                        distance: 2,
+                        style: {
+
+                            color: 'black'
+                        }
+                    },
+                    data: [{
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+
+                            enabled: false,
+                            format: '2.5',
+                            //distance: 15
+                        }
+                    }, {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: false,
+                            format: '5'
+                        }
+                    }, {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: false,
+                            format: '7.5'
+                        }
+                    }, {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: false,
+                            format: '10',
+                            //y:-50
+                        }
+                    }, {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: false,
+                            format: '15'
+                        }
+                    }, {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: false,
+                            format: '20'
+                        }
+                    }]
+                }, {
+                    enableMouseTracking: false,
+                    animation: false,
+                    type: 'pie',
+                    innerSize: '97%',
+                    size: g_w,
+                    startAngle: 18,
+                    endAngle: 90,
+                    dataLabels: {
+                        enabled: false,
+                        distance: -30,
+                        style: {
+
+                            color: 'white'
+                        }
+                    },
+                    data: [{
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: false,
+                            format: '30'
+                        }
+                    }, {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: false,
+                            format: '40'
+                        }
+                    }, {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: false,
+                            format: '50'
+                        }
+                    }, {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: false,
+                            format: '60'
+                        }
+                    }, {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: false,
+                            format: '70'
+                        }
+                    }, {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: false,
+                            format: '80'
+                        }
+                    }, {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: false,
+                            format: '90'
+                        }
+                    }, {
+                        y: 10,
+                        color: '#bdc4ca',
+                        dataLabels: {
+                            enabled: false,
+                            format: '100'
+                        }
+                    }]
+                }]
+            });
+            //   $('#' + _container).css('height', $('#gauge_loss').height())
+            // var g_h = $('#gauge_loss').height() + ($('#gauge_loss').height() / 2);
+            setTimeout(function () {
+                $('#' + _container).css('height', '220px')
+            }, 500)
+
+
+        }
+        var flying_sel_f, clicked_sel_f;
+        var fxs = {};
+        var flying = false;
+
+        function sort_by_value(a, b) {
+
+            return a.y < b.y ? 1 : -1;
+        }
+
+        function round_this(someNumber, digits) {
+            switch (digits) {
+                case 1:
+                    var p = 1e1;
+                    break;
+                case 2:
+                    var p = 1e2;
+                    break;
+                case 3:
+                    var p = 1e3;
+                    break;
+                case 4:
+                    var p = 1e4;
+                    break;
+            }
+            return Math.round(someNumber * p) / p;
+        }
+        var options = {
+            selected_param: 'gain'
+        }
+        var mangroves_popup;
+
+        var selects = {
+            gain_info: {},
+            loss_info: {}
+        };
+        $(document).ready(function () {
+
+
+            //   mapboxgl.accessToken = 'pk.eyJ1IjoicGVyaWt1dCIsImEiOiJVNzBjMl9FIn0.38swLsSY2ao8E8rU8FYgyw';
+            map = new mapboxgl.Map({
+                container: 'map',
+                attributionControl: false,
+                // style: 'mapbox://styles/mapbox/light-v10',
+                //     style: 'mapbox://styles/perikut/ck1xa74kk1c2c1cmtdho498go',
+                //style: 'mapbox://styles/perikut/ck1xa74kk1c2c1cmtdho498go',
+                // center: [-100, 22],
+                center: [-100, 22],
+                style: {
+                    "version": 8,
+                    "sources": {
+                        "geoserver": {
+                            "type": "vector",
+                            "tiles": [
+                                "https://geospatial.jrc.ec.europa.eu/geoserver/gwc/service/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=hotspots:gaul_0_simplified&STYLE=&TILEMATRIX=EPSG:900913:{z}&TILEMATRIXSET=EPSG:900913&FORMAT=application/vnd.mapbox-vector-tile&TILECOL={x}&TILEROW={y}"
+                            ],
+                        }
+                    },
+                    "layers": [{
+                        "id": "gaul_0_simple",
+                        "source": "geoserver",
+                        "source-layer": "gaul_0_simplified",
+                        "type": "fill",
+                        'paint': {
+                            "fill-color": "#8bc34a",
+                            "fill-outline-color": "#6e9090",
+                            "fill-opacity": 0.4
+
+                        }
+                    }]
+                },
+                //   center: [1.087646, 44.613934],
+                // center: [102.612305, 61.752331],
+                //    center: [-2, 41],
+                //center: [73, 62],
+                zoom: 2,
+                _id: 'mapboxid',
+                pitchWithRotate: false,
+                dragRotate: false,
+                touchZoomRotate: false
+
+            }).addControl(new mapboxgl.NavigationControl({
+                showCompass: false
+            }), 'top-right');
+
+
+
+            // disable map rotation using right click + drag
+            map.dragRotate.disable();
+
+            // disable map rotation using touch rotation gesture
+            map.touchZoomRotate.disableRotation();
+
+            //   Add zoom and rotation controls to the map.
+            //  map.addControl(new mapboxgl.NavigationControl());
+            class MyCustomControl {
+                onAdd(map) {
+                    this.map = map;
+                    this.container = document.createElement('div');
+                    this.container.className = 'my-custom-control';
+                    //this.container.textContent = '<h5>Just a test</h5>';
+                    return this.container;
+                }
+                onRemove() {
+                    this.container.parentNode.removeChild(this.container);
+                    this.map = undefined;
+                }
+            }
+
+            var myCustomControl = new MyCustomControl();
+
+            map.addControl(myCustomControl, 'bottom-right');
+
+            //     $('.my-custom-control').show();
+            var hovering_map = true;
+
+            var control_html = '<div style="display:visible" class="row"><button class="btn white  red-text waves-effect waves-red gain">Gain</button> <button class="btn white teal-text waves-effect waves-teal loss">Loss</button> <button class="btn white green-text waves-effect waves-green stable">Stable</button></div>' +
+                '<div  id="country_stats_highcharts"><h5></h5><div></div></div>' +
+                '<div class="top_countries"><ul class="collection with-header"></ul></div>' +
+                '<div class="scale"><svg><g></g></svg></div>';
+            $('.my-custom-control').html(control_html);
+
+
+
+
+            $('.mapboxgl-control-container').on('mouseenter', function (e) {
+
+                hovering_map = false;
+            }).on('mouseleave', function (e) {
+
+                hovering_map = true;
+            })
+            $('.my-custom-control').on('click', function (e) {
+
+                if (hovering_map == false) {
+                    var target = $(e.target)
+                    if ($(e.target).is('button')) {
+                        var param_arr = target.attr('class').split(' ');
+                        //   alert(param)
+                        var param = param_arr[param_arr.length - 1];
+                        $('.btn.selected').removeClass('selected');
+                        //   $('.btn.' + param + ')'.addClass('selected');
+                        $('.top_countries,#country_stats_highcharts').show();
+                        if (param == 'gain') {
+                            $('.btn.gain').addClass('selected');
+                            plot('gain')
+                        }
+                        if (param == 'loss') {
+                            $('.btn.loss').addClass('selected');
+                            plot('loss')
+                        }
+                        if (param == 'stable') {
+                            alert('Stable still not ready')
+                        }
+                    }
+
+                    if ($(e.target).is('li')) {
+                        var code = target.attr('data-code');
+                        $('.top_countries li.selected').removeClass('selected');
+                        console.log(code)
+                        if (code) {
+                            $(e.target).addClass('selected')
+                            countries_data.filter(function (d) {
+
+                                if (d.adm_0_iso == code) {
+                                    console.log(d)
+                                    map.flyTo({
+                                        'center': d.centroid
+                                    });
+                                    clicked_sel_f = {
+                                        sel_code: code,
+                                        sel_latlng: d.centroid
+                                    };
+
+                                    map.fire('flystart');
+                                    // setTimeout(function () {
+                                    //     mousemove_map({ sel_code: code, sel_latlng: d.centroid })
+                                    // }, 1600)
+
+                                }
+                            })
+                        }
+                    }
+
+
+
+
+
+                }
+            })
+            map.on('flystart', function (e) {
+                console.log(e)
+                flying = true;
+            });
+            map.on('flyend', function (e) {
+                console.log(e)
+                flying = false;
+            });
+
+            function create_opacity_expression(code) {
+                var opacity_expression = mangroves_data.reduce(function (memo, data) {
+                    if (data.adm_0_id == code)
+                        memo.push(data.adm_0_id, 0.7);
+                    else
+                        memo.push(data.adm_0_id, 0.2);
+                    return memo;
+                },
+                    // 'filter': ['any', ['==', 'adm_0_code', '']]
+                    ["match", ["get", "iso3"]]
+                );
+
+                opacity_expression.push(0)
+                return opacity_expression;
+
+            }
+
+            function plot(gain_loss) {
+
+                console.warn(selects)
+                //options.selected_param = 'gain';
+                var countries_data = [];
+                if (gain_loss == 'gain') {
+
+                    map.setPaintProperty('eez_land_id', "fill-color", selects.gain_info.expression);
+                    var param_to_plot = 'avg_gain';
+                    $('#country_stats_highcharts h5').text('Gain data sqKm')
+                    //<h5>Top 20 Gain</h5>
+                    var li_title = '<li class="collection-header"></li>';
+
+                    selects.data.forEach(function (d) {
+                        if (d.avg_gain > 3) {
+                            console.warn(d)
+                            countries_data.push({
+                                name: d.adm_0_name,
+                                color: d.avg_gain_color,
+                                y: d.avg_gain,
+                                code: d.adm_0_id
+                            });
+                        }
+
+                    });
+                } else {
+                    map.setPaintProperty('eez_land_id', "fill-color", selects.loss_info.expression);
+                    var param_to_plot = 'avg_loss';
+                    $('#country_stats_highcharts h5').text('Loss data sqKm')
+                    //<h5>Top 20 Loss</h5>
+                    var li_title = '<li class="collection-header"></li>'
+
+                    selects.data.forEach(function (d) {
+
+                        if (d.avg_loss > 3) {
+                            console.warn(d)
+                            countries_data.push({
+                                name: d.adm_0_name,
+                                color: d.avg_loss_color,
+                                y: d.avg_loss,
+                                code: d.adm_0_id
+                            });
+                        }
+
+                    });
+                }
+
+                var sorted_arr = countries_data.sort(sort_by_value);
+                var countries_arr = sorted_arr.map(function (d) {
+                    return d.name;
+                })
+                console.log(sorted_arr)
+                var li = li_title;
+                sorted_arr.forEach(function (d, i) {
+                    //  if (i < 20) {
+                    li += '<li data-code="' + d.code + '" class="collection-item" style="color: white; background-color: ' + d.color + '; opacity: 0.7">' + d.name + ' <span class="badge blue">' + d.y + ' sqKm</span></li>'
+                    // }
+                })
+                $('.top_countries ul').empty().append(li);
+                $('.my-custom-control').show().css('padding', '20px');
+
+                $('.top_countries li').click(function () {
+
+                })
+                var $container = $('#country_stats_highcharts div');
+
+                var t = $container[0]
+                console.log(t)
+
+                //Highcharts.chart(container, {
+                window.chart = new Highcharts.Chart({
+                    credits: {
+                        enabled: false
+                    },
+
+                    chart: {
+                        type: 'column',
+                        zoomType: 'xy',
+                        renderTo: t
+
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    title: {
+                        text: null
+                    },
+                    legend: {
+                        enabled: false,
+                        //   align: 'right',
+                        //   verticalAlign: 'middle'
+                    },
+
+                    xAxis: {
+                        type: 'column',
+                        categories: countries_arr,
+                        labels: {
+                            style: {
+                                color: 'black',
+                                fontName: 'Montserrat'
+                                //   fontSize:xAxis_size
+                            }
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: null,
+                            labels: {
+                                style: {
+                                    color: 'black',
+                                    fontName: 'Montserrat'
+                                    //  fontSize:xAxis_size
+                                }
+                            }
+                        }
+
+                    },
+                    plotOptions: {
+                        column: {
+                            pointPadding: 0.2,
+                            borderWidth: 0
+                        }
+                    },
+
+
+
+                    series: [{
+
+                        data: sorted_arr
+
+                    }]
+                });
+            }
+            map.on('load', function () {
+
+
+                mangroves_popup = new mapboxgl.Popup({
+                    closeButton: false,
+                    closeOnClick: true,
+                    //offset: [20, -20]
+                    offset: {
+                        'bottom': [0, -20],
+                        'top': [0, 55],
+                        'top-left': [0, 0], //[linearOffset, (markerHeight - markerRadius - linearOffset) * -1],
+                        'top-right': [0, 0], //[-linearOffset, (markerHeight - markerRadius - linearOffset) * -1],
+
+                        // 'bottom-left': [linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
+                        // 'bottom-right': [-linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
+                        //'left': [markerRadius, (markerHeight - markerRadius) * -1],
+                        //'right': [-markerRadius, (markerHeight - markerRadius) * -1]
+                    }
+                });
+
+
+                // return memo;
+                //       },
+                //       ["match", ["get", "adm_0_pfaf"]]
+                //   );
+
+                var eez_filter = mangroves_data.reduce(function (memo, data) {
+                    memo.push(data.adm_0_id);
+                    return memo;
+                },
+                    // 'filter': ['any', ['==', 'adm_0_code', '']]
+                    ['in', 'iso3']
+                );
+
+                var avg_summary = mangroves_data.reduce(function (memo, data, index) {
+                    // memo.code = data.adm_0_id;
+                    memo.total_gain += data.avg_gain;
+                    memo.total_loss += data.avg_loss;
+                    memo.total_stable += data.avg_stable;
+
+                    if (data.avg_gain > 0) {
+                        var max = memo.max_gain > data.avg_gain ? memo.max_gain : data.avg_gain;
+                        memo.max_gain = max;
+
+                        var min = memo.min_gain < data.avg_gain ? memo.min_gain : data.avg_gain;
+                        memo.min_gain = min;
+                    }
+
+                    if (data.avg_loss > 0) {
+                        var max = memo.max_loss > data.avg_loss ? memo.max_loss : data.avg_loss;
+                        memo.max_loss = max;
+
+                        var min = memo.min_loss < data.avg_loss ? memo.min_loss : data.avg_loss;
+                        memo.min_loss = min;
+                    }
+
+                    if (index == mangroves_data.length - 1) {
+                        memo.avg_gain = Number((memo.total_gain / mangroves_data.length).toFixed(2));
+                        memo.avg_loss = Number((memo.total_loss / mangroves_data.length).toFixed(2));
+                        memo.avg_stable = Number((memo.total_stable / mangroves_data.length).toFixed(2));
+                        console.info(memo.avg_stable)
+                    }
+                    return memo;
+                }, {
+                        'total_gain': 0,
+                        'total_loss': 0,
+                        'total_stable': 0,
+                        'num_features': mangroves_data.length
+                    });
+                console.info(mangroves_data)
+                console.info(avg_summary)
+
+                //      var class_function = get_thresholds_class(avg_summary, 'gain');
+                var scale = d3v5.scaleLinear();
+
+                function chroma_scale(length, chroma_scale) {
+                    var colors = [];
+
+                    scale.domain([1, length])
+
+
+                    var color_scale = chroma.scale();
+
+                    for (var i = 1; i <= length; i++) {
+                        var val = scale(i)
+                        colors.push(chroma_scale(val));
+                    }
+
+                    return colors;
+                }
+
+
+                function get_thresholds_colors(gain_loss) {
+                    var buckets = 10;
+                    console.log(gain_loss)
+                    if (gain_loss == 'gain')
+                        var bezier_1 = chroma_scale(buckets, chroma.bezier(['#fdfac4', 'blue', '#ff1a1a']));
+
+                    if (gain_loss == 'loss')
+                        var bezier_1 = chroma_scale(buckets, chroma.bezier(['#e91e63', '#ffea35', '#03a9f4']));
+
+                    console.log(bezier_1)
+                    var colors = bezier_1.map(function (d) {
+                        console.log(d.hex())
+                        return d.hex()
+                    })
+                    console.log(colors)
+                    //_class list
+                    var domain = d3v5.range(0, buckets, 1).map(function (d) {
+                        return d
+                    })
+
+                    return d3v5.scaleThreshold()
+                        //min, avg,
+                        .domain(domain)
+                        // .range(["#6e7c5a", "#a0b28f", "#d8b8b3", "#b45554", "#760000"]);
+                        .range(colors)
+                }
+
+
+                mangroves_data.forEach(function (d) {
+
+                    var color_function = get_thresholds_colors('gain');
+                    var class_function = get_thresholds_class(avg_summary, 'gain');
+
+                    var gain_class = class_function(d.avg_gain);
+                    //  console.info(_class + ' for value ' + d.avg_gain + ' COLOR ' + color_function(_class))
+                    d.avg_gain_class = gain_class;
+                    d.avg_gain_color = color_function(gain_class);
+
+                    var color_function = get_thresholds_colors('loss');
+                    var class_function = get_thresholds_class(avg_summary, 'loss');
+
+                    var loss_class = class_function(d.avg_loss);
+                    d.avg_loss_class = loss_class;
+                    d.avg_loss_color = color_function(loss_class);
+
+                })
+                selects.data = mangroves_data;
+                var sums_gain_class = mangroves_data.reduce(function (memo, data, index) {
+                    //[fruit]: (map[fruit] || 0) + 1,
+                    if (memo[data.avg_gain_class]) {
+                        memo[data.avg_gain_class].sum++;
+                    } else {
+                        console.info('non existent ' + data.avg_gain_class)
+                        memo[data.avg_gain_class] = {
+                            sum: 1
+                        }
+
+                    }
+                    return memo
+                }, []);
+                console.log(sums_gain_class)
+
+                var sums_loss_class = mangroves_data.reduce(function (memo, data, index) {
+                    //[fruit]: (map[fruit] || 0) + 1,
+                    if (memo[data.avg_loss_class]) {
+                        memo[data.avg_loss_class].sum++;
+                    } else {
+                        console.info('non existent ' + data.avg_loss_class)
+                        memo[data.avg_loss_class] = {
+                            sum: 1
+                        }
+
+                    }
+                    return memo
+                }, []);
+
+
+                var eez_gain_color_expression = mangroves_data.reduce(function (memo, data) {
+                    memo.push(data.adm_0_id, data.avg_gain_color);
+                    return memo;
+                },
+                    // 'filter': ['any', ['==', 'adm_0_code', '']]
+                    ["match", ["get", "iso3"]]
+                );
+                eez_gain_color_expression.push("#d0c4c4");
+
+                selects.gain_info.expression = eez_gain_color_expression;
+
+
+                var eez_loss_color_expression = mangroves_data.reduce(function (memo, data) {
+                    memo.push(data.adm_0_id, data.avg_loss_color);
+                    return memo;
+                },
+                    // 'filter': ['any', ['==', 'adm_0_code', '']]
+                    ["match", ["get", "iso3"]]
+                );
+                //   eez_gain_color_expression.push("#d0c4c4");
+
+                eez_loss_color_expression.push("#d0c4c4");
+                console.log(eez_loss_color_expression)
+                selects.loss_info.expression = eez_loss_color_expression;
+
+
+
+                function get_thresholds_class(avg_summary, param) {
+
+                    var domain = []
+                    var buckets = 10;
+                    console.log(avg_summary)
+
+                    if (param == 'gain') {
+                        var min = avg_summary.min_gain;
+                        var max = avg_summary.max_gain;
+                        var avg = avg_summary.avg_gain;
+
+                    } else {
+                        var min = avg_summary.min_loss;
+                        var max = avg_summary.max_loss;
+                        var avg = avg_summary.avg_loss;
+                    }
+
+
+                    var each_step = ((max - min) / buckets);
+                    var domain = d3v5.range(min, max, each_step);
+
+                    var data_range = d3v5.range(0, buckets, 1).map(function (d) {
+                        console.info(d)
+                        return d
+                    })
+
+
+                    /*
+                    The domain is the complete set of values, so in this case that is all of your temperatures, from 33 to 64. 
+                    The range is the set of resulting values of a function, in this case the resulting values of scaling your temperatures 
+                    from 0 to 600.
+                    
+                    */
+                    return d3v5.scaleThreshold()
+                        //[min,each_step*1,each_step*2....,max]
+                        .domain(domain)
+                        //[0,1,2,3,4....20]
+                        .range(data_range)
+
+                }
+
+                map.addSource("eez_source", {
+                    "type": "vector",
+                    "tiles": ["https://geospatial.jrc.ec.europa.eu/geoserver/gwc/service/wmts?layer=hotspots:eez_land&tilematrixset=EPSG:900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application/x-protobuf;type=mapbox-vector&TileMatrix=EPSG:900913:{z}&TileCol={x}&TileRow={y}"]
+                });
+
+
+                var layer = {
+
+                    "id": "eez_land_id",
+                    "type": "fill",
+                    "source": "eez_source",
+
+                    "source-layer": "eez_land",
+                    'layout': {
+                        'visibility': 'visible'
+
+                    },
+
+
+                    'paint': {
+                        "fill-color": "#ff7f50",
+                        "fill-outline-color": "#fec46c",
+
+                        "fill-opacity": 0.01
+
+                    },
+
+                }
+
+
+
+
+                map.addLayer(layer);
+                //["in", "class", "street_major", "street_minor", "street_limited"]
+                map.setFilter('eez_land_id', eez_filter);
+
+
+                map.addSource("gaul_0_simple", {
+                    "type": "vector",
+                    "tiles": ["https://geospatial.jrc.ec.europa.eu/geoserver/gwc/service/wmts?layer=hotspots:gaul_0_simplified&tilematrixset=EPSG:900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application/x-protobuf;type=mapbox-vector&TileMatrix=EPSG:900913:{z}&TileCol={x}&TileRow={y}"]
+                });
+
+                var layer = {
+                    "id": "gaul_0_simple",
+                    "type": "fill",
+                    "source": "gaul_0_simple",
+                    "source-layer": "gaul_0_simplified",
+                    "minzom": 1,
+                    // 'layout': {
+                    //     'visibility': 'none'
+
+                    // },
+                    'maxzoom': 5,
+
+                    'paint': {
+                        "fill-color": "#8bc34a",
+                        "fill-outline-color": "#fec46c",
+                        "fill-opacity": 0.2
+
+                    }
+
+                }
+                //   map.addLayer(layer, 'country-label');
+
+                map.addSource("gaul_0_simple_lines", {
+                    "type": "vector",
+                    "tiles": ["https://geospatial.jrc.ec.europa.eu/geoserver/gwc/service/wmts?layer=hotspots:gaul_0_simple_lines&tilematrixset=EPSG:900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application/x-protobuf;type=mapbox-vector&TileMatrix=EPSG:900913:{z}&TileCol={x}&TileRow={y}"]
+                });
+                map.addLayer({
+                    "id": "gaul_0_clicked",
+                    "type": "line",
+                    "source": "gaul_0_simple_lines",
+
+                    "source-layer": "gaul_0_simple_lines",
+                    'layout': {
+                        'visibility': 'none'
+
+                    },
+                    'paint': {
+                        //purple, when click
+                        'line-color': "#e91e63",
+                        'line-width': 2
+
+                    },
+                    'filter': ['any', ['==', 'adm_0_code', '']]
+
+                });
+
+                map.addLayer({
+                    "id": "gaul_0_mouseover",
+                    "type": "line",
+                    "source": "gaul_0_simple_lines",
+                    "source-layer": "gaul_0_simple_lines",
+                    'layout': {
+                        'visibility': 'none'
+
+                    },
+                    'paint': {
+                        //yellow
+                        'line-color': "#ffc107",
+                        'line-width': 2
+
+                    },
+                    'filter': ['any', ['==', 'adm_0_code', '']]
+
+                });
+
+            });
+
+            function throttle(fn, threshhold, scope) {
+                threshhold || (threshhold = 150);
+                var last,
+                    deferTimer;
+                return function () {
+                    var context = scope || this;
+
+                    var now = +new Date,
+                        args = arguments;
+                    if (last && now < last + threshhold) {
+                        // hold on to it
+                        clearTimeout(deferTimer);
+                        deferTimer = setTimeout(function () {
+                            last = now;
+                            fn.apply(context, args);
+                        }, threshhold);
+                    } else {
+                        last = now;
+                        fn.apply(context, args);
+                    }
+                };
+            }
+            //throttle(
+            map.on("moveend", function () {
+                console.log(flying_sel_f)
+                if (flying && flying_sel_f) {
+                    //setTimeout(function () {
+                    mousemove_map(flying_sel_f);
+                    map.fire('flyend');
+                    //}, 1600)
+                }
+
+                if (flying && clicked_sel_f) {
+                    //setTimeout(function () {
+                    fxs.click_map(clicked_sel_f);
+                    map.fire('flyend');
+                    //}, 1600)
+                }
+            })
+            map.on("mousemove", function (e) {
+                if (!map.loaded()) {
+                    return
+                }
+                console.log(e)
+
+                if (hovering_map == false)
+                    return false;
+
+                mousemove_map({
+                    sel_ev: e
+                })
+
+            })
+
+
+            function mousemove_map(sel_f) { // flying_sel_f = { sel_code: code, sel_latlng: d.centroid };
+                console.log(sel_f)
+                var zoom = map.getZoom();
+                if (sel_f.sel_ev) {
+                    //not triggered, really moving the cursor over a country
+                    var e = sel_f.sel_ev;
+                    var latlng = e.lngLat;
+
+                    var x = e.originalEvent.clientX
+                    var y = e.originalEvent.clientY
+
+                    //{left : `${x}`, top : `${y}`, position : 'absolute', zIndex : 1}
+                    console.log(x, y)
+                    console.info(e)
+                    // var features = map.queryRenderedFeatures(e.point);
+
+                    var features = map.queryRenderedFeatures(e.point, {
+                        //   layers: ['eez_land_id'] // replace this with the name of the layer
+                        layers: ['gaul_0_simple']
+                        //gaul_0_fixed
+                    });
+                } else {
+
+                    //triggering a mousemove event from gain/loss table
+                    console.log(sel_f)
+                    var latlng = sel_f.sel_latlng;
+
+                    var features = map.querySourceFeatures("eez_source", {
+                        sourceLayer: 'eez_land',
+                        filter: ['any', ['==', 'iso3', sel_f.sel_code]]
+                    });
+                }
+                console.log(features)
+                var feature = getUniqueFeatures(features, 'iso3');
+                console.log(feature)
+                //only layers that we are mouseovering...
+
+                //console.info(mouseov_layers)
+                var html = '';
+
+
+                // if (mouseov_layers.length == 1 && mouseov_layers[0] !== 'eez_land_id') {
+                //     if ($('.bassins_popup').length > 0)
+                //         mangroves_popup.remove();
+                //     if ($('.country_popup').length > 0)
+                //         country_popup.remove();
+                // }
+                /*{ "adm_0_id": "IRN", "adm_0_name": "Iran", "pfaf_features": [], "years":
+                [1996, 2007, 2008, 2009, 2010, 2015, 2016],
+                "data": { "1996": { "gain": 0, "loss": 0, "stable": 79.48913922 }, 
+                            "2007": { "gain": 0.761204143, "loss": 1.352846162, "stable": 78.13629305 }, "2008": { "gain": 0.51886109, "loss": 1.335055378, "stable": 78.15408384 }, "2009": { "gain": 0.516437743, "loss": 1.284943517, "stable": 78.2041957 }
+                */
+
+                if (feature.length == 0) {
+                    //map.setFilter('gaul_0_simple_lines', ['==', 'adm_0_id', '']);
+                    map.setLayoutProperty('gaul_0_mouseover', "visibility", "none");
+                    map.setPaintProperty('eez_land_id', "fill-opacity", 0.01);
+                    if (mangroves_popup) mangroves_popup.remove();
+                }
+                feature.forEach(function (f) {
+                    //if (f.layer.id == 'eez_land_id') {
+                    console.log(f.properties)
+                    var adm_0_id = f.properties.adm_0_id;
+                    console.warn('mangroves ' + adm_0_id)
+                    var this_data = mangroves_data.filter(function (d) {
+                        // return d.adm_0_id == f.properties.iso3;
+                        return d.adm_0_id == adm_0_id;
+
+                    })[0];
+                    console.info(this_data)
+                    var summary = '<div class="mangroves_summary pop_summary"><div class="gain_loss_title">Mangroves</div>'
+                    if (!this_data)
+                    //return false;
+                    {
+
+                        summary += "<span class='gain title no_data'><b>No mangroves in this country</b></span></div>"
+                        console.log(summary)
+
+                    } else {
+                        var balance = round_this((this_data.last_gain_percent - this_data.last_loss_percent), 2);
+                        console.log(balance)
+                        var balance_sqkm = this_data.last_gain - this_data.last_loss;
+                        if (balance > 0) {
+
+                            summary += "<span class='gain_loss light-green'>" + balance + "% gain</span> since year 2000 - " + +this_data.last_year + " " + round_this(balance_sqkm, 1) + " sqKm</span>";
+                        } else {
+                            summary += "<span class='gain_loss red accent3'>" + balance + "% loss</span> since year 2000 - " + +this_data.last_year + " " + round_this(balance_sqkm, 1) + " sqKm</span>";
+                        }
+                        //   summary += "<span class='gain title'><span class='gain_loss light-green'>" + round_this(this_data.last_gain_percent, 2) + "% gain</span> since year 2000 - " + +this_data.last_year + " " + round_this(this_data.last_gain, 1) + " sqKm</span>";
+                        // summary += "<span class='loss title'><span class='gain_loss  red accent3'>" + round_this(this_data.last_loss_percent, 2) + "% loss</span> since year 2000 - " + this_data.last_year + " " + round_this(this_data.last_loss, 1) + " sqKm</span>";
+                        summary += '</div>'; //closing .mangroves_summary pop_summary
+
+                    }
+
+                    var others = '<div class="lakes_summary pop_summary no_data"><div class="gain_loss_title">Lakes</div><span class="loss title">No data yet</span></div><div class="reservoirs_summary pop_summary no_data"><div class="gain_loss_title">Reservoirs</div><span class="loss title">No data yet</span></div><div class="rivers_summary pop_summary no_data"><div class="gain_loss_title">Rivers</div><span class="loss title">No data yet</span></div><div class="groundwater_summary pop_summary no_data"><div class="gain_loss_title">Groundwater</div><span class="loss title">No data yet</span></div>'
+                    html += ' <div class="country_popup small_popup" attr-id="' + f.properties.adm_0_name + '">' +
+                        '<div class="section"> <div class="adm_name">' +
+                        f.properties.adm_0_name + '</div></div>' +
+                        summary + others
+                        // + '<div>Gain - Loss</div>'
+
+                        +
+                        '<div id="popup_container"></div>' +
+                        '</div>'
+                    console.log(html)
+                    mangroves_popup.setLngLat(latlng);
+
+                    if ($('.country_popup').length == 0) {
+                        //if not present the popup or we are on a different country... 
+                        mangroves_popup.setHTML(html) //<hr>'+feature.properties.adm_0_name)
+                            .addTo(map);
+                        setTimeout(function () {
+                            map.setFilter('gaul_0_mouseover', ['==', 'adm_0_id', adm_0_id]);
+                            map.setLayoutProperty('gaul_0_mouseover', "visibility", "visible");
+
+                            //   highcharts_popup(this_data)
+                        }, 10)
+                    } else {
+                        // return false
+                        if ($('.country_popup').attr('attr-id') !== adm_0_id) {
+                            mangroves_popup.setHTML(html)
+                            setTimeout(function () {
+                                map.setFilter('gaul_0_mouseover', ['==', 'adm_0_id', adm_0_id]);
+                                map.setLayoutProperty('gaul_0_mouseover', "visibility", "visible");
+                                // eez_gain_color_expression.push("#d0c4c4");
+                                // map.setPaintProperty('eez_land_id', "fill-color", eez_gain_color_expression);
+                                //   map.setPaintProperty('eez_land_id', "fill-opacity", create_opacity_expression(this_data.adm_0_id));
+                                //  highcharts_popup(this_data)
+                            }, 10)
+                        }
+                    }
+                    //   }
+
+                })
+            }
+
+            function highcharts_popup(this_data) {
+                console.log(this_data.data)
+                //    "data": { "1996": { "gain": 0, "loss": 0, "stable": 79.48913922 }, 
+                //"2007": { "gain": 0.761204143, "loss": 1.352846162, "stable": 78.13629305 }, "2008": { "gain": 0.51886109, "loss": 1.335055378, "stable": 78.15408384 }, "2009": { "gain": 0.516437743, "loss": 1.284943517, "stable": 78.2041957 }
+                var gain_arr = [];
+                var loss_arr = [];
+                for (var p in this_data.data) {
+                    var _t = this_data.data[p];
+                    gain_arr.push(_t.gain);
+
+                    loss_arr.push(_t.loss);
+
+
+                }
+                console.warn(this_data.years)
+                console.info(gain_arr)
+                Highcharts.chart('popup_container', {
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        type: 'column',
+                        width: 240,
+                        height: 200
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    title: {
+                        text: null
+                    },
+                    xAxis: {
+                        type: 'category',
+                        categories: this_data.years,
+                        labels: {
+                            style: {
+                                color: 'black',
+                                fontName: 'Montserrat'
+                                //   fontSize:xAxis_size
+                            }
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: null,
+                            labels: {
+                                style: {
+                                    color: 'black',
+                                    fontName: 'Montserrat'
+                                    //  fontSize:xAxis_size
+                                }
+                            }
+                        }
+
+                    },
+                    plotOptions: {
+                        column: {
+                            pointPadding: 0.2,
+                            borderWidth: 0
+                        }
+                    },
+
+
+
+                    series: [{
+
+                        name: 'Gain',
+                        data: gain_arr
+                    }, {
+                        name: 'Loss',
+                        data: loss_arr
+
+                    }]
+                });
+            }
+
+            function getRandomColor() {
+                var letters = '0123456789ABCDEF';
+                var color = '#';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+
+            function getUniqueFeatures(array, comparatorProperty) {
+
+                var existingFeatureKeys = {};
+                var uniqueFeatures = array.filter(function (el) {
+                    if (existingFeatureKeys[el.properties[comparatorProperty]]) {
+                        return false;
+                    } else {
+                        existingFeatureKeys[el.properties[comparatorProperty]] = true;
+                        return true;
+                    }
+                });
+
+                return uniqueFeatures;
+            }
+            var y = 1;
+            var canvas = map.getCanvasContainer();
+
+            function getRandomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            var features_arr = [];
+
+            function get_thresholds_colors(features) {
+
+                var colorInterpolator = d3v5.interpolateRainbow;
+                var domain = features_arr;
+                console.log(features_arr)
+
+                //  console.log(d3v5.range(1, 100, 10))
+                var range = d3v5.range(0, 100, 5);
+                var colorArray = range.map(function (d) {
+                    console.info(d)
+                    return colorInterpolator(d)
+                });
+
+
+                console.log(colorArray);
+                console.warn(domain)
+
+                return d3v5.scaleThreshold()
+                    //min, avg,
+                    .domain(domain)
+                    // .range(["#6e7c5a", "#a0b28f", "#d8b8b3", "#b45554", "#760000"]);
+                    .range(colorArray)
+            }
+
+
+
+            fxs.click_map = function (sel_f) { //// clicked_sel_f = { sel_code: code, sel_latlng: d.centroid };
+                console.info(sel_f)
+                if (sel_f.sel_ev) {
+                    console.log(sel_f)
+                    //alert('not triggered, really moving the cursor over a country')
+                    var e = sel_f.sel_ev;
+                    var latlng = e.lngLat;
+
+                    var x = e.originalEvent.clientX
+                    var y = e.originalEvent.clientY
+
+                    //{left : `${x}`, top : `${y}`, position : 'absolute', zIndex : 1}
+                    console.log(x, y)
+                    console.info(e)
+                    // var features = map.queryRenderedFeatures(e.point);
+
+                    var features = map.queryRenderedFeatures(e.point, {
+                        layers: ['eez_land_id'] // replace this with the name of the layer
+                        //gaul_0_fixed
+                    });
+
+                    console.log(features)
+                    var feature = getUniqueFeatures(features, 'iso3');
+                    console.log(feature)
+
+                    var code = feature[0].properties.iso3;
+                } else {
+
+                    //triggering a mousemove event from gain/loss table or autocomplete
+                    console.log(sel_f)
+                    var code = sel_f.sel_code;
+
+                    // var latlng = sel_f.sel_latlng;
+
+                    // var features = map.querySourceFeatures("eez_source", {
+                    //     sourceLayer: 'eez_land',
+                    //     filter: ['any', ['==', 'iso3', sel_f.sel_code]]
+                    // });
+                }
+
+                //countries_data
+                var this_country = countries_data.filter(function (d) {
+                    return d.adm_0_iso == code
+                })[0];
+
+                var coords = this_country.bbox.coordinates;
+
+                if (this_country.adm_0_code == 259) {
+                    var bbox = [
+                        [-198.281250, 19.808054],
+                        [-31.025391, 69.595890]
+                    ];
+                } else {
+                    var bbox = [coords[0][2], coords[0][0]];
+                    //  var bbox = [[-198.281250 19.808054], [-31.025391 69.595890]];
+                }
+                console.log(bbox)
+
+                //  map.fitBounds(bbox);
+                //    map.fire('flystart');
+
+                map.flyTo({
+                    'center': this_country.centroid
+                });
+
+                map.setLayoutProperty('gaul_0_mouseover', "visibility", "none");
+                map.setLayoutProperty('gaul_0_clicked', "visibility", "visible");
+                map.setFilter('gaul_0_clicked', ['==', 'adm_0_id', code]);
+
+
+                var this_data = mangroves_data.filter(function (d) {
+                    return d.adm_0_id == code
+                })[0];
+                $('.country_li').find('.card-content .card-title').text(this_data.adm_0_name);
+                var data = {};
+
+                var mangroves_table = '<table class="striped highlight responsive-table"> <thead> <tr> <th></th> <th>Total extent (sqKm)</th> <th>Gain (sqKm)</th> <th>Loss (sqKm)</th> </tr> </thead> <tbody>';
+
+                var perc_change = [];
+                var total_extent = [];
+                var data_length = Object.keys(this_data.data).length;
+                var i = 0;
+
+                var el_gain = $('#gain_circle_text')
+
+
+                var el_loss = $('#loss_circle_text')
+                var counterUp = window.counterUp["default"]; // import counterUp from "counterup2"
+
+                for (var p in this_data.data) {
+                    var _t = this_data.data[p];
+                    console.log(_t)
+                    perc_change.push(round_this(_t.percent_change, 2));
+                    total_extent.push(round_this(_t.total_extent, 2));
+                    if (i == data_length - 1) {
+
+                        data.gain = round_this(_t.gain, 2);
+                        data.gain_percent = round_this(_t.gain_percent_percent, 2);
+                        if (_t.gain_percent < 1) {
+                            data.gain_percent = round_this(_t.gain_percent, 2);
+                        } else {
+                            data.gain_percent = round_this(_t.gain_percent, 1);
+                        }
+
+                        switch (true) {
+                            case (data.gain_percent <= 5):
+                                var gain_color = '#308de4';
+                                break;
+
+                            case (data.gain_percent >= 5 && data.gain_percent <= 10):
+                                var gain_color = '#f3d05c';
+                                break;
+
+                            case (data.gain_percent >= 10):
+                                var gain_color = '#f0aa06';
+                                break;
+
+
+                        }
+
+
+                        $('#gain_circle_text').html(data.gain_percent).prev().attr('fill', gain_color);
+
+
+                        // <span class="loss title"><span class='gain_loss #8bc34a light-green'>2% gain</span>
+                        // since year 2000 - 70 sqKm</span>
+
+                        data.loss_percent = round_this(_t.loss_percent, 2);
+                        data.loss = round_this(_t.loss, 2);
+                        if (_t.loss_percent < 1) {
+                            data.loss_percent = round_this(_t.loss_percent, 2);
+
+                        } else {
+                            data.loss_percent = round_this(_t.loss_percent, 1);
+
+                        }
+
+
+                        switch (true) {
+                            case (data.loss_percent <= 5):
+                                var loss_color = '#308de4';
+                                break;
+
+                            case (data.loss_percent >= 5 && data.loss_percent <= 10):
+                                var loss_color = '#f3d05c';
+                                break;
+
+                            case (data.loss_percent >= 10):
+                                var loss_color = '#f006dc';
+                                break;
+
+
+                        }
+                        $('.mangroves_li .years_info').text(' Years 2000 - ' + this_data.last_year);
+                        var summary = '<div>';
+                        var balance = round_this((data.gain_percent - data.loss_percent), 2);
+
+                        var balance_sqkm = data.gain - data.loss;
+                        if (balance > 0) {
+
+                            summary += "<span class='gain_loss light-green'>" + balance + "% gain</span> since year 2000 - " + +this_data.last_year + " " + round_this(balance_sqkm, 1) + " sqKm</span>";
+                        } else {
+                            summary += "<span class='gain_loss red accent3'>" + balance + "% loss</span> since year 2000 - " + +this_data.last_year + " " + round_this(balance_sqkm, 1) + " sqKm</span>";
+                        }
+                        //   summary += "<span class='gain title'><span class='gain_loss light-green'>" + round_this(this_data.last_gain_percent, 2) + "% gain</span> since year 2000 - " + +this_data.last_year + " " + round_this(this_data.last_gain, 1) + " sqKm</span>";
+                        // summary += "<span class='loss title'><span class='gain_loss  red accent3'>" + round_this(this_data.last_loss_percent, 2) + "% loss</span> since year 2000 - " + this_data.last_year + " " + round_this(this_data.last_loss, 1) + " sqKm</span>";
+                        summary += '</div>'; //closing .mangroves_summary pop_summary
+                        $('.mangroves_summary').find('.col.s6').html(summary);
+                        $('.mangroves_balance').html('<div style="margin-right:10px">Balance: ' + summary + '</div>');
+
+                        $('#loss_circle_text').html(data.loss_percent).prev().attr('fill', loss_color)
+
+                        // // Start counting, do this on DOM ready or with Waypoints.
+                        setTimeout(function () {
+
+
+                            counterUp(el_gain, {
+                                duration: 1000,
+                                delay: 16,
+                            })
+
+                            // // Start counting, do this on DOM ready or with Waypoints.
+                            counterUp(el_loss, {
+                                duration: 1000,
+                                delay: 16,
+                            })
+                        }, 1000)
+
+                        //  var incomplete = 100 - data.gain;
+                        data.gain_data = [{
+                            "name": "Gain",
+                            "y": _t.gain,
+                            "color": '#b6e084'
+                        }];
+                        data.loss = _t.loss;
+                        data.loss_data = [{
+                            "name": "Loss",
+                            "y": _t.loss,
+                            "color": '#e91e63'
+                        }];
+                    }
+                    mangroves_table += '<tr><td>' + p + '</td><td>' + _t.total_extent + '</td><td>' + _t.gain + '</td><td>' + _t.loss + '</td></tr>'
+                    //mangroves_table += '<tr><td>' + p + '</td><td>' + _t.gain + '</td><td>' + _t.loss + '</td><td>' + _t.stable + '</td></tr>'
+                    i++;
+                }
+
+                mangroves_table += ' </tbody></table>';
+
+                console.info(mangroves_table)
+                $('.mangroves_table').empty().append(mangroves_table);
+
+
+
+                if ($('.sidenav').hasClass('sidenav_on') == false) {
+                    $('#slide-out').sidenav('open');
+                    $('.sidenav').addClass('sidenav_on');
+                }
+
+                //if ($('.country_li ul li .valign-wrapper[info_container="mangroves"]').is('visible') == false) {
+                if ($('.show_hide_table').is(':visible') == false)
+                    $('.country_li ul li .valign-wrapper[info_container="mangroves"]').find('.info').trigger('click');
+
+                setTimeout(function () {
+
+                    console.info(data)
+                    //  create_gauge(data.loss_percent, 'gauge_loss_graph');
+                    // create_gauge(data.gain_percent, 'gauge_gain_graph');
+
+
+                    var w = $('#slide-out .collapsible-header').eq(0).width();
+                    //   $('#mangroves_double_chart').css('width', w)
+                    // alert(w + (w / 2))
+
+                    Highcharts.chart('mangroves_double_chart', {
+                        credits: {
+                            enabled: false
+                        },
+                        chart: {
+                            zoomType: 'xy',
+                            width: w,
+                            height: w / 3
+                        },
+                        title: {
+                            text: ''
+                        },
+
+                        xAxis: [{
+                            className: 'xAxis-style',
+                            categories: this_data.years,
+                            crosshair: true
+                        }],
+                        yAxis: [{ // Primary yAxis
+                            className: 'yAxis-style',
+                            labels: {
+                                format: '{value}',
+                                margin: 0,
+                                padding: 0
+                                // style: {
+                                //     color: Highcharts.getOptions().colors[1]
+                                // }
+                            },
+                            title: {
+                                text: 'Total extent (sqKm)',
+                                margin: 0,
+                                padding: 0
+                                // style: {
+                                //     color: Highcharts.getOptions().colors[1]
+                                // }
+                            }
+                        }, { // Secondary yAxis
+                            title: {
+                                text: 'Percent change',
+                                style: {
+                                    color: '#0a5ffb'
+                                },
+                                margin: 0,
+                                padding: 0
+                                // style: {
+                                //     color: Highcharts.getOptions().colors[0]
+                                // }
+                            },
+                            labels: {
+                                margin: 0,
+                                padding: 0,
+                                format: '{value} %',
+                                style: {
+                                    color: '#0a5ffb'
+                                }
+                            },
+                            opposite: true
+                        }],
+                        tooltip: {
+                            shared: true
+                        },
+                        legend: {
+                            layout: 'horizontal',
+                            align: 'center',
+                            x: 40,
+                            verticalAlign: 'bottom',
+                            y: 20,
+                            floating: true,
+                            // backgroundColor:
+                            //     Highcharts.defaultOptions.legend.backgroundColor || // theme
+                            //     'rgba(255,255,255,0.25)'
+                        },
+                        series: [{
+                            name: 'Total extent',
+                            type: 'column',
+                            data: total_extent,
+                            color: '#2fce1ba1',
+                            tooltip: {
+                                valueSuffix: 'sqKm'
+                            }
+                        }, {
+                            name: 'Percent change',
+                            type: 'spline',
+                            yAxis: 1,
+                            color: '#5396e8c4',
+                            data: perc_change,
+                            tooltip: {
+                                valueSuffix: ' %'
+
+
+                            }
+                        }]
+                    });
+
+                }, 100)
+
+
+
+
+                //return false;
+            }
+
+            map.on('click', function (e) {
+
+                if (hovering_map == false || flying == true)
+                    return false;
+
+
+
+
+                fxs.click_map({
+                    sel_ev: e
+                });
+                //  return false;
+
+                var country_f = map.queryRenderedFeatures(e.point, {
+                    layers: ['eez_land_id'] // replace this with the name of the layer
+                    //gaul_0_fixed
+                })[0];
+                console.info(country_f)
+
+                if (country_f) {
+                    var code = country_f.properties.iso3;
+                    var this_data = countries_data.filter(function (d) {
+                        console.warn(d)
+                        return d.adm_0_iso == code;
+                    })[0];
+                    console.log(this_data)
+                    $('.country_li').find('.card-content .card-title').text(this_data.adm_0_name)
+                    var coords = this_data.bbox.coordinates;
+                    //USA
+                    if (this_data.adm_0_code == 259) {
+                        var bbox = [
+                            [-198.281250, 19.808054],
+                            [-31.025391, 69.595890]
+                        ];
+                    } else {
+                        var bbox = [coords[0][2], coords[0][0]];
+                        //  var bbox = [[-198.281250 19.808054], [-31.025391 69.595890]];
+                    }
+                    console.log(bbox)
+
+                    map.fitBounds(bbox);
+
+                }
+
+            })
+            map.on('sourcedataloading', function (e) {
+                return false;
+                console.log('sourcedataloading');
+                return false;
+                var checkLoaded = setInterval(loaded, 100);
+
+                function loaded() {
+                    if (map.getLayer('basins_6_adm_0')) {
+                        //  console.log('tiles loaded: ', map.areTilesLoaded());
+                    }
+                    if (map.areTilesLoaded()) {
+
+
+                        window.clearInterval(checkLoaded);
+                        console.log('tiles loaded: ', map.areTilesLoaded());
+                        setTimeout(function () {
+                            //  if (y == 0) return false;
+                            var features = map.querySourceFeatures("basins_06", {
+                                sourceLayer: 'adm_0_level_6',
+                                filter: ['any', ['==', 'adm_0_code', 85]]
+                            });
+                            console.info(features);
+                            if (features.length == 0) {
+                                // y = 0;
+                                console.info(features.length)
+                                return false;
+                            } else {
+                                if (y == 1) {
+                                    console.log('y == 1')
+                                    y = 0;
+                                    var all_f = map.querySourceFeatures("basins_06", {
+                                        sourceLayer: 'adm_0_level_6'
+                                    })
+                                    //   return false;
+                                } else {
+                                    return false;
+                                }
+                            }
+
+                            var uniques_by_country = getUniqueFeatures(all_f, "adm_0_name");
+                            var countries = uniques_by_country.map(function (d) {
+                                return d.properties.adm_0_name;
+                            })
+                            console.warn(countries)
+
+                            //  var uniques = getUniqueFeatures(features, "adm_0_code");
+
+                            // Run through the selected features and set a filter
+                            // to match features with unique FIPS codes to activate
+                            // the `counties-highlighted` layer.
+                            var filter = features.reduce(
+                                function (memo, feature) {
+                                    memo.push(feature.properties.pfaf_id);
+                                    return memo;
+                                }, ["in", "pfaf_id"]
+                            );
+                            console.warn(filter)
+                            // map.setFilter("counties-highlighted", filter);
+                            // var pfaf_arr = uniques.map(function (d) {
+                            //     return d.properties.pfaf_id
+                            // });
+                            var symbol_expression = ["match", ["get", "pfaf_id"]];
+                            var opacity_expression = ["match", ["get", "pfaf_id"]];
+                            var uniques = getUniqueFeatures(features, "pfaf_id");
+                            uniques.forEach(function (d) {
+                                //    console.log(d)
+                                symbol_expression.push(d.properties.pfaf_id, getRandomColor());
+                                opacity_expression.push(d.properties.pfaf_id, 1);
+                            })
+                            console.info(symbol_expression)
+                            symbol_expression.push("#d0c4c4");
+                            opacity_expression.push(0);
+
+                            map.setPaintProperty('basins_6_adm_0', "fill-opacity", opacity_expression);
+                            map.setPaintProperty('basins_6_adm_0', "fill-color", symbol_expression);
+                            map.setLayoutProperty('basins_6_adm_0', "visibility", "visible");
+
+                            // setTimeout(function () {
+                            //     var features = map.querySourceFeatures("basins_06", {
+                            //         sourceLayer: 'adm_0_level_6',
+                            //         filter: ['any', ['==', 'adm_0_code',]]
+                            //     });
+                            // })
+
+                            //   console.info(pfaf_arr.sort())
+                        }, 100)
+                    }
+                }
+            });
+
+        })
+    </script>
+
+</body>
+<script src='./mangroves_new2/countries_stats.js'></script>
+
+</html>

@@ -15,7 +15,7 @@
  #baselayers_dropdown.dropdown-content {
      top: 63px!important;
      padding: 13px;
-     min-height:300px;
+     /* min-height:300px; */
  }
  
  .dropdown_legend_btn {

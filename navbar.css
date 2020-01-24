@@ -154,7 +154,11 @@ top: 0.1rem!important;
     background-color: red;
     height:200px;
   }
-  
+  .mangroves div.legend .col.s6 > div
+  {
+     display: inline-block!important;
+     padding: 10px!important;
+ } 
   .sidenav li.active .collapsible-body{
     background-color: #ffffff0d;
 }

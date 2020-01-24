@@ -57,8 +57,7 @@ $(document).ready(function () {
     $('.collapsible').collapsible();
 
     var li_h = $('#overlays_dropdown .main.collection-item').eq(0).height();
-    alert(li_h)
-    alert($('#overlays_dropdown .main.collection-item').length * li_h)
+
 
     $('#overlays_dropdown.dropdown-content').css('min-height', $('#overlays_dropdown .main.collection-item').length * li_h + 'px');
 
@@ -183,9 +182,9 @@ $(document).ready(function () {
 
                     map.flyTo({ 'center': d.centroid });
                     clicked_sel_f = { sel_code: code, sel_latlng: d.centroid };
-                    map.fire('flystart');
-                    //  fxs.click_map(clicked_sel_f);
-                    //map.fire('click');
+                    //  map.fire('flystart');
+                    fxs.click_map(clicked_sel_f);
+                    // map.fire('click');
                     // setTimeout(function () {
                     //     mousemove_map({ sel_code: code, sel_latlng: d.centroid })
                     // }, 1600)
