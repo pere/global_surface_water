@@ -2,7 +2,6 @@ var basins_6_adm_0_layer, gaul_0_simple_layer;
 
 function init_map() {
 
-    // mapboxgl.accessToken = 'pk.eyJ1IjoicGVyaWt1dCIsImEiOiJVNzBjMl9FIn0.38swLsSY2ao8E8rU8FYgyw';
     map = new mapboxgl.Map({
         container: 'map',
         attributionControl: false,
@@ -29,17 +28,15 @@ function init_map() {
                 }
             }]
         },
-        // style: 'mapbox://styles/mapbox/light-v10',
-        //  style: 'mapbox://styles/perikut/ck1xa74kk1c2c1cmtdho498go',
-        //style: 'mapbox://styles/v1/perikut/ck1xa74kk1c2c1cmtdho498go',
+       
+     
         center: [-100, 22],
         //    center: [-2, 41],
         //center: [73, 62],
         zoom: 2
-    });
-
-    // Add zoom and rotation controls to the map.
-    map.addControl(new mapboxgl.NavigationControl());
+    }).addControl(new mapboxgl.NavigationControl({
+        showCompass: false
+    }), 'top-right');
 
     map.on('load', function() {
 
