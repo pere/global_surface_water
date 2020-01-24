@@ -36,8 +36,7 @@ $(document).ready(function () {
                     main_li.find('.collapsible-body').show()
                     $('.' + info_type).show();
 
-                }
-                else {
+                } else {
 
                     //   $('.lakes_li').show()
                     //  $('.lakes_li').find('.collapsible-body').show()
@@ -75,12 +74,45 @@ $(document).ready(function () {
             var adm_name = txt;
             console.info(adm_name)
             countries_data.forEach(function (d) {
+                /* if (d.adm_0_name == adm_name) {
+                     console.log(d.bbox)
+                     var bbox_arr = d.bbox.coordinates[0];
+                     console.info(bbox_arr)
+                     //var bbox = [coords[0][2], coords[0][0]];
+                     var bbox = [bbox_arr[2], bbox_arr[0]]
+                     map.fitBounds(bbox);
+                 }
+                 */
+
                 if (d.adm_0_name == adm_name) {
-                    console.log(d.bbox)
+                    console.log(d)
+                    var _bbox = d.bbox.coordinates[0];
                     //var bbox = [coords[0][2], coords[0][0]];
-                    var bbox = [d.bbox[2], d.bbox[0]]
-                    //console.log(bbox)
+                    var bbox = [_bbox[2], _bbox[0]]
+
+                    //USA
+                    if (d.adm_0_code == 259) {
+                        var bbox = [
+                            [-198.281250, 19.808054],
+                            [-31.025391, 69.595890]
+                        ];
+                    }
+                    var code = d.adm_0_iso;
+
+                    //map.flyTo({ 'center': d.centroid });
                     map.fitBounds(bbox);
+                    clicked_sel_f = { sel_code: code, sel_latlng: d.centroid };
+                    selects.adm_0_code = d.adm_0_code;
+                    app.plot_thematic_map(d.adm_0_code)
+                    // map.fire('flystart');
+                    //  fxs.click_map(clicked_sel_f);
+                    //map.fire('click');
+                    // setTimeout(function () {
+                    //     mousemove_map({ sel_code: code, sel_latlng: d.centroid })
+                    // }, 1600)
+
+
+
                 }
             })
 
@@ -212,22 +244,22 @@ $(document).ready(function () {
 
 
     });
-    $('#overlays_dropdown .material-icons').each(function () {
-        if ($(this).hasClass('layers'))
-            $(this).attr('data-tooltip', "<b>Use this icon to show on/off this layer</b>");
+    // $('#overlays_dropdown .material-icons').each(function () {
+    //     if ($(this).hasClass('layers'))
+    //         $(this).attr('data-tooltip', "<b>Use this icon to show on/off this layer</b>");
 
-        if ($(this).hasClass('palette'))
-            $(this).attr('data-tooltip', "<b>Use this icon to symbolize this layer</b>");
+    //     if ($(this).hasClass('palette'))
+    //         $(this).attr('data-tooltip', "<b>Use this icon to symbolize this layer</b>");
 
-        $(this).attr("data-position", "top");
+    //     $(this).attr("data-position", "top");
 
-        $(this).tooltip({
-            enterDelay: 10,
-            exitDelay: 5050,
-            position: 'right',
-            html: true
-        });
-    })
+    //     $(this).tooltip({
+    //         enterDelay: 10,
+    //         exitDelay: 5050,
+    //         position: 'right',
+    //         html: true
+    //     });
+    // })
 
     $('#overlays_dropdown .material-icons').on('mouseout', function () {
         $(this).tooltip('close');

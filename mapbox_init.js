@@ -1,9 +1,36 @@
+var basins_6_adm_0_layer, gaul_0_simple_layer;
+
 function init_map() {
-    mapboxgl.accessToken = 'pk.eyJ1IjoicGVyaWt1dCIsImEiOiJVNzBjMl9FIn0.38swLsSY2ao8E8rU8FYgyw';
+
+    // mapboxgl.accessToken = 'pk.eyJ1IjoicGVyaWt1dCIsImEiOiJVNzBjMl9FIn0.38swLsSY2ao8E8rU8FYgyw';
     map = new mapboxgl.Map({
         container: 'map',
+        attributionControl: false,
+        style: {
+            "version": 8,
+            "sources": {
+                "geoserver": {
+                    "type": "vector",
+                    "tiles": [
+                        "https://geospatial.jrc.ec.europa.eu/geoserver/gwc/service/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=hotspots:gaul_0_simplified&STYLE=&TILEMATRIX=EPSG:900913:{z}&TILEMATRIXSET=EPSG:900913&FORMAT=application/vnd.mapbox-vector-tile&TILECOL={x}&TILEROW={y}"
+                    ],
+                }
+            },
+            "layers": [{
+                "id": "gaul_0_simple",
+                "source": "geoserver",
+                "source-layer": "gaul_0_simplified",
+                "type": "fill",
+                'paint': {
+                    "fill-color": "#8bc34a",
+                    "fill-outline-color": "#6e9090",
+                    "fill-opacity": 0.4
+
+                }
+            }]
+        },
         // style: 'mapbox://styles/mapbox/light-v10',
-        style: 'mapbox://styles/perikut/ck1xa74kk1c2c1cmtdho498go',
+        //  style: 'mapbox://styles/perikut/ck1xa74kk1c2c1cmtdho498go',
         //style: 'mapbox://styles/v1/perikut/ck1xa74kk1c2c1cmtdho498go',
         center: [-100, 22],
         //    center: [-2, 41],
@@ -14,7 +41,7 @@ function init_map() {
     // Add zoom and rotation controls to the map.
     map.addControl(new mapboxgl.NavigationControl());
 
-    map.on('load', function () {
+    map.on('load', function() {
 
         country_popup = new mapboxgl.Popup({
             closeButton: false,
@@ -22,9 +49,9 @@ function init_map() {
             //offset: [20, -20]
             offset: {
                 'bottom': [0, -20],
-                'top': [0, -15],
-                'top-left': [0, 0],//[linearOffset, (markerHeight - markerRadius - linearOffset) * -1],
-                'top-right': [0, 0],//[-linearOffset, (markerHeight - markerRadius - linearOffset) * -1],
+                'top': [0, 55],
+                'top-left': [0, 0], //[linearOffset, (markerHeight - markerRadius - linearOffset) * -1],
+                'top-right': [0, 0], //[-linearOffset, (markerHeight - markerRadius - linearOffset) * -1],
 
                 // 'bottom-left': [linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
                 // 'bottom-right': [-linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
@@ -34,6 +61,10 @@ function init_map() {
         });
 
         bassins_popup = new mapboxgl.Popup({
+            'bottom': [0, -20],
+            'top': [0, 55],
+            'top-left': [0, 0], //[linearOffset, (markerHeight - markerRadius - linearOffset) * -1],
+            'top-right': [0, 0], //[-linearOffset, (markerHeight - markerRadius - linearOffset) * -1],
             closeButton: false,
             closeOnClick: true
         });
@@ -79,16 +110,12 @@ function init_map() {
 
         var layers_correspondence_new = [];
 
-
-        var layer = {
-            "id": "basins_6_adm_0",
+        var basins_5 = {
+            "id": "basins_5_adm_0_fill",
             "type": "fill",
-            "source": "basins_06",
-            "source-layer": "adm_0_level_6",
-            'layout': {
-                'visibility': 'visible'
 
-            },
+            "source": "basins_5_adm_0",
+            "source-layer": "basins_5_adm_0",
             // "layout": {
             //     'text-field': '{pfaf_id}',
             //     'text-font': ["Lato Bold"],
@@ -100,29 +127,70 @@ function init_map() {
             //         ]
             //     }
             // },
-            "paint": {
-                //"fill-color": expression,
-                "fill-color": '#9cb9ef',
-                "fill-opacity": 0.6,
-                'fill-outline-color':
-                {
-                    "stops": [
-                        [3, '#8a2be2'],
-                        [6, '#8a2be2'],
-                        [8, '#8a2be2']
-
-
-
-                        //  [8, 'rgba(255, 255, 255, 0.1)']
-                    ]
-                }
-
-
+            'layout': {
+                'visibility': 'none'
+            },
+            'paint': {
+                "fill-color": "#b183dc",
+                //'line-color': "#5a5a5a",
+                "fill-outline-color": "#5a5a5a",
+                "fill-opacity": 0.1
 
             }
-        };
+            // 'filter': ['any', ['==', 'adm_0_code', 204]]
 
-        map.addLayer(layer, 'country-label');
+        }
+
+        basins_6_adm_0_layer = {
+            "id": "basins_6_adm_0",
+            "type": "fill",
+            "source": "basins_06",
+            "source-layer": "adm_0_level_6",
+            'layout': {
+                'visibility': 'none'
+
+            },
+
+            'paint': {
+                "fill-color": "#ff7f50",
+                "fill-outline-color": "#fec46c",
+                "fill-opacity": 0.1
+
+            }
+            // "layout": {
+            //     'text-field': '{pfaf_id}',
+            //     'text-font': ["Lato Bold"],
+            //     'text-size': {
+            //         "base": 1,
+            //         "stops": [
+            //             [12, 12],
+            //             [16, 16]
+            //         ]
+            //     }
+            // },
+            // "paint": {
+            //     //"fill-color": expression,
+            //     "fill-color": '#9cb9ef',
+            //     "fill-opacity": 0,
+            //     'fill-outline-color': {
+            //         "stops": [
+            //             [3, '#8a2be2'],
+            //             [6, '#8a2be2'],
+            //             [8, '#8a2be2']
+
+
+
+            //             //  [8, 'rgba(255, 255, 255, 0.1)']
+            //         ]
+            //     }
+
+
+
+            // }
+        };
+        layers_correspondence_new.push(layer, 'basins_5_adm_0_fill');
+        //   layers_correspondence
+        //    map.addLayer(layer, 'country-label');
 
         var layer = {
             "id": "basins_06_lines",
@@ -131,21 +199,21 @@ function init_map() {
 
             "source-layer": "adm_0_level_6",
             'layout': {
-                'visibility': 'visible'
+                'visibility': 'none'
 
             },
             'paint': {
 
-                'line-color': "#ff07a7",
-                'line-width': 2
+                'line-color': "#0aa6ec",
+                'line-width': 0.02
 
             }
-            ,
-            'filter': ['any', ['==', 'pfaf_id', '']]
+
         }
 
 
-        map.addLayer(layer, 'country-label');
+        map.addLayer(layer);
+        map.addLayer(basins_6_adm_0_layer);
 
         layers_correspondence_new.push(layer);
 
@@ -191,7 +259,7 @@ function init_map() {
 
         layers_correspondence_new.push(layer);
 
-        map.addLayer(layer, 'country-label');
+        map.addLayer(layer);
 
 
 
@@ -216,32 +284,40 @@ function init_map() {
 
         }
 
-        map.addLayer(layer, 'country-label');
+        map.addLayer(layer);
 
         layers_correspondence_new.push(layer);
 
-        var layer = {
+        gaul_0_simple_layer = {
             "id": "gaul_0_simple",
             "type": "fill",
             "source": "gaul_0_simple",
             "source-layer": "gaul_0_simplified",
-            "minzom": 1,
+            // "minzom": 1,
             // 'layout': {
             //     'visibility': 'none'
 
             // },
-            'maxzoom': 5,
+            // 'maxzoom': 5,
 
             'paint': {
                 "fill-color": "#0ff",
                 "fill-outline-color": "#fec46c",
-                "fill-opacity": 0.2
+                "fill-opacity": 0
 
             }
 
         }
-        map.addLayer(layer, 'country-label');
-        layers_correspondence_new.push(layer);
+        map.addLayer(basins_5);
+        map.addLayer(gaul_0_simple_layer);
+
+
+        // map.setLayoutProperty('basins_5_adm_0_fill', "visibility", "visible");
+
+
+
+
+        layers_correspondence_new.push(gaul_0_simple_layer);
 
         var layer = {
             "id": "gaul_0_fixed",
@@ -262,7 +338,7 @@ function init_map() {
             },
 
         }
-        map.addLayer(layer, 'country-label');
+        map.addLayer(layer);
         layers_correspondence_new.push(layer);
 
 
@@ -287,38 +363,9 @@ function init_map() {
             },
             'filter': ['any', ['==', 'adm_0_code', 204]]
 
-        }, 'country-label');
+        });
 
-        map.addLayer({
-            "id": "basins_5_adm_0_fill",
-            "type": "fill",
 
-            "source": "basins_5_adm_0",
-            "source-layer": "basins_5_adm_0",
-            // "layout": {
-            //     'text-field': '{pfaf_id}',
-            //     'text-font': ["Lato Bold"],
-            //     'text-size': {
-            //         "base": 1,
-            //         "stops": [
-            //             [12, 12],
-            //             [16, 16]
-            //         ]
-            //     }
-            // },
-            'layout': {
-                'visibility': 'none'
-            },
-            'paint': {
-                "fill-color": "#b183dc",
-                //'line-color': "#5a5a5a",
-                "fill-outline-color": "#5a5a5a",
-                "fill-opacity": 0.8
-
-            }
-            // 'filter': ['any', ['==', 'adm_0_code', 204]]
-
-        }, 'country-label');
 
         map.addLayer({
             "id": "gaul_0_simple_lines",
@@ -338,7 +385,7 @@ function init_map() {
             },
             'filter': ['any', ['==', 'adm_0_code', '']]
 
-        }, 'country-label');
+        });
 
         // map.addLayer({
         //     "id": "gaul_0_fixed",
@@ -412,14 +459,12 @@ function init_map() {
                 // y = 0;
                 console.info(features.length)
                 return false;
-            }
-            else {
+            } else {
                 if (y == 0) {
                     console.log('y == 0')
-                    //  y = 0;
-                    //   return false;
-                }
-                else {
+                        //  y = 0;
+                        //   return false;
+                } else {
                     console.log('y == 1 should return false')
                     y = 0;
                     var uniques = getUniqueFeatures(features, "pfaf_id");
@@ -434,7 +479,7 @@ function init_map() {
         }
     }
     //var checkLoaded;
-    map.on('sourcedataloading', function (e) {
+    map.on('sourcedataloading', function(e) {
 
         // console.log('sourcedataloading');
         //    window.checkLoaded = setInterval(loaded, 2200);

@@ -101,8 +101,9 @@ $(document).ready(function () {
     //     app.plot_features_on_click();
     // });
 
-    function plot_thematic_map(adm_0_code) {
+    app.plot_thematic_map = function (adm_0_code) {
         //working??
+
         console.info(adm_0_code)
         console.log(selects)
 
@@ -116,7 +117,7 @@ $(document).ready(function () {
         }
 
         if (selects.avg_layer == 'gaul_1') {
-            alert('data not ready for Gaul 1');
+            console.info('data not ready for Gaul 1');
             return false;
         }
         if (selects.avg_layer == 'basins_5')
@@ -132,7 +133,7 @@ $(document).ready(function () {
 
         } else {
 
-            map.setFilter('gaul_0_simple_lines', ['==', 'adm_0_code', adm_0_code]);
+
 
             // var this_data = all_basins6_simple.filter(function (d) {
             //     return d.adm_0_code == adm_0_code;
@@ -148,12 +149,14 @@ $(document).ready(function () {
         }
         var id_avg_arr = [];
 
-        console.info(JSON.stringify(selects._data))
+        console.info(JSON.stringify(this_data))
         var total_avg = 0;
         var index = 0;
         if (selects.avg_layer !== 'countries') {
             if (selects.adm_0_code == 'global') {
                 console.log('requesting global info')
+
+                map.setFilter('basins_6_adm_0', null);
 
                 var symbol_expression = ["match", ["get", "pfaf_id"]];
 
@@ -269,7 +272,7 @@ $(document).ready(function () {
             arrs: arrs_decimals
         }
 
-
+        console.log(params)
         if (selects.avg_type == 'avg_seasonal') {
             var interpolate = d3v5.interpolatePiYG;
         }
@@ -288,10 +291,11 @@ $(document).ready(function () {
 
 
         if (selects.avg_layer !== 'countries') {
-
+            //working wityh bassins
             if (selects.adm_0_code == 'global') {
+                console.info('global  bassins')
                 this_data.forEach(function (country) {
-                    console.info(country)
+
                     for (var pfaf_id in country.pfaf_features) {
                         var this_avg = country.pfaf_features[pfaf_id][selects.avg_type];
                         if (selects.avg_type == 'avg_permanent') {
@@ -319,9 +323,13 @@ $(document).ready(function () {
 
             }
             else {
+
+                console.info('country  bassins')
+                console.info(this_data['pfaf_features'])
                 //map.setFilter('basins_06', { filter: ['any', ['==', 'adm_0_code', country_f[0].properties.adm_0_code]] })
                 //  map.setFilter('basins_06_lines', { filter: ['any', ['==', 'adm_0_code', adm_0_code]] });
-                map.setFilter('basins_6_adm_0', ['==', 'adm_0_code', adm_0_code]);
+                // map.setFilter('basins_6_adm_0', ['==', 'adm_0_code', adm_0_code]);
+                // map.setPaintProperty('basins_6_adm_0', "fill-opacity", 1);
 
                 for (var pfaf_id in this_data['pfaf_features']) {
                     var this_avg = this_data['pfaf_features'][pfaf_id][selects.avg_type];
@@ -338,7 +346,7 @@ $(document).ready(function () {
                         var other_avg = this_data['pfaf_features'][pfaf_id][selects.avg_type];
                         //  var other_avg=country.pfaf_features[pfaf_id]['avg_permanent']
                     }
-                    console.warn({ other_avg_label: other_avg })
+
                     symbol_expression.push(parseInt(pfaf_id), threshold_colors_pfafs_avg(this_avg));
 
                     var obj = { pfaf_id: pfaf_id, color: threshold_colors_pfafs_avg(this_avg) };
@@ -349,46 +357,71 @@ $(document).ready(function () {
             }
         } else {
             //(selects.avg_layer == 'countries') 
-            this_data.forEach(function (d) {
+
+            console.info('global countries')
+            console.warn(this_data)
+            console.log(symbol_expression)
+            // map.setFilter('basins_6_adm_0', 'none');
+            map.removeLayer('basins_6_adm_0');
+
+
+            this_data.forEach(function (d, i) {
 
                 if (selects.avg_type == 'avg_permanent') {
+                    console.log(i)
+                    console.log(d)
                     var this_label = 'avg_permanent';
                     var other_avg_label = 'avg_seasonal';
                     var other_avg = d['avg_seasonal']
                     var this_avg = d[selects.avg_type];
+
 
                 }
                 else {
                     var this_label = 'avg_seasonal';
                     var other_avg_label = 'avg_permanent';
                     //  var other_avg=country.pfaf_features[pfaf_id]['avg_permanent']
-                    var other_avg = d[selects.avg_type];
-                }
-                console.warn({ other_avg_label: other_avg })
-                symbol_expression.push(parseInt(d.adm_0_code), threshold_colors_pfafs_avg(this_avg));
 
+
+                    var other_avg = d['avg_permanent']
+                    var this_avg = d[selects.avg_type];
+                }
+
+                symbol_expression.push(parseInt(d.adm_0_code), threshold_colors_pfafs_avg(this_avg));
                 var obj = { country_id: d.adm_0_code, color: threshold_colors_pfafs_avg(this_avg) };
+                console.log(obj)
                 obj[this_label] = this_avg;
                 obj[other_avg_label] = other_avg;
 
                 selects._data.push(obj);
+                //   console.warn({ other_avg_label: other_avg })
             })
-        }
-        //  console.info(symbol_expression)
-        // console.log(JSON.stringify(selects._data))
 
+        }
+
+        console.log(symbol_expression)
         do_legend(params);
         $('.mapboxgl-ctrl-bottom-right').show();
 
         //set up transparent by default not working...
         //https://stackoverflow.com/questions/18189201/is-there-a-color-code-for-transparent-in-html/18189313
         symbol_expression.push("#d0c4c4");
+        console.log(symbol_expression)
         //rgba(0,0,0,0)
         // console.info(symbol_expression)
         if (selects.avg_layer !== 'countries') {
+
+            if (!map.getLayer("basins_6_adm_0")) {
+                console.log('basins')
+
+                map.addLayer(basins_6_adm_0_layer)
+                //map.setFilter('basins_6_adm_0', null)
+
+                map.setPaintProperty('basins_6_adm_0', "fill-opacity", 1);
+            }
+
             if (selects.adm_0_code == 'global') {
                 var bbox = [[-167.167969, -61.270233], [167.343750, 61.270233]];
-                map.fitBounds(bbox);
             }
             else {
                 var coords = this_data.bbox.coordinates;
@@ -400,16 +433,11 @@ $(document).ready(function () {
                     var bbox = [coords[0][2], coords[0][0]];
                     //  var bbox = [[-198.281250 19.808054], [-31.025391 69.595890]];
                 }
-                //  -198.281250,19.808054,-31.025391,69.595890
-                console.info(this_data)
 
-
-
-                console.log(bbox)
-
-
-                map.fitBounds(bbox);
             }
+
+            map.fitBounds(bbox);
+
 
             switch (selects.avg_layer) {
                 case 'basins_6': var layer_name = 'basins_6_adm_0'; break;
@@ -418,10 +446,15 @@ $(document).ready(function () {
             }
             // map.setLayoutProperty('gaul_0_simple_lines', 'visibility', 'visible');
             // map.setPaintProperty('basins_6_adm_0', "fill-opacity", 0);
-            map.setPaintProperty('basins_06_lines', "line-width", 2);
 
-            //  var point = [bbox[0][1] + bbox.width/2, bbox.y + bbox.height/2];
-            map.setLayoutProperty('basins_06_lines', "visibility", "visible");
+            //map.setLayoutProperty('gaul_0_simple', "fill-opacity", 1);
+
+            map.setFilter(layer_name, ['==', 'adm_0_code', adm_0_code]);
+
+            //  map.setPaintProperty('basins_06_lines', "line-width", 2);
+
+
+            //  map.setLayoutProperty('basins_06_lines', "visibility", "visible");
 
             map.setPaintProperty(layer_name, "fill-opacity", 1);
             map.setPaintProperty(layer_name, "fill-color", symbol_expression);
@@ -434,9 +467,20 @@ $(document).ready(function () {
             map.setLayoutProperty('gaul1_simple', "visibility", "none");
             map.setLayoutProperty('gaul_1', "visibility", "none");
         } else {
-            //  map.setLayoutProperty('gaul_0_simple', "visibility", 'visible');
-            map.setPaintProperty('gaul_0_simple', "fill-color", symbol_expression);
+            //    console.info('countries')
+            if (!map.getLayer("gaul_0_simple")) {
+                console.log('add countries')
+                map.addLayer(gaul_0_simple_layer);
+
+
+            }
             map.setPaintProperty('gaul_0_simple', "fill-opacity", 1);
+            console.log(symbol_expression)
+            map.setLayoutProperty('gaul_0_simple', "visibility", 'visible');
+            map.setPaintProperty('gaul_0_simple', "fill-opacity", 1);
+
+            map.setPaintProperty('gaul_0_simple', "fill-color", symbol_expression);
+
         }
         // map.setFilter('basins_6_adm_0', ['==', 'adm_0_code', adm_0_code]);
         selects.pfafs_avg_expression = symbol_expression;
@@ -445,6 +489,8 @@ $(document).ready(function () {
 
     app.plot_features_on_click = function (e) {
         console.log(e)
+
+
 
         //                 var bbox=[[-86.72, 32.72],[-118.36, 14.53]];
         // var features = turf.featureCollection([
@@ -469,7 +515,12 @@ $(document).ready(function () {
             selects.adm_0_code = 'global';
 
             map.fitBounds(bbox);
-            plot_thematic_map()
+            // if (!map.getLayer("basins_6_adm_0")) {
+            //     //    console.info('add basins 6')
+            //     map.addLayer(basins_6_adm_0_layer, 'country-label');
+
+            // }
+            app.plot_thematic_map()
         }
         else {
             // var features = map.querySourceFeatures(e.point);
@@ -480,6 +531,8 @@ $(document).ready(function () {
             var adm_0_code = country_f[0].properties.adm_0_code;
 
             map.setFilter('gaul_0_simple_lines', ['==', 'adm_0_code', adm_0_code]);
+
+
             var features = map.querySourceFeatures("basins_06", {
                 sourceLayer: 'adm_0_level_6',
                 filter: ['any', ['==', 'adm_0_code', adm_0_code]]
@@ -490,7 +543,7 @@ $(document).ready(function () {
 
             options.map_element = e;
             selects.adm_0_code = adm_0_code;
-            plot_thematic_map(adm_0_code)
+            app.plot_thematic_map(adm_0_code)
 
 
             // features.forEach(function (d) {
@@ -546,14 +599,30 @@ $(document).ready(function () {
     }
     map.on("click", function (e) {
         options.map_element = e;
-        console.log(e)
-        map.setPaintProperty('basins_6_adm_0', "fill-opacity", 0);
-        map.setPaintProperty('basins_06_lines', "line-width", 0);
-        map.setFilter('basins_6_adm_0', ['has', 'adm_0_code']);
-        setTimeout(function () {
 
-            map.setPaintProperty('basins_06_lines', "line-width", 2);
-        }, 1000)
+
+
+        console.log(e)
+
+        if (!map.getLayer("basins_6_adm_0")) {
+            //    console.info('add basins 6')
+            map.addLayer(basins_6_adm_0_layer);
+
+        }
+
+        if (!map.getLayer("gaul_0_simple")) {
+            //    console.info('add basins 6')
+            map.addLayer(gaul_0_simple_layer);
+
+        }
+
+        //map.setPaintProperty('basins_6_adm_0', "fill-opacity", 0);
+        // map.setPaintProperty('basins_06_lines', "line-width", 0);
+        // map.setFilter('basins_6_adm_0', ['has', 'adm_0_code']);
+        // setTimeout(function () {
+
+        //     map.setPaintProperty('basins_06_lines', "line-width", 2);
+        // }, 1000)
         app.plot_features_on_click(e);
     })
 
@@ -635,16 +704,16 @@ $(document).ready(function () {
         var zoom = map.getZoom();
 
         var features = map.queryRenderedFeatures(e.point);
-        //  console.info(features)
+
 
         //only layers that we are mouseovering...
         var mouseov_layers = features.map(function (d) {
             return d.layer.id;
         });
-        //console.info(mouseov_layers)
-        var html = '';
+        console.info(mouseov_layers)
 
-        if (mouseov_layers.length == 1 && mouseov_layers[0] == 'water') {
+
+        if (mouseov_layers.length == 1 && mouseov_layers[0] == 'gaul_0_simple') {
             if ($('.bassins_popup').length > 0)
                 bassins_popup.remove();
             if ($('.country_popup').length > 0)
@@ -655,7 +724,9 @@ $(document).ready(function () {
 
 
             if (f.layer.id == 'gaul_0_simple' || f.layer.id == 'gaul_0_fixed') {
+                var html = '';
                 var adm_0_code = f.properties.adm_0_code;
+                //  map.setLayoutProperty('basins_6_adm_0', "fill-opacity", 0);
                 //    console.log(adm_0_code)
 
 
@@ -672,7 +743,7 @@ $(document).ready(function () {
                         var _sel = selects._data.filter(function (d) {
                             return d.country_id == adm_0_code;
                         })[0]
-                        console.info(_sel)
+                        //   console.info(_sel)
 
                         // if (selects.avg_type=='avg_permanent')
                         html += '<div class="title" style="color:' + _sel.color + '">Average permanenent</div><div class="row">' + _sel.avg_permanent + '<div></div>'
@@ -695,7 +766,9 @@ $(document).ready(function () {
 
             }
             if (f.layer.id == 'basins_6_adm_0') {
-                //  console.log(f.properties)
+                var html = '';
+                console.log(f.properties)
+
                 var adm_0_code = f.properties.adm_0_code;
                 var pfaf_id = f.properties.pfaf_id;
 
@@ -730,12 +803,17 @@ $(document).ready(function () {
 
 
 
-
+                console.info(selects)
                 if (selects.adm_0_code) {
                     if (adm_0_code == selects.adm_0_code || selects.adm_0_code == 'global') {
+
+                        // if ($('.bassins_popup').length > 0)
+                        //     bassins_popup.remove();
+
                         selects._data.forEach(function (d) {
                             //   console.info(d)
                             if (parseInt(d.pfaf_id) == parseInt(f.properties.pfaf_id)) {
+                                console.info(f.properties)
                                 // html += '<div class="bassins_popup"><div class="section">Bassin id: <div>' + f.properties.pfaf_id + '</div>'+
                                 //'<span>Average permanent</span><div><div class="divider">' + d.avg_permanent + '<p><div class="section">'+
                                 //    '<span>Average seasonal</span><div class="divider">' + d.avg_seasonal + '</div></div>';
@@ -747,25 +825,25 @@ $(document).ready(function () {
                         })
 
                         html += '<div class"highcharts_container"></div>';
+
+
+
                     }
                 }
                 else {
-                    html += ' <div class="bassins_popup"> <div class="section"> <div class="row"> <div>' + f.properties.pfaf_id + '</div></div></div></div>'
+                    //  html += ' <div class="bassins_popup"> <div class="section"> <div class="row"> <div>' + f.properties.pfaf_id + '</div></div></div></div>'
                 }
                 bassins_popup.setLngLat(e.lngLat)
 
-
+                console.info(html)
                 bassins_popup.setHTML(html) //<hr>'+feature.properties.adm_0_name)
                     .addTo(map);
 
-                var this_data = all_basins6_simple.filter(function (d) {
-                    return d.adm_0_code == adm_0_code;
-                })[0];
             }
         })
         // get_chart(this_data);
 
-    }, 1));
+    }, 100));
 
 
 })

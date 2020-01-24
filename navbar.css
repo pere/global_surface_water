@@ -87,7 +87,10 @@
   .theme_container.on {
       display: block;
   }
-  
+  #topbarsearch .material-icons
+  {
+top: 0.1rem!important;
+  }
   .sidenav {
       top: 75px;
       width: 35%;
@@ -177,7 +180,7 @@
 
     .scale {
         margin-bottom: 2vm;
-        margin-top: 30px;
+        
         pointer-events: auto;
     }
 

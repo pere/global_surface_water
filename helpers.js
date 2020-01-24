@@ -1,4 +1,4 @@
-$.fn.hasAttr = function (name) {
+$.fn.hasAttr = function(name) {
     return this.attr(name) !== undefined;
 };
 
@@ -10,26 +10,54 @@ function getRandomInt(min, max) {
 var layers_correspondence = {
     'countries': { layer_ids: ['gaul_0_simple', 'gaul_0_fixed', 'gaul_0_simplified_highlighted', 'gaul_0_fixed_highlighted'] },
     'gaul_1': ['gaul_1', 'gaul1_simple'],
-    'basins_6': ['basins_6_adm_0'],
+    'basins_6': ['basins_06_lines'],
     'basins_5': ['basins_5_adm_0_fill']
 };
 
 function show_hide_layers(action, data_layer) {
-    layers_correspondence[data_layer].forEach(function (d) {
+    layers_correspondence[data_layer].forEach(function(d) {
+        console.dir(d)
         var visibility = map.getLayoutProperty(d, 'visibility');
         console.warn(visibility + ' for layer ' + d)
         if (action == 'hide') {
             map.setLayoutProperty(d, 'visibility', 'none');
         } else {
+
+            if (!map.getLayer(d)) {
+                map.addLayer(d, 'gaul_0_simple')
+            }
             map.setLayoutProperty(d, 'visibility', 'visible');
         }
     })
+
+
+    // if (action == 'hide') {
+    //     if (map.getLayer('basins_5_adm_0_fill')) {
+    //         console.log('hide basins')
+    //         map.removeLayer(basins_6_adm_0_layer)
+    //         //map.setFilter('basins_6_adm_0', null)
+
+    //         // map.setPaintProperty(data_layer, "fill-opacity", 1);
+    //     }
+    // }
+    // else {
+    //     if (!map.getLayer('basins_5_adm_0_fill')) {
+    //         console.log('add basins')
+    //         console.info(d)
+    //         map.addLayer('basins_5_adm_0_fill')
+    //         //map.setFilter('basins_6_adm_0', null)
+
+    //         map.setPaintProperty('basins_5_adm_0_fill', "fill-opacity", 1);
+    //         map.setLayoutProperty('basins_5_adm_0_fill', 'visibility', 'visible');
+    //     }
+    // }
+
 }
 
 function getUniqueFeatures(array, comparatorProperty) {
 
     var existingFeatureKeys = {};
-    var uniqueFeatures = array.filter(function (el) {
+    var uniqueFeatures = array.filter(function(el) {
         if (existingFeatureKeys[el.properties[comparatorProperty]]) {
             return false;
         } else {
@@ -52,7 +80,7 @@ function get_chart(data) {
             type: 'column',
             zoomType: 'xy',
             renderTo: $('.highcharts_container_bottom')[0]
-            // height:409                             
+                // height:409                             
         },
         title: {
             //text: 'Only landcover classes with bigger than 1% surface are shown on this graphic'
@@ -118,10 +146,11 @@ function do_legend(params) {
     var class_function = get_thresholds_class(params);
     var color_function = get_thresholds_colors(params);
 
-    $('.general_stats .permanent_stats .data').empty().html('<div>Average <span>' + params.avg + '</span></div><div> Minimum <span>' + params.min + '</span></div><div> Maximum <span>' + params.max + '</span></div>')
-    $('#slide-out').sidenav('open')
+    $('.general_stats .permanent_stats .data').empty().html('<div>Average <span>' + params.avg + '</span></div><div> Minimum <span>' +
+            params.min + '</span></div><div> Maximum <span>' + params.max + '</span></div>')
+        // $('#slide-out').sidenav('open')
     var arr = []
-    selects._data.forEach(function (d) {
+    selects._data.forEach(function(d) {
         arr.push({
             data: d.avg_permanent,
             _class: class_function(d.avg_permanent),
@@ -133,9 +162,9 @@ function do_legend(params) {
     var x = d3v5.scaleLinear()
         .domain([params.min, params.max])
         .rangeRound([1, 500])
-    var classified_data = class_function.range().map(function (_class) {
+    var classified_data = class_function.range().map(function(_class) {
         var d = class_function.invertExtent(_class);
-        if (d[0] == null) d[0] = x.domain()[0];//+30;
+        if (d[0] == null) d[0] = x.domain()[0]; //+30;
         if (d[1] == null) d[1] = x.domain()[1];
         //var avg = Number((total_avg / index).toFixed(2));
         console.log(d)
@@ -144,13 +173,12 @@ function do_legend(params) {
 
     var arr_classified = [];
     var temp_arr = []
-    arr.forEach(function (d) {
+    arr.forEach(function(d) {
         var pos = temp_arr.indexOf(d._class)
         if (temp_arr.indexOf(d._class) == -1) {
             temp_arr.push(d._class);
             arr_classified.push({ data_range: classified_data[d._class], _class: d._class, count: 1, color: d.color })
-        }
-        else {
+        } else {
             arr_classified[pos].count++;
         }
     })
@@ -160,32 +188,34 @@ function do_legend(params) {
     var x = d3v5.scaleLinear()
         .domain([params.min, params.max])
         .rangeRound([1, 500])
-    //  .rangeRound([1,legend_wrapper.width()-70])
+        //  .rangeRound([1,legend_wrapper.width()-70])
 
 
     var xAxis = d3v5.axisBottom(x)
         .tickSize(15)
         .tickValues(color_function.domain())
-        .tickFormat(function (d, i) {
+        .tickFormat(function(d, i) {
             if (i == 0 || i == 2 || i == 7 || i == 12)
                 return parseInt(d); // === 0.5 ? formatPercent(d) : formatNumber(100 * d);
         });
     $(".scale").empty();
     $('.my-custom-control').show();
 
-    var all = color_function.range().map(function (color) {
-        var d = color_function.invertExtent(color);
-        if (d[0] == null) d[0] = x.domain()[0];//+30;
-        if (d[1] == null) d[1] = x.domain()[1];
+    var all = color_function.range().map(function(color) {
+            var d = color_function.invertExtent(color);
+            if (d[0] == null) d[0] = x.domain()[0]; //+30;
+            if (d[1] == null) d[1] = x.domain()[1];
 
-        return d;
-    })
-    //console.log(all)
+            return d;
+        })
+        //console.log(all)
 
     //params.total_features
-    var params_html = '<div class="scale_params"><span>Min: ' + params.min + '</span><span> Average: ' + params.avg + '</span><span>Max ' + params.max + '</span></div>';
+    var params_html = '<div class="scale_params"><span>' + params.total_features + ' features symbolized</span><span>Min: ' + params.min + '</span><span> Average: ' + params.avg +
+        '</span><span>Max ' + params.max + '</span></div><div class="scale2"></div>';
+    $('.scale').append(params_html)
 
-    all.forEach(function (d, i) {
+    all.forEach(function(d, i) {
         var item = $("<div class='color'>");
         var c = color_function(d[0]);
         console.log(c)
@@ -193,55 +223,54 @@ function do_legend(params) {
         item.css("height", "2vw");
         item.css("width", 0)
         item.addClass('cat_' + i);
-        $('.scale').append(item)
+        $('.scale2').append(item)
         item.animate({ "width": x(d[1]) - x(d[0]) }, 1000);
 
     });
 
-    $('.scale').append('<span>' + params.total_features + ' features symbolized</span>' + params_html)
-    setTimeout(function () {
-        $('.scale .color').each(function () {
-            var cat = $(this).attr('class').split('_')[1];
-            console.log(cat)
-            var filtered = arr_classified.filter(function (d) {
-                // console.log(d)
-                return d._class == cat;
-            })[0];
-            //console.info(filtered)
-            if (filtered) {
+    // $('.scale').append('' + params_html)
+    setTimeout(function() {
+            $('.scale .color').each(function() {
+                var cat = $(this).attr('class').split('_')[1];
+                console.log(cat)
+                var filtered = arr_classified.filter(function(d) {
+                    // console.log(d)
+                    return d._class == cat;
+                })[0];
+                //console.info(filtered)
+                if (filtered) {
 
-                var range_txt = filtered.data_range[0] + ' - ' + filtered.data_range[1];
+                    var range_txt = filtered.data_range[0] + ' - ' + filtered.data_range[1];
 
-                $(this).attr('data-tooltip', '<div class="section"> <div class="title" style="background-color:' + filtered.color + '">' + range_txt + '</div>' + filtered.count + ' records found</div>');
-            }
-            else {
-                $(this).attr('data-tooltip', "<b>No data in this category</b>");
-            }
-
+                    $(this).attr('data-tooltip', '<div class="section"> <div class="title" style="background-color:' + filtered.color + '">' + range_txt + '</div>' + filtered.count + ' records found</div>');
+                } else {
+                    $(this).attr('data-tooltip', "<b>No data in this category</b>");
+                }
 
 
-            $(this).attr("data-position", "top");
 
-            $(this).tooltip({
-                enterDelay: 10,
-                //  exitDelay: 5050,
-                position: 'top',
-                html: true
+                $(this).attr("data-position", "top");
+
+                $(this).tooltip({
+                    enterDelay: 10,
+                    //  exitDelay: 5050,
+                    position: 'top',
+                    html: true
+                });
+            })
+
+            $('.scale .color').on('mouseout', function(e) {
+                console.info('mouseout cat ' + $(e.target).attr('class'))
+                $('.scale .color').tooltip('close');
+            })
+
+            $('.scale .color').on('hover', function(e) {
+                //   var _this = $(e.target)
+
+                $(this).tooltip('open');
             });
-        })
-
-        $('.scale .color').on('mouseout', function (e) {
-            console.info('mouseout cat ' + $(e.target).attr('class'))
-            $('.scale .color').tooltip('close');
-        })
-
-        $('.scale .color').on('hover', function (e) {
-            //   var _this = $(e.target)
-
-            $(this).tooltip('open');
-        });
-    }, 500)
-    /*
+        }, 500)
+        /*
       var g = d3v5.select(".scale g").call(xAxis);
   
       g.select(".domain")
@@ -302,10 +331,10 @@ function get_thresholds_class(params) {
 
 function get_thresholds_colors(params) {
     var domain = params.arrs;
-    var colorInterpolator = d3v5.interpolateRainbow;//("red", "green");
+    var colorInterpolator = d3v5.interpolateRainbow; //("red", "green");
     var steps = domain.length + 1;
     //14
-    var colorArray = d3v5.range(0, (1 + 1 / steps), 1 / (steps - 1)).map(function (d) {
+    var colorArray = d3v5.range(0, (1 + 1 / steps), 1 / (steps - 1)).map(function(d) {
         return colorInterpolator(d)
     });
     console.warn(d3v5.range(0, (1 + 1 / steps), 1 / (steps - 1)))
@@ -331,7 +360,7 @@ function get_thresholds_classification(params) {
 
     var steps = domain.length;
 
-    var colorArray = d3v5.range(0, (1 + 1 / steps), 1 / (steps - 1)).map(function (d) {
+    var colorArray = d3v5.range(0, (1 + 1 / steps), 1 / (steps - 1)).map(function(d) {
         return colorInterpolator(d)
     });
 
@@ -345,6 +374,7 @@ function get_thresholds_classification(params) {
         .range(range)
 
 }
+
 function get_colors(pfafs_avg_max) {
     return d3v5.scaleLinear()
         .domain([pfafs_avg_min, pfafs_avg_max])
